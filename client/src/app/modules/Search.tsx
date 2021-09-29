@@ -2,6 +2,7 @@
 import React, {useState, useEffect, FC} from 'react'
 import axios from 'axios'
 import {Link, useHistory } from 'react-router-dom'
+import {Pic} from './Pic'
 
 function getMangas(title:string) {
   return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>('https://api.mangadex.org/manga', {params: {title: title, limit: 10}})
@@ -21,6 +22,7 @@ const SearchBar: FC = () => {
   const [response, setResponse] = useState<any>();
   const [result, setResult] = useState<any>();
   const [total, setTotal] = useState<any>();
+  const [cover, setCover] = useState<any>();
   const [loading, setLoading] = useState(true);
 
   function handleSearch() {
@@ -80,6 +82,9 @@ const SearchBar: FC = () => {
                   </td>
                   <td>
                     {d.attributes.status}
+                  </td>
+                  <td>
+                    <Pic manga_id={d.id} cover_id={d.relationships.find((o:any) => o.type === 'cover_art').id} />
                   </td>
                 </tr>
               ))}
