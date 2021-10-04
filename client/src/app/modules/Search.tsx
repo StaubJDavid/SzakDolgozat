@@ -2,10 +2,10 @@
 import React, {useState, useEffect, FC} from 'react'
 import axios from 'axios'
 import {Link, useHistory } from 'react-router-dom'
-import {Pic} from './Pic'
+import {Cover} from './Cover'
 
 function getMangas(title:string) {
-  return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>('https://api.mangadex.org/manga', {params: {title: title, limit: 10}})
+  return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>('https://api.mangadex.org/manga', {params: {title: title, limit: 100}})
 }
 
 type Props = {
@@ -52,7 +52,7 @@ const SearchBar: FC = () => {
   return (
     <div>
       <label className="form-label">Search</label>
-      <input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="SearchBar" placeholder="Boku no piko" />
+      <input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="SearchBar" placeholder="Manga name" />
       <button type="button" onClick={handleSearch} className="btn btn-primary">Search</button>
       <div>
         {loading === false && (<div>
@@ -84,7 +84,7 @@ const SearchBar: FC = () => {
                     {d.attributes.status}
                   </td>
                   <td>
-                    <Pic manga_id={d.id} cover_id={d.relationships.find((o:any) => o.type === 'cover_art').id} />
+                    <Cover manga_id={d.id} cover_id={d.relationships.find((o:any) => o.type === 'cover_art').id} />
                   </td>
                 </tr>
               ))}

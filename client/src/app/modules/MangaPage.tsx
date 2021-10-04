@@ -2,7 +2,9 @@
 import React, {FC, useState, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
-import {Pic} from './Pic'
+import {Cover} from './Cover'
+import {MangaVolumesChapters} from './MangaVolumesChapters'
+import {MangaChapters} from './MangaChapters'
 
 function getMangaPage(manga_id:string) {
   return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>(`https://api.mangadex.org/manga/${manga_id}`)
@@ -37,7 +39,7 @@ const MangaPage: FC = () => {
     <>   
         <table>
             <tbody>
-                <tr key="cover"><Pic manga_id={data.data.id} cover_id={data.data.relationships.find((o:any) => o.type === 'cover_art').id} /></tr>
+                <tr key="cover"><td><Cover manga_id={data.data.id} cover_id={data.data.relationships.find((o:any) => o.type === 'cover_art').id} /></td></tr>
                 <tr key="response"><td>Response: {data.response}</td></tr>
                 <tr key="result"><td>Result: {data.result}</td></tr>
                 <tr key={data.data.id}>
@@ -86,6 +88,8 @@ const MangaPage: FC = () => {
                 </tr>
             </tbody>
         </table>
+        {/*<MangaVolumesChapters manga_id={data.data.id} />*/}
+        <MangaChapters manga_id={data.data.id} />
     </>
   )
 

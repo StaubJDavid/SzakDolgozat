@@ -22,7 +22,7 @@ function changeRes(url:string,res:string){
   return url;
 }
 
-const Pic: FC<Props> = ({manga_id, cover_id}) => {
+const Cover: FC<Props> = ({manga_id, cover_id}) => {
 
   const [isLoading, setLoading] = useState(true);
   // const [showSplashScreen, setShowSplashScreen] = useState(true)
@@ -52,4 +52,4 @@ const Pic: FC<Props> = ({manga_id, cover_id}) => {
   
 }
 
-export {Pic}
+export {Cover}
