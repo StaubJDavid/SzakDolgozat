@@ -1,7 +1,7 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, useState, useEffect} from 'react'
+import {FC, useState, useEffect} from 'react'
 import axios from 'axios'
 import {useHistory} from "react-router-dom";
+import { PageNavBar } from './PageNavBar';
 
 type Props = {
   manga_id: string
@@ -14,6 +14,14 @@ function getMangaChapters(manga_id:string, offset:number) {
 const MangaChapters: FC<Props> = ({manga_id}) => {
   const history = useHistory();
 
+  const [data, setData] = useState<[any]>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState<any>();
+  const [offset, setOffset] = useState<any>();
+  const [result, setResult] = useState<any>();
+  const [total, setTotal] = useState<any>();
+  const [isLoading, setLoading] = useState(true);
+
   function nav(_chapter_id:any, _chapter_hash:any, _chapter_data:any, _chapter_data_saver:any) {
     history.push({
       pathname: `/manga/read/${_chapter_id}`,
@@ -25,17 +33,21 @@ const MangaChapters: FC<Props> = ({manga_id}) => {
       }
     });
   }
-  const [isLoading, setLoading] = useState(true);
+  
   // const [showSplashScreen, setShowSplashScreen] = useState(true)
-  const [data, setData] = useState<any>();
   useEffect(() => {
       const Data = async () => {
         try {
           const response = await getMangaChapters(manga_id,0*100);
           // console.log("MangaChapt");
           // console.log(response.data);
-          setData(response.data);
-          // console.log(data);
+          setCurrentPage(1);
+          setData(response.data.data);
+          setLimit(response.data.limit);
+          setOffset(response.data.offset);
+          setResult(response.data.result);
+          setTotal(response.data.total);
+
           setLoading(false)
         } catch (error) {
           console.log(error)
@@ -45,39 +57,33 @@ const MangaChapters: FC<Props> = ({manga_id}) => {
       Data()
     }, []);
 
+  function handlePage(page:number) {
+    console.log(`Page number: ${page}`);
+    setLoading(true);
+    setCurrentPage(page);
+
+    getMangaChapters(manga_id,(page - 1)*100)
+    .then(({data}) => {
+      // console.log(data.data);
+      setData(data.data);
+      setLimit(data.limit);
+      setOffset(data.offset);
+      setResult(data.result);
+      setTotal(data.total);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log(error.response.status);     
+      setLoading(true);   
+    })
+  }
 
   return isLoading ? <></> : (
     <>   
         <table>
             <tbody>
-            <tr key="Data result">
-              <td>
-                Data result: {data.result}
-              </td>
-            </tr>
-            <tr key="Limit result">
-              <td>
-                Limit result: {data.limit}
-              </td>
-            </tr>
-            <tr key="offset result">
-              <td>
-                offset result: {data.offset}
-              </td>
-            </tr>
-            <tr key="Total result">
-              <td>
-                Total result: {data.total}
-              </td>
-            </tr>
-            {data.data.map((ch:any) => (
+            {data!.map((ch:any) => (
               <tr key={ch.id}>
-                <td>
-                  Type: {ch.type}
-                </td>
-                <td>
-                  id: {ch.id}
-                </td>
                 <td>
                   Volume: {ch.attributes.volume}
                 </td>
@@ -94,6 +100,7 @@ const MangaChapters: FC<Props> = ({manga_id}) => {
             ))}
             </tbody>
         </table>
+        {isLoading === false && (<PageNavBar passedFc={handlePage} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />)}
     </>
   )
 

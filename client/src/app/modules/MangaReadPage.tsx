@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, useState, useEffect} from 'react'
+import {FC, useState, useEffect} from 'react'
 import axios from 'axios'
 import { useLocation } from "react-router-dom";
 import {Img} from './Img';
@@ -50,16 +49,6 @@ const MangaReadPage: FC = (props) => {
     <>   
         <table>
             <tbody>          
-            <tr key="Data result">
-              <td>
-                Data result: {data.result}
-              </td>
-            </tr>
-            <tr key="baseUrl result">
-              <td>
-                baseUrl result: {data.baseUrl}
-              </td>
-            </tr>
             {chapter_data.map((chd:any) => (
               <tr key={chd}>
                 <td>

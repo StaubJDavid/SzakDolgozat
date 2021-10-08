@@ -1,9 +1,6 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, useState, useEffect} from 'react'
-import {Link} from 'react-router-dom'
+import {FC, useState, useEffect} from 'react'
 import axios from 'axios'
 import {Cover} from './Cover'
-import {MangaVolumesChapters} from './MangaVolumesChapters'
 import {MangaChapters} from './MangaChapters'
 
 function getMangaPage(manga_id:string) {
@@ -39,9 +36,7 @@ const MangaPage: FC = () => {
     <>   
         <table>
             <tbody>
-                <tr key="cover"><td><Cover manga_id={data.data.id} cover_id={data.data.relationships.find((o:any) => o.type === 'cover_art').id} /></td></tr>
-                <tr key="response"><td>Response: {data.response}</td></tr>
-                <tr key="result"><td>Result: {data.result}</td></tr>
+                <tr key="cover"><td><Cover width={10} height={10} manga_id={data.data.id} cover_id={data.data.relationships.find((o:any) => o.type === 'cover_art').id} /></td></tr>
                 <tr key={data.data.id}>
                     <td>{data.data.attributes.title.en}</td>
                 </tr>

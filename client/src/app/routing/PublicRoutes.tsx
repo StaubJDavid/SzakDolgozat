@@ -1,10 +1,10 @@
-import React, {Suspense, lazy} from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 
 import {SearchContent} from '../modules/SearchContent'
 import {SearchBar} from '../modules/Search'
 import {MangaPage} from '../modules/MangaPage'
 import { MangaReadPage } from '../modules/MangaReadPage'
+import { ParentTest } from '../modules/ParentTest'
 
 export function PublicRoutes() {
 
@@ -14,14 +14,7 @@ export function PublicRoutes() {
         <Route path='/search' exact component={SearchContent} />
         <Route path='/manga/:id' exact component={MangaPage} />
         <Route path='/manga/read/:chapterid' exact component={MangaReadPage} />
-        {/*<Route path='/builder' component={BuilderPageWrapper} />
-        <Route path='/crafted/pages/profile' component={ProfilePage} />
-        <Route path='/crafted/pages/wizards' component={WizardsPage} />
-        <Route path='/crafted/widgets' component={WidgetsPage} />
-        <Route path='/apps/chat' component={ChatPage} />
-        <Route path='/menu-test' component={MenuTestPage} />
-        <Redirect to="/" />*/}
-        
+        <Route path='/test' exact component={ParentTest} />        
       </Switch>
   )
 }

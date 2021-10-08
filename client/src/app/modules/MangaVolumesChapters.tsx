@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, useState, useEffect} from 'react'
+import {FC, useState, useEffect} from 'react'
 import axios from 'axios'
 
 type Props = {

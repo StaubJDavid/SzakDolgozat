@@ -2,9 +2,11 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter} from 'react-router-dom'
 
-import {SearchBar} from './modules/Search'
-import {SearchContent} from './modules/SearchContent'
 import {Routes} from './routing/Routes'
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 type Props = {
   basename: string
@@ -13,6 +15,16 @@ type Props = {
 const App: React.FC<Props> = ({basename}) =>  {
   return (
     <BrowserRouter basename={basename}>
+      <Navbar bg="light" expand="lg" expanded={false}>
+          <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="navbar-collapse">
+            <Nav className="me-auto">
+              <Nav.Link href="/">Home</Nav.Link>
+              <Nav.Link href="/search">Search</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+      </Navbar>
       <Routes />
     </BrowserRouter>
   );

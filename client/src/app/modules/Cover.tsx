@@ -1,11 +1,11 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {FC, useState, useEffect} from 'react'
-import {Link} from 'react-router-dom'
+import {FC, useState, useEffect} from 'react'
 import axios from 'axios'
 
 type Props = {
   manga_id: string,
-  cover_id: string
+  cover_id: string,
+  width: number,
+  height: number
 }
 
 function getCover(cover_id:string) {
@@ -22,7 +22,7 @@ function changeRes(url:string,res:string){
   return url;
 }
 
-const Cover: FC<Props> = ({manga_id, cover_id}) => {
+const Cover: FC<Props> = ({manga_id, cover_id, height, width}) => {
 
   const [isLoading, setLoading] = useState(true);
   // const [showSplashScreen, setShowSplashScreen] = useState(true)
@@ -45,7 +45,7 @@ const Cover: FC<Props> = ({manga_id, cover_id}) => {
 
   return isLoading ? <></> : (
     <>   
-        <img src={changeRes(data,"256")} alt="Waaaa"></img>
+        <img width={`${width}%`} height={`${height}%`} src={changeRes(data,"256")} alt="Waaaa"></img>
     </>
   )
 

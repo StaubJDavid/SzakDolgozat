@@ -1,11 +1,11 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {useState, useEffect, FC} from 'react'
+import {useState, FC} from 'react'
 import axios from 'axios'
-import {Link, useHistory } from 'react-router-dom'
-import {Cover} from './Cover'
+import {useHistory } from 'react-router-dom'
+import { PageNavBar } from './PageNavBar';
+import { SearchResult } from './TableRows/SearchResult';
 
-function getMangas(title:string) {
-  return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>('https://api.mangadex.org/manga', {params: {title: title, limit: 100}})
+function getMangas(title:string, offset:number) {
+  return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>('https://api.mangadex.org/manga', {params: {title: title, limit: 20, offset: offset}})
 }
 
 type Props = {
@@ -15,6 +15,8 @@ type Props = {
 const SearchBar: FC = () => {
   let history = useHistory();
 
+
+  const [currentPage, setCurrentPage] = useState(1);
   const [title, setTitle] = useState('')
   const [data, setData] = useState<[any]>();
   const [limit, setLimit] = useState<any>();
@@ -25,12 +27,14 @@ const SearchBar: FC = () => {
   const [cover, setCover] = useState<any>();
   const [loading, setLoading] = useState(true);
 
-  function handleSearch() {
-    console.log(`You clicked submit. ${title}`);
+  function handleSearch(page:number) {
+    console.log(`Page number: ${page}`);
     setLoading(true);
-    getMangas(title)
+    setCurrentPage(page);
+
+    getMangas(title,(page - 1)*10)
     .then(({data}) => {
-      console.log(data.data);
+      // console.log(data.data);
       setData(data.data);
       setLimit(data.limit);
       setOffset(data.offset);
@@ -53,47 +57,22 @@ const SearchBar: FC = () => {
     <div>
       <label className="form-label">Search</label>
       <input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="SearchBar" placeholder="Manga name" />
-      <button type="button" onClick={handleSearch} className="btn btn-primary">Search</button>
+      <button type="button" onClick={() => handleSearch(1)} className="btn btn-primary">Search</button>
       <div>
         {loading === false && (<div>
-          <div>
-            <table>
-              <tbody>
-                <tr key="limit">Limit: {limit}</tr>
-                <tr key="offset">Offset: {offset}</tr>
-                <tr key="response">Response: {response}</tr>
-                <tr key="result">Result: {result}</tr>
-                <tr key="total">Total: {total}</tr>
-              </tbody>
-            </table>
-          </div>
           <table>
             <tbody>
               {data?.map((d:any) => (
-                <tr key={d.id}>
-                  <td>
-                    {d.id}
-                  </td>
-                  <td>
-                    {d.type}
-                  </td>
-                  <td onClick={() => {onMangaNameClick(d.id);}}>
-                    {d.attributes.title.en}
-                  </td>
-                  <td>
-                    {d.attributes.status}
-                  </td>
-                  <td>
-                    <Cover manga_id={d.id} cover_id={d.relationships.find((o:any) => o.type === 'cover_art').id} />
-                  </td>
-                </tr>
-              ))}
+                <SearchResult passFc={onMangaNameClick} id={d.id} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
+              ))}                  
             </tbody>
           </table>
       </div>)}
       </div>
+        {loading === false && (<PageNavBar passedFc={handleSearch} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />)}
       </div>
   )
 }
 
+//{passedFc, currentPage, total, limit, maxPage}
 export {SearchBar}
