@@ -47,11 +47,11 @@ const MangaReadPage: FC = (props) => {
 
   return isLoading ? <></> : (
     <>   
-        <table>
+        <table className="table table-responsive">
             <tbody>          
             {chapter_data.map((chd:any) => (
               <tr key={chd}>
-                <td>
+                <td className="text-center">
                   <Img src={`${data.baseUrl}/data/${chapter_hash}/${chd}`} />
                 </td>
               </tr>

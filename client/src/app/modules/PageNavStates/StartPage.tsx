@@ -11,12 +11,12 @@ const StartPage: FC<Props> = ({passedFc, maxPage, currentPage}) => {
 
   return (
     <ul className="pagination justify-content-center">
-      <li className={"page-item" + (currentPage === 1 ? ' disabled' : '')}><a className="page-link" onClick={() => passedFc(1)}>{1}</a></li>
-      <li className={"page-item" + (currentPage === 2 ? ' disabled' : '')}><a className="page-link" onClick={() => passedFc(2)}>{2}</a></li>
-      <li className={"page-item" + (currentPage === 3 ? ' disabled' : '')}><a className="page-link" onClick={() => passedFc(3)}>{3}</a></li>
-      <li className={"page-item" + (currentPage === 4 ? ' disabled' : '')}><a className="page-link" onClick={() => passedFc(4)}>{4}</a></li>
-      <li className="page-item disabled"><a className="page-link">...</a></li>
-      <li className="page-item"><a className="page-link" onClick={() => passedFc(maxPage)}>{maxPage}</a></li>
+      <li className={"page-item" + (currentPage === 1 ? ' disabled' : '')}><button className="page-link" onClick={() => passedFc(1)}>{1}</button></li>
+      <li className={"page-item" + (currentPage === 2 ? ' disabled' : '')}><button className="page-link" onClick={() => passedFc(2)}>{2}</button></li>
+      <li className={"page-item" + (currentPage === 3 ? ' disabled' : '')}><button className="page-link" onClick={() => passedFc(3)}>{3}</button></li>
+      <li className={"page-item" + (currentPage === 4 ? ' disabled' : '')}><button className="page-link" onClick={() => passedFc(4)}>{4}</button></li>
+      <li className="page-item disabled"><button className="page-link">...</button></li>
+      <li className="page-item"><button className="page-link" onClick={() => passedFc(maxPage)}>{maxPage}</button></li>
     </ul>
   )
 }

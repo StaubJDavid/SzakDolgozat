@@ -16,12 +16,11 @@ const App: React.FC<Props> = ({basename}) =>  {
   return (
     <BrowserRouter basename={basename}>
       <Navbar bg="light" expand="lg" expanded={false}>
-          <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+          <Navbar.Brand href="#home">Project Reader</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="navbar-collapse">
             <Nav className="me-auto">
               <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="/search">Search</Nav.Link>
             </Nav>
           </Navbar.Collapse>
       </Navbar>

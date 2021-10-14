@@ -80,7 +80,7 @@ const MangaChapters: FC<Props> = ({manga_id}) => {
 
   return isLoading ? <></> : (
     <>   
-        <table>
+        <table className="table table-responsive">
             <tbody>
             {data!.map((ch:any) => (
               <tr key={ch.id}>

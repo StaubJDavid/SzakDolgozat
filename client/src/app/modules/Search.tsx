@@ -44,7 +44,7 @@ const SearchBar: FC = () => {
       setLoading(false);
     })
     .catch((error) => {
-      console.log(error.response.status);     
+      // console.log(error.response.status);     
       setLoading(true);   
     })
   }
@@ -54,23 +54,19 @@ const SearchBar: FC = () => {
   }
 
   return (
-    <div>
-      <label className="form-label">Search</label>
-      <input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="SearchBar" placeholder="Manga name" />
-      <button type="button" onClick={() => handleSearch(1)} className="btn btn-primary">Search</button>
-      <div>
-        {loading === false && (<div>
-          <table>
-            <tbody>
+    <div className="d-flex flex-column justify-content-center">
+      <div className="d-inline-flex flex-row justify-content-center">
+        <div className="p-2 justify-content-center"><input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="SearchBar" placeholder="Manga name" /></div>
+        <div className="p-2 justify-content-center"><button type="button" onClick={() => handleSearch(1)} className="btn btn-primary">Search</button></div>
+      </div>
+        {loading === false && (
+        <div className="posts">
               {data?.map((d:any) => (
-                <SearchResult passFc={onMangaNameClick} id={d.id} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
+                <SearchResult passFc={onMangaNameClick} id={d.id} demography={d.attributes.publicationDemographic} description={d.attributes.description.en} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
               ))}                  
-            </tbody>
-          </table>
-      </div>)}
-      </div>
+        </div>)}
         {loading === false && (<PageNavBar passedFc={handleSearch} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />)}
-      </div>
+    </div>
   )
 }
 
