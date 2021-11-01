@@ -32,18 +32,16 @@ const SearchResult: FC<Props> = ({passFc, id, title, status, relationships, demo
       //   </td>
       // </tr>
     <div className="card card-body">
-      <div className="row">
-        <div className="col-2 align-self-center">
-          <Cover height={100} width={100} manga_id={id} cover_id={relationships.find((o:any) => o.type === 'cover_art').id} />
+      <div className="row justify-content-md-center">
+        <div className="d-flex justify-content-center col-md-2 align-self-center">
+          <Cover height={50} width={50} manga_id={id} cover_id={relationships.find((o:any) => o.type === 'cover_art').id} />
         </div>
-        <div className="col-2 align-self-center">
+        <div className="col-sm-2 align-self-center">
           <p className="text-center" onClick={() => {passFc(id)}}>{title}</p>
-          <br />
           <p className="text-center">{status}</p>
-          <br />
           <p className="text-center">{demography}</p>
         </div>
-        <div className="col-8 align-self-center">
+        <div className="col-md-8 align-self-center">
           <p className="align-middle">{description}</p>
         </div>
       </div>
