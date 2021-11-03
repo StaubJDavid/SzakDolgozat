@@ -4,6 +4,8 @@ exports.joi_email = Joi.string().email().required();
 exports.joi_nickname = Joi.string().required().min(2);
 //const joi_password = Joi.string().pattern(new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?#$%&()"\'\[\\\]*+,-./{}~])(?=.{8,})')).required().messages({'string.pattern.base': `Password is bad`});;
 exports.joi_password = Joi.string().required().min(4);
+exports.joi_string = Joi.string().required();
+exports.joi_digit = Joi.number().required();
 
 /*const joi_lastname = Joi.string().min(2).max(20).required(); 
 const joi_firstname = Joi.string().min(2).max(20).required(); 

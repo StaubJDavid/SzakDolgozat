@@ -1,7 +1,6 @@
 auth
-    api/auth/login [POST]
-    api/auth/register [POST]
-    api/auth/get-user [GET]
+    api/auth/login [POST] X
+    api/auth/register [POST] X
 comments
     api/comments/:target_id [GET, POST]
     api/comments/:c_id [DELETE, PUT]

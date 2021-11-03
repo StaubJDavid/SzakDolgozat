@@ -62,6 +62,12 @@ router.post('/login', (req, res) => {
     }
 });
 
+/*router.get('/pw', (req, res) => {
+    const hashedPassword = bcrypt.hashSync("12345", saltRounds);
+    
+    res.json(hashedPassword);
+});*/
+
 // -------------------------------
 // POST api/auth/register
 // Register user
