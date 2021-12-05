@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const db = require('./src/database/db');
+const { v4: uuidv4, validate: uuidValidate } = require('uuid');
 
 require('dotenv').config();
 
@@ -27,6 +28,10 @@ app.use('/api/votes', cors(), votesRouter);// localhost:3001/api/votes
 
 app.get('/', (req, res) => {
     res.send('Home');
+});
+
+app.get('/uuid/:manga_id', (req, res) => {
+    res.send(uuidValidate(req.params.manga_id));
 });
 
 app.get('/token', (req, res) => {

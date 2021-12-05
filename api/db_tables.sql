@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
 );
 
 CREATE TABLE IF NOT EXISTS `threads` (
-    `thread_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `thread_id` VARCHAR(255) NOT NULL PRIMARY KEY,
     `user_id` INT NOT NULL,
     `title` VARCHAR(255),
     `text` VARCHAR(255),

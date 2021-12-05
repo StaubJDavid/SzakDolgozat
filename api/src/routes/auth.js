@@ -28,7 +28,7 @@ router.post('/login', (req, res) => {
             if(err1){
                 console.log(err1);
                 errors.query = "sql_loginCheckIfRegistered query error";
-                errors.log(err1);
+                errors.log = err1;
 
                 res.status(400).json(errors);
             }else{
@@ -40,7 +40,7 @@ router.post('/login', (req, res) => {
                             nickname:   results1[0].nickname
                         }
 
-                        const token = jwt.sign(payload, process.env.SECRET_KEY,{expiresIn: "2m"});
+                        const token = jwt.sign(payload, process.env.SECRET_KEY,{expiresIn: "30m"});
 
                         res.json({
                             success: true,
@@ -85,7 +85,7 @@ router.post('/register', (req, res) => {
             if(err1){
                 console.log(err1);
                 errors.query = "sql_checkIfRegistered query error";
-                errors.log(err1);
+                errors.log = err1;
 
                 res.status(400).json(errors);
             }else{
@@ -97,7 +97,7 @@ router.post('/register', (req, res) => {
                         if(err2){
                             console.log(err2);
                             errors.query = "sql_registerUser query error";
-                            errors.log(err2);
+                            errors.log = err2;
             
                             res.status(400).json(errors);
                         }else{
@@ -105,7 +105,7 @@ router.post('/register', (req, res) => {
                                 if(err3){
                                     console.log(err3);
                                     errors.query = "sql_getRegisteredUser query error";
-                                    errors.log(err3);
+                                    errors.log = err3;
                     
                                     res.status(400).json(errors);
                                 }else{

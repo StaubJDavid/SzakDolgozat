@@ -3,11 +3,11 @@ auth
     api/auth/register [POST] X
 comments
     api/comments/:target_id [GET, POST]
-    api/comments/:c_id [DELETE, PUT]
+    api/comments/:c_id [DELETE]
 lists
     api/lists [GET, POST]
     api/lists/:list_id [GET, POST, DELETE, PUT]
-    api/lists/:list_id/:ld_id [DELETE]
+    api/lists/entry/:list_id/:ld_id [DELETE]
 threads
     api/threads [GET, POST]
     api/threads/:t_id [GET, DELETE]
@@ -18,6 +18,8 @@ user
     api/user/details [POST]
     api/user/details/:ud_id [DELETE, PUT]
     api/user/friend-request [GET, POST, DELETE]
+    api/user/friend [DELETE]
+    api/user/get/friend-request [GET]
 votes
     api/votes/like/:c_id [GET, POST]
     api/votes/rate/:m_id [GET, POST, PUT, DELETE]

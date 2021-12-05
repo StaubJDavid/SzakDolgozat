@@ -6,6 +6,7 @@ exports.joi_nickname = Joi.string().required().min(2);
 exports.joi_password = Joi.string().required().min(4);
 exports.joi_string = Joi.string().required();
 exports.joi_digit = Joi.number().required();
+exports.joi_visibility_digit = Joi.number().min(0).max(2).required();
 
 /*const joi_lastname = Joi.string().min(2).max(20).required(); 
 const joi_firstname = Joi.string().min(2).max(20).required(); 

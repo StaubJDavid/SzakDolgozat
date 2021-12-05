@@ -5,6 +5,15 @@ const db = require('../database/db');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const verify = require('../helpers/verify');
+const isEmpty = require('../helpers/isEmpty');
+const {threadCreateThreadValidator,
+    threadGetThreadsValidator,
+    threadGetThreadValidator,
+    threadDelThreadValidator,
+    threadGetUsersThreadValidator
+} = require('../helpers/validations/threadValidations');
+const tq = require('../helpers/queries/threadQueries');
+const { v4: uuidv4 } = require('uuid');
 
 require('dotenv').config();
 
@@ -14,7 +23,52 @@ require('dotenv').config();
 // Private
 // -------------------------------
 router.post('/', verify, (req, res) => {
-    res.json("POST api/threads");
+    const user_id = req.jwt.id;
+    const {title, text} = req.body;
+    const errors = threadCreateThreadValidator(req.jwt,req.body);
+
+
+    if(!isEmpty(errors)){
+        res.status(400).json(errors);
+    }else{
+        db.query(tq.sql_checkBeforeCreateThread, [user_id, title], (err1, results1) => {
+            if(err1){
+                console.log(err1);
+                errors.query = "sql_checkBeforeCreateThread query error";
+                errors.log = err1;
+    
+                res.status(400).json(errors);
+            }else{                
+                if(results1.length == 0){
+                    db.query(tq.sql_createThread, [uuidv4(), user_id, title, text], (err2, results2) => {
+                        if(err2){
+                            console.log(err2);
+                            errors.query = "sql_createThread query error";
+                            errors.log = err2;
+                
+                            res.status(400).json(errors);
+                        }else{
+                            if(results2.affectedRows == 1){
+                                res.json({success: "Successfully created thread"});
+                            }else{
+                                if(results2.affectedRows == 0){
+                                    errors.query = "Thread creation was unsuccessful";
+                                }else{
+                                    errors.query = "More threads were created than anticipated: " + results2.affectedRows;
+                                }
+            
+                                res.status(400).json(errors);
+                            }
+                        }
+                    });
+                }else{
+                    errors.query = "You already have a thread with the title:" + title;
+
+                    res.status(400).json(errors);
+                }
+            }
+        });
+    }
 });
 
 // -------------------------------
@@ -23,7 +77,31 @@ router.post('/', verify, (req, res) => {
 // Private
 // -------------------------------
 router.get('/', verify, (req, res) => {
-    res.json("GET api/threads");
+    const user_id = req.jwt.id;
+    const errors = threadGetThreadsValidator(req.jwt);
+
+
+    if(!isEmpty(errors)){
+        res.status(400).json(errors);
+    }else{
+        db.query(tq.sql_getAllThreads, (err1, results1) => {
+            if(err1){
+                console.log(err1);
+                errors.query = "sql_getAllThreads query error";
+                errors.log = err1;
+    
+                res.status(400).json(errors);
+            }else{                
+                if(results1.length > 0){
+                    res.json(results1);
+                }else{
+                    errors.query = "No threads available";
+
+                    res.status(400).json(errors);
+                }
+            }
+        });
+    }
 });
 
 // -------------------------------
@@ -32,7 +110,36 @@ router.get('/', verify, (req, res) => {
 // Private
 // -------------------------------
 router.get('/:t_id', verify, (req, res) => {
-    res.json("GET api/threads/" + req.params.t_id);
+    const user_id = req.jwt.id;
+    const thread_id = req.params.t_id;
+    const errors = threadGetThreadValidator(user_id,thread_id);
+
+
+    if(!isEmpty(errors)){
+        res.status(400).json(errors);
+    }else{
+        db.query(tq.sql_getThread, [thread_id], (err1, results1) => {
+            if(err1){
+                console.log(err1);
+                errors.query = "sql_getThread query error";
+                errors.log = err1;
+    
+                res.status(400).json(errors);
+            }else{                
+                if(results1.length == 1){
+                    res.json(results1);
+                }else{
+                    if(results1.length == 0){
+                        errors.query = "No threads available";
+                    }else{
+                        errors.query = "There's more than one thread with id: " + thread_id;
+                    }
+                    
+                    res.status(400).json(errors);
+                }
+            }
+        });
+    }
 });
 
 // -------------------------------
@@ -41,7 +148,57 @@ router.get('/:t_id', verify, (req, res) => {
 // Private
 // -------------------------------
 router.delete('/:t_id', verify, (req, res) => {
-    res.json("DELETE api/threads/" + req.params.t_id);
+    const user_id = req.jwt.id;
+    const thread_id = req.params.t_id;
+    const errors = threadDelThreadValidator(user_id,thread_id);
+
+
+    if(!isEmpty(errors)){
+        res.status(400).json(errors);
+    }else{
+        db.query(tq.sql_checkBeforeDelThread, [user_id,thread_id], (err1, results1) => {
+            if(err1){
+                console.log(err1);
+                errors.query = "sql_checkBeforeDelThread query error";
+                errors.log = err1;
+    
+                res.status(400).json(errors);
+            }else{                
+                if(results1.length == 1){
+                    db.query(tq.sql_delThread, [thread_id], (err2, results2) => {
+                        if(err2){
+                            console.log(err2);
+                            errors.query = "sql_checkBeforeDelThread query error";
+                            errors.log = err2;
+                
+                            res.status(400).json(errors);
+                        }else{                
+                            //TODO: DELETE COMMENTS OF THE THREAD
+                            if(results2.affectedRows == 1){
+                                res.json({success: "Successfully deleted thread"});
+                            }else{
+                                if(results2.affectedRows == 0){
+                                    errors.query = "No thread available";
+                                }else{
+                                    errors.query = "There's more than one thread with id: " + thread_id;
+                                }
+                                
+                                res.status(400).json(errors);
+                            }
+                        }
+                    });
+                }else{
+                    if(results1.length == 0){
+                        errors.query = "No thread available";
+                    }else{
+                        errors.query = "There's more than one thread with id: " + thread_id;
+                    }
+                    
+                    res.status(400).json(errors);
+                }
+            }
+        });
+    }
 });
 
 // -------------------------------
@@ -50,7 +207,35 @@ router.delete('/:t_id', verify, (req, res) => {
 // Private
 // -------------------------------
 router.get('/own/:u_id', verify, (req, res) => {
-    res.json("GET api/threads/own/" + req.params.u_id);
+    const user_id = req.params.u_id;
+    const errors = threadGetUsersThreadValidator(user_id);
+
+
+    if(!isEmpty(errors)){
+        res.status(400).json(errors);
+    }else{
+        db.query(tq.sql_getUsersThreads, [user_id], (err1, results1) => {
+            if(err1){
+                console.log(err1);
+                errors.query = "sql_getUsersThreads query error";
+                errors.log = err1;
+    
+                res.status(400).json(errors);
+            }else{                
+                if(results1.length != 0){
+                    res.json(results1);
+                }else{
+                    if(results1.length == 0){
+                        errors.query = "User has no threads";
+                    }else{
+                        errors.query = "Idk man something else is wrong";
+                    }
+                    
+                    res.status(400).json(errors);
+                }
+            }
+        });
+    }
 });
 
 
