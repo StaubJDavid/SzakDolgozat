@@ -108,7 +108,7 @@ router.get('/', verify, (req, res) => {
 });
 
 // -------------------------------
-// GET api/lists
+// GET api/lists/user/:user_id
 // Get all of the lists of a user based on the url user_id
 // Private
 // -------------------------------
@@ -523,13 +523,14 @@ router.delete('/entry/:list_id/:ld_id', verify, (req, res) => {
     }
 });
 
+// [DEPRACATED]
 // -------------------------------
 // PUT api/lists/:list_id/:ld_id
 // Edit the specified list entry based on the list_id and ld_id
 // Private
 // -------------------------------
 router.put('/:list_id/:ld_id', verify, (req, res) => {
-    res.json("DELETE api/lists/" + req.params.list_id + "/" + req.params.ld_id);
+    //res.json("DELETE api/lists/" + req.params.list_id + "/" + req.params.ld_id);
 });
 
 

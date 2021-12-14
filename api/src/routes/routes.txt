@@ -8,6 +8,7 @@ lists
     api/lists [GET, POST]
     api/lists/:list_id [GET, POST, DELETE, PUT]
     api/lists/entry/:list_id/:ld_id [DELETE]
+    api/lists/user/:user_id [GET]
 threads
     api/threads [GET, POST]
     api/threads/:t_id [GET, DELETE]

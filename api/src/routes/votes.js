@@ -15,7 +15,7 @@ const vq = require('../helpers/queries/voteQueries');
 require('dotenv').config();
 
 // -------------------------------
-// POST api/votes/like/:c_id
+// POST api/votes/like
 // Like or dislike a comment
 // Private
 // -------------------------------
@@ -98,8 +98,8 @@ router.post('/like', verify, (req, res) => {
 });
 
 // -------------------------------
-// GET api/votes/like/:c_id
-// Get the ratings of a comment
+// GET api/votes/like/:target_id
+// Get the likes of a comment
 // Public
 // -------------------------------
 router.get('/like/:target_id', (req, res) => {
