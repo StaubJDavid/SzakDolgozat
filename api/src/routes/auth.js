@@ -76,6 +76,8 @@ router.post('/login', (req, res) => {
 router.post('/register', (req, res) => {
     const { email, nickname, password} = req.body;
 
+    console.log(req.body);
+
     const errors = registerValidator(req.body);
 
     if(!isEmpty(errors)){
