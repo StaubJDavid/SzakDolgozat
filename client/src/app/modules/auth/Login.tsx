@@ -3,6 +3,7 @@ import axios from 'axios';
 import classnames from 'classnames';
 import {connect} from 'react-redux';
 import {loginUser} from '../../actions/authActions';
+import TextInput from '../../common/TextInput';
 
 type Props = {
     auth:any,
@@ -75,26 +76,22 @@ class Login extends Component<Props,State> {
                             <h1 className="display-4 text-center">Log In</h1>
                             <p className="lead text-center">Sign in to your DevConnector account</p>
                             <form onSubmit={this.onSubmit}>
-                                <div className="form-group">
-                                    <input 
-                                    type="email" 
-                                    className={classnames("form-control form-control-lg",{"is-invalid":errors.email})} 
+                                <TextInput
+                                    name="email" 
+                                    value={this.state.email}
+                                    error={errors.email} 
+                                    type="email"
+                                    onChange={this.onChange}  
                                     placeholder="Email Address"
-                                    value={this.state.email} 
-                                    onChange={this.onChange}
-                                    name="email" />
-                                    {errors.email && (<div className='invalid-feedback'>{errors.email}</div>)}
-                                </div>
-                                <div className="form-group">
-                                    <input 
-                                    type="password" 
-                                    className={classnames("form-control form-control-lg",{"is-invalid":errors.password})} 
-                                    placeholder="Password" 
+                                />
+                                <TextInput 
+                                    type="password"
+                                    name="password"
                                     value={this.state.password} 
                                     onChange={this.onChange}
-                                    name="password" />
-                                    {errors.password && (<div className='invalid-feedback'>{errors.password}</div>)}
-                                </div>
+                                    error={errors.password}
+                                    placeholder="Password"
+                                />
                                 <input type="submit" className="btn btn-info btn-block mt-4" />
                             </form>
                         </div>
