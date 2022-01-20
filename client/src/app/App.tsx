@@ -6,6 +6,7 @@ import store from './store';
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './helpers/setAuthToken';
 import { logoutUser, setCurrentUser } from './actions/authActions';
+import {withRouter} from 'react-router';
 
 import {Routes} from './routing/Routes'
 import Navbar from './layout/Navbar';
@@ -22,6 +23,7 @@ import { ParentTest } from './modules/ParentTest'
 import Login from './modules/auth/Login'
 import Register from './modules/auth/Register'
 import Profile from './modules/Profile'
+import { clearProfile } from './actions/profileActions';
 
 type State = {
   basename: string
@@ -35,6 +37,7 @@ if(localStorage.JWT){
   const currentTime = Date.now()/1000;
   if(decoded.exp < currentTime){
     store.dispatch(logoutUser());
+    store.dispatch(clearProfile());
     window.location.href = '/';
   }
 }
@@ -62,7 +65,7 @@ const App: React.FC<State> = ({basename}) =>  {
           <Route path='/test' exact component={ParentTest} /> 
           <Route path='/register' exact component={Register} /> 
           <Route path='/login' exact component={Login} />
-          <Route path='/profile' exact component={Profile} />
+          <Route path='/profile/:id' exact component={withRouter(Profile)} />
         </div>
         
         {/*<Footer />*/}

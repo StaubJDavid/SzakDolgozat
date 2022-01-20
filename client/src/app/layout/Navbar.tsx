@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {logoutUser} from '../actions/authActions';
+import {clearProfile} from '../actions/profileActions';
 
 type Props = {
     auth:any,
-    logoutUser:any
+    logoutUser:any,
+    clearProfile:any
 }
 
 type State = {
@@ -17,6 +19,7 @@ class Navbar extends Component<Props,State> {
     onLogoutClick(e:any){
         //Olyan href ek keresése amiről elkell vinni az emberkét
         e.preventDefault();
+        this.props.clearProfile();
         this.props.logoutUser();
     }
 
@@ -26,7 +29,7 @@ class Navbar extends Component<Props,State> {
         const authLinks = (
             <ul className="navbar-nav ms-auto">
                 <li className="nav-item">
-                    <Link className="nav-link" to="/profile">{user.nickname}</Link>
+                    <Link className="nav-link" to={'/profile/'+ user.id} >{user.nickname}</Link>
                 </li>
                 <li className="nav-item">
                     <Link to="/" onClick={this.onLogoutClick.bind(this)} className="nav-link">Logout</Link>
@@ -78,4 +81,4 @@ const mapStateToProps = (state:any) => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, {logoutUser})(Navbar);
+export default connect(mapStateToProps, {logoutUser,clearProfile})(Navbar);

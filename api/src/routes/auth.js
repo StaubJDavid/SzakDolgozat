@@ -112,7 +112,7 @@ router.post('/register', (req, res) => {
                                     res.status(400).json(errors);
                                 }else{
                                     if(results3.length === 1){
-                                        res.json(results3[0]);
+                                        res.json(true);
                                     }else{
                                         errors.query = `sql_getRegisteredUser gave back [ ${results3.length} ] results`;
                                     }

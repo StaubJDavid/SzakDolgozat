@@ -40,7 +40,7 @@ class Login extends Component<Props,State> {
 
     componentWillReceiveProps(nextProps:any){
         if(nextProps.auth.isAuthenticated){
-            this.props.history.push('/profile');
+            this.props.history.push('/');
         }
 
         if(nextProps.errors){

@@ -109,6 +109,8 @@ router.get('/:u_id', verify, (req, res) => {
     const id = req.params.u_id;
     const errors = userGetUserIdValidator(req.jwt,req.params.u_id);
     
+    console.log('get api/user/u_id Request');
+
     const profile = {
         id: 0,
         nickname: "",

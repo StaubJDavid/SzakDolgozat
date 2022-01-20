@@ -1,9 +1,35 @@
 import axios from 'axios';
-import {GET_ERRORS, SET_CURRENT_USER} from './types';
-import setAuthToken from '../helpers/setAuthToken';
-import jwt_decode from 'jwt-decode';
+import {GET_PROFILE, PROFILE_LOADING, GET_ERRORS, CLEAR_PROFILE} from './types';
 
-export const registerUser = (userData:any, history:any) => (dispatch:any) => {
+export const getProfile = (id:number) => (dispatch:any) => {
+    dispatch(setProfileLoading());
+    axios.get(`${process.env.REACT_APP_API_URL}/api/user/${id}`)
+    .then(
+        res => dispatch({
+            type: GET_PROFILE,
+            payload: res.data
+        })
+    ).catch(
+        err => dispatch({
+            type: GET_PROFILE,
+            payload: null
+        })
+    );
+}
+
+export const setProfileLoading = () => {
+    return {
+        type: PROFILE_LOADING
+    }
+}
+
+export const clearProfile = () => {
+    return {
+        type: CLEAR_PROFILE
+    }
+}
+
+/*export const registerUser = (userData:any, history:any) => (dispatch:any) => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, 
         {nickname: userData.nickname,
         email: userData.email,
@@ -49,4 +75,4 @@ export const logoutUser = () => (dispatch:any) => {
     localStorage.removeItem('JWT');
     setAuthToken(false);
     dispatch(setCurrentUser({}));
-}
+}*/
