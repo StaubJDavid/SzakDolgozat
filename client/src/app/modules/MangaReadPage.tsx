@@ -32,7 +32,7 @@ const MangaReadPage: FC = (props) => {
           
           const response = await getMangaServer(chapter_id);
           console.log("MangaRead");
-          // console.log(response.data);
+          console.log(response.data);
           setData(response.data);
           // console.log(data);
           setLoading(false)
@@ -49,10 +49,10 @@ const MangaReadPage: FC = (props) => {
     <>   
         <table className="table table-responsive">
             <tbody>          
-            {chapter_data.map((chd:any) => (
+            {data.chapter.data.map((chd:any) => (
               <tr key={chd}>
                 <td className="text-center">
-                  <Img src={`${data.baseUrl}/data/${chapter_hash}/${chd}`} />
+                  <Img src={`${data.baseUrl}/data/${data.chapter.hash}/${chd}`} />
                 </td>
               </tr>
             ))}

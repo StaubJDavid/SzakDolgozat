@@ -108,15 +108,13 @@ router.get('/', verify, (req, res) => {
 router.get('/:u_id', verify, (req, res) => {
     const id = req.params.u_id;
     const errors = userGetUserIdValidator(req.jwt,req.params.u_id);
-    
-    console.log('get api/user/u_id Request');
 
     const profile = {
         id: 0,
         nickname: "",
         registered: "",
         last_login: "",
-        bio: "",
+        bio: {},
         liked_manga: [],
         disliked_manga: [],
         friends: []
@@ -149,10 +147,22 @@ router.get('/:u_id', verify, (req, res) => {
                         }else{
                             for(let i = 0; i < results2.length; i++){
                                 switch(results2[i].dt_id){
-                                    case 1:profile.bio = results2[i].value;break;
-                                    case 2:profile.liked_manga.push(results2[i].value);break;
-                                    case 3:profile.disliked_manga.push(results2[i].value);break;
+                                    case 1:profile.bio = {ud_id:results2[i].ud_id,value:results2[i].value};break;
+                                    
+                                    case 2:profile.liked_manga.push({
+                                        ud_id:results2[i].ud_id,
+                                        manga_id:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
+                                        value:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
+                                    });break;
+
+                                    case 3:profile.disliked_manga.push({
+                                        ud_id:results2[i].ud_id,
+                                        manga_id:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
+                                        value:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
+                                    });break;
+
                                     case 4:profile.friends.push({
+                                        ud_id:results2[i].ud_id,
                                         fid:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
                                         fnickname:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
                                     });break;

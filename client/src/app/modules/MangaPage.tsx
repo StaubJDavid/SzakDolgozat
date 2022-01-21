@@ -33,57 +33,7 @@ const MangaPage: FC = () => {
 
 
   return isLoading ? <></> : (
-    <>   
-        {/* <table>
-            <tbody>
-                <tr key="cover"><td><Cover width={10} height={10} manga_id={data.data.id} cover_id={data.data.relationships.find((o:any) => o.type === 'cover_art').id} /></td></tr>
-                <tr key={data.data.id}>
-                    <td>{data.data.attributes.title.en}</td>
-                </tr>
-                <tr key="description">
-                    <td>{data.data.attributes.description.en}</td>
-                </tr>
-                <tr key="type">
-                    <td>{data.data.attributes.type}</td>
-                </tr>
-                {data.data.attributes.tags.map((t:any) => (
-                <tr key={t.id}>
-                  <td>
-                    {t.attributes.group}
-                  </td>
-                  <td>
-                    {t.attributes.name.en}
-                  </td>
-                </tr>
-                ))}
-                {data.data.attributes.altTitles.map((at:any) => (
-                <tr key={at.en}>
-                  <td>
-                    {at.en}
-                  </td>
-                </tr>
-                ))}
-                <tr key="lastupdate">
-                    <td>{data.data.attributes.updatedAt}</td>
-                </tr>
-                <tr key="status">
-                    <td>{data.data.attributes.status}</td>
-                </tr>
-                <tr key="originalLanguage">
-                    <td>{data.data.attributes.originalLanguage}</td>
-                </tr>
-                <tr key="publicationDemographic">
-                    <td>{data.data.attributes.publicationDemographic}</td>
-                </tr>
-                <tr key="createdAt">
-                    <td>{data.data.attributes.createdAt}</td>
-                </tr>
-                <tr key="contentRating">
-                    <td>{data.data.attributes.contentRating}</td>
-                </tr>
-            </tbody>
-        </table> profile.html */}
-        
+    <> 
         <div className="container">
           <div className="row">
             <div className="col-md-12">

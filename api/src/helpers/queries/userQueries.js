@@ -1,7 +1,7 @@
 const userQueries = {
 
     sql_getUserDetails : 
-        'SELECT ud.user_id,ud.dt_id,dt.type_name,ud.value '+
+        'SELECT ud.ud_id,ud.user_id,ud.dt_id,dt.type_name,ud.value '+
         'FROM user_details as ud '+
         'JOIN detail_types as dt ON ud.dt_id = dt.dt_id '+
         'WHERE ud.user_id = ?'
