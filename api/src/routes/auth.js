@@ -103,18 +103,18 @@ router.post('/register', (req, res) => {
             
                             res.status(400).json(errors);
                         }else{
-                            db.query(aq.sql_getRegisteredUser, [results2.insertId], (err3, results3) => {
+                            db.query(aq.sql_fillDefaultValues, [results2.insertId], (err3, results3) => {
                                 if(err3){
                                     console.log(err3);
-                                    errors.query = "sql_getRegisteredUser query error";
+                                    errors.query = "sql_fillDefaultValues query error";
                                     errors.log = err3;
                     
                                     res.status(400).json(errors);
                                 }else{
-                                    if(results3.length === 1){
+                                    if(results3.affectedRows === 1){
                                         res.json(true);
                                     }else{
-                                        errors.query = `sql_getRegisteredUser gave back [ ${results3.length} ] results`;
+                                        errors.query = `sql_fillDefaultValues gave back [ ${results3.length} ] results`;
                                     }
                                 }
                             });

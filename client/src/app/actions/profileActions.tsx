@@ -24,6 +24,21 @@ export const getProfile = (id:number) => (dispatch:any) => {
     );
 }
 
+export const getProfileNoLoading = (id:number) => (dispatch:any) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/user/${id}`)
+    .then(
+        res => dispatch({
+            type: GET_PROFILE,
+            payload: res.data
+        })
+    ).catch(
+        err => dispatch({
+            type: GET_PROFILE,
+            payload: null
+        })
+    );
+}
+
 export const searchForManga = (manga:string) => (dispatch:any) => {
     axios.get('https://api.mangadex.org/manga',{params:{title: manga, limit:20}})
     .then(
@@ -46,8 +61,7 @@ export const addMangaProfile = (id:number,detail_type:number,manga_id:string,man
     })
     .then(
         res => {
-            //dispatch(clearProfile());
-            dispatch(getProfile(id));
+            dispatch(getProfileNoLoading(id));
         }
     ).catch(
         err => dispatch({
@@ -61,8 +75,21 @@ export const deleteMangaProfile = (id:number,ud_id:number) => (dispatch:any) => 
     axios.delete(`${process.env.REACT_APP_API_URL}/api/user/details/${ud_id}`)
     .then(
         res => {
-            //dispatch(clearProfile());
-            dispatch(getProfile(id));
+            dispatch(getProfileNoLoading(id));
+        }
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
+}
+
+export const updateProfile = (id:number,ud_id:number,value:string) => (dispatch:any) => {
+    axios.put(`${process.env.REACT_APP_API_URL}/api/user/details/${ud_id}`,{value: value})
+    .then(
+        res => {
+            dispatch(getProfileNoLoading(id));
         }
     ).catch(
         err => dispatch({

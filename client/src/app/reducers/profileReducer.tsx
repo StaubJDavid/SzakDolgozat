@@ -1,4 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
+import { bindActionCreators } from "redux";
 import {GET_PROFILE,
         PROFILE_LOADING,
         CLEAR_PROFILE,
@@ -29,6 +30,14 @@ export default function(state = initialState, action:any){
             ...state,
             manga_search: action.payload
         };
+        /*case ADD_MANGA_PROFILE: return {
+            ...state,
+            profile:{
+                ...state.profile,
+                liked_manga: action.payload.liked_manga,
+                disliked_manga: action.payload.disliked_manga
+            }
+        };*/
         case CLEAR_PROFILE: return {
             ...state,
             profile: null

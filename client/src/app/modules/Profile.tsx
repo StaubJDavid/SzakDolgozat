@@ -1,7 +1,7 @@
 import React, { Component, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {getProfile, searchForManga, addMangaProfile,deleteMangaProfile} from '../actions/profileActions';
+import {getProfile, searchForManga, addMangaProfile,deleteMangaProfile,updateProfile} from '../actions/profileActions';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import TextInput from '../common/TextInput';
@@ -16,14 +16,18 @@ type Props = {
     getProfile:any,
     searchForManga:any,
     addMangaProfile:any,
-    deleteMangaProfile:any
+    deleteMangaProfile:any,
+    updateProfile:any
 }
 
 type State = {
     manga_search:string,
     errors: any,
     timer:any,
-    own:boolean
+    own:boolean,
+    bio_l:string,
+    bio_edit:boolean,
+    count:number
 }
 
 
@@ -35,15 +39,20 @@ class Profile extends Component<Props,State> {
             manga_search: '',
             errors: {},
             timer: null,
-            own: false
+            own: false,
+            bio_l:"",
+            bio_edit:true,
+            count:0
         }
         
         this.onChangeManga = this.onChangeManga.bind(this);
         this.onAddMangaClick = this.onAddMangaClick.bind(this);
         this.onDeleteMangaClick = this.onDeleteMangaClick.bind(this);
+        this.onEditClick = this.onEditClick.bind(this);
+        this.onChangeEdit = this.onChangeEdit.bind(this);
+        this.onSaveClick = this.onSaveClick.bind(this);
     }
 
-    
 
     onChangeManga(e:any){
         this.setState({[String(e.target.name)]: String(e.target.value)} as any);
@@ -57,11 +66,26 @@ class Profile extends Component<Props,State> {
         this.setState({timer: newTimer});
     }
 
-    onAddMangaClick(e:any){
-        /*console.log(e.target.getAttribute("data-type"));
-        console.log(e.target.getAttribute("data-id"));
-        console.log(e.target.getAttribute("data-name"));*/
+    onEditClick(e:any){
+        console.log("Clicked on Edit");
+        this.setState({bio_l:this.props.profile.profile.bio.value});
+        this.setState({bio_edit:!this.state.bio_edit});
+    }
 
+    onChangeEdit(e:any){
+        this.setState({bio_l: String(e.target.value)} as any);
+    }
+
+    onSaveClick(e:any){
+        //console.log(this.state.bio_l);
+        this.props.updateProfile(Number(this.props.auth.user.id),
+                                Number(this.props.profile.profile.bio.ud_id),
+                                String(this.state.bio_l)
+        )
+        this.onEditClick({});
+    }
+
+    onAddMangaClick(e:any){
         this.props.addMangaProfile(Number(this.props.auth.user.id),
             Number(e.target.getAttribute("data-type")),
             String(e.target.getAttribute("data-id")),
@@ -70,10 +94,6 @@ class Profile extends Component<Props,State> {
     }
 
     onDeleteMangaClick(e:any){
-        /*console.log(e.target.getAttribute("data-type"));
-        console.log(e.target.getAttribute("data-id"));
-        console.log(e.target.getAttribute("data-name"));*/
-
         this.props.deleteMangaProfile(Number(this.props.auth.user.id),
             Number(e.target.getAttribute("data-id"))
         )
@@ -88,6 +108,9 @@ class Profile extends Component<Props,State> {
         url = url.slice(url.lastIndexOf('/')+1,url.length);
         this.setState({own: isSameUser(this.props.auth,url)});
         this.props.getProfile(parseInt(url));
+        if(this.props.profile.profile != null){
+            this.setState({bio_l: this.props.profile.profile.bio.value});
+        }
     }
 
     componentDidUpdate(prevProps:any){
@@ -96,13 +119,15 @@ class Profile extends Component<Props,State> {
             url = url.slice(url.lastIndexOf('/')+1,url.length);
             this.setState({own: isSameUser(this.props.auth,url)});
             this.props.getProfile(parseInt(url));
+
+            if(this.props.profile.profile != null){
+                this.setState({bio_l: this.props.profile.profile.bio.value});
+            }
         }
     }
 
     render() {
         let {loading, profile} = this.props.profile;
-        
-        console.log(this.props.profile);
 
         let profileContent = <></>;
 
@@ -111,13 +136,35 @@ class Profile extends Component<Props,State> {
         }else{
             let {nickname, registered, last_login, bio, liked_manga, disliked_manga, friends} = this.props.profile.profile;
             let manga_search_results = this.props.profile.manga_search.data;
-        
+
+            if(this.state.count == 0){
+                if(this.props.profile.profile != null){
+                    this.setState({bio_l: this.props.profile.profile.bio.value});
+                    this.setState({count: 1});
+                }
+            }
+
             profileContent = (
                 <>
                     <p>Nickname: {nickname}</p>
                     <p>Registered: {registered}</p>
                     <p>Last logged in: {last_login}</p>
                     <p key={bio.ud_id}>Bio: {bio.value}</p>
+                    {this.state.own?(<><i onClick={this.onEditClick} className="bi bi-pencil fa-5x" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave"/>
+                    <div> 
+                        <div className="collapse" id="collapseEditSave">
+                            <TextInput
+                                name="bio_l" 
+                                value={this.state.bio_l}
+                                error={this.state.errors.thing}
+                                type="text"
+                                onChange={this.onChangeEdit}  
+                                placeholder="About me"
+                                disabled={this.state.bio_edit}
+                            />
+                            <button onClick={this.onSaveClick} className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave">Save</button>
+                        </div>
+                    </div></>):<></>}
 
                     {this.state.own?(<div>
                         <p>
@@ -149,7 +196,7 @@ class Profile extends Component<Props,State> {
                     </div>):<></>}
 
                     <p>Liked Manga:</p>
-                    <ul>{liked_manga.map((element:any, i:number) => {
+                    <ul>{this.props.profile.profile.liked_manga.map((element:any, i:number) => {
                         return  <li key={element.ud_id}>
                                     <Link to={'/manga/'+ element.manga_id} >{element.value}</Link>
                                     {this.state.own?<button onClick={this.onDeleteMangaClick} data-id={element.ud_id} type="button" className="btn-close" aria-label="Close"></button>:<></>}
@@ -158,7 +205,7 @@ class Profile extends Component<Props,State> {
                     </ul>
 
                     <p>Disliked Manga:</p>
-                    <ul>{disliked_manga.map((element:any, i:number) => {
+                    <ul>{this.props.profile.profile.disliked_manga.map((element:any, i:number) => {
                         return  <li key={element.ud_id}>
                                     <Link to={'/manga/'+ element.manga_id} >{element.value}</Link>
                                     {this.state.own?<button onClick={this.onDeleteMangaClick} data-id={element.ud_id} type="button" className="btn-close" aria-label="Close"></button>:<></>}
@@ -189,4 +236,4 @@ const mapStateToProps = (state:any)=>({
     profile: state.profile
 });
 
-export default connect(mapStateToProps,{getProfile, searchForManga, addMangaProfile,deleteMangaProfile})(Profile);
+export default connect(mapStateToProps,{getProfile, searchForManga, addMangaProfile,deleteMangaProfile,updateProfile})(Profile);
