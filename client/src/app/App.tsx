@@ -16,14 +16,16 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import {SearchContent} from './modules/SearchContent'
-import {SearchBar} from './modules/Search'
+import {Search} from './modules/Search'
 import {MangaPage} from './modules/MangaPage'
 import { MangaReadPage } from './modules/MangaReadPage'
 import { ParentTest } from './modules/ParentTest'
 import Login from './modules/auth/Login'
 import Register from './modules/auth/Register'
-import Profile from './modules/Profile'
+import Profile from './modules/Profile/Profile'
 import { clearProfile } from './actions/profileActions';
+
+import SearchTest from './modules/SearchTest';
 
 type State = {
   basename: string
@@ -59,13 +61,14 @@ const App: React.FC<State> = ({basename}) =>  {
         {/*<Routes />*/}
         <Route path='/' exact component={Landing} />
         <div className="container">
-          <Route path='/search' exact component={SearchBar} />
+          <Route path='/search' exact component={Search} />
           <Route path='/manga/:id' exact component={MangaPage} />
           <Route path='/manga/read/:chapterid' exact component={MangaReadPage} />
           <Route path='/test' exact component={ParentTest} /> 
           <Route path='/register' exact component={Register} /> 
           <Route path='/login' exact component={Login} />
           <Route path='/profile/:id' exact component={withRouter(Profile)} />
+          <Route path='/stest' exact component={SearchTest} />
         </div>
         
         {/*<Footer />*/}

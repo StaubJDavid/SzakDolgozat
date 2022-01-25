@@ -1,17 +1,20 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { bindActionCreators } from "redux";
 import {GET_PROFILE,
         PROFILE_LOADING,
         CLEAR_PROFILE,
         SEARCH_FOR_MANGA,
-        DELETE_MANGA_PROFILE,
-        ADD_MANGA_PROFILE
+        
+        CREATE_LIST,
+        GET_LISTS,
+        ADD_LIST_ENTRY,
+        DEL_LIST_ENTRY,
+        CLEAR_LIST
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
 const initialState = {
     profile: null,
-    manga_search: {},
+    lists:null,
     loading: false
 }
 
@@ -29,6 +32,14 @@ export default function(state = initialState, action:any){
         case SEARCH_FOR_MANGA: return {
             ...state,
             manga_search: action.payload
+        };
+        case GET_LISTS: return {
+            ...state,
+            lists: action.payload
+        };
+        case CLEAR_LIST: return {
+            ...state,
+            lists:null
         };
         /*case ADD_MANGA_PROFILE: return {
             ...state,

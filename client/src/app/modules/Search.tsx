@@ -12,7 +12,7 @@ type Props = {
   className: string
 }
 
-const SearchBar: FC = () => {
+const Search: FC = () => {
   let history = useHistory();
 
 
@@ -56,7 +56,7 @@ const SearchBar: FC = () => {
   return (
     <div className="d-flex flex-column justify-content-center">
       <div className="d-inline-flex flex-row justify-content-center">
-        <div className="p-2 justify-content-center"><input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="SearchBar" placeholder="Manga name" /></div>
+        <div className="p-2 justify-content-center"><input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="Search" placeholder="Manga name" /></div>
         <div className="p-2 justify-content-center"><button type="button" onClick={() => handleSearch(1)} className="btn btn-primary">Search</button></div>
       </div>
         {loading === false && (
@@ -71,4 +71,4 @@ const SearchBar: FC = () => {
 }
 
 //{passedFc, currentPage, total, limit, maxPage}
-export {SearchBar}
+export {Search}

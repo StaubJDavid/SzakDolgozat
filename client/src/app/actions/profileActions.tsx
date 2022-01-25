@@ -3,9 +3,13 @@ import {GET_PROFILE,
         PROFILE_LOADING,
         GET_ERRORS,
         CLEAR_PROFILE,
-        SEARCH_FOR_MANGA,
-        DELETE_MANGA_PROFILE,
-        ADD_MANGA_PROFILE
+        
+        CREATE_LIST,
+        GET_LISTS,
+        ADD_LIST_ENTRY,
+        DEL_LIST_ENTRY,
+        CLEAR_MANGA,
+        CLEAR_LIST
 } from './types';
 
 export const getProfile = (id:number) => (dispatch:any) => {
@@ -39,13 +43,33 @@ export const getProfileNoLoading = (id:number) => (dispatch:any) => {
     );
 }
 
-export const searchForManga = (manga:string) => (dispatch:any) => {
-    axios.get('https://api.mangadex.org/manga',{params:{title: manga, limit:20}})
+/* Custom LISTS BEGIN*/
+
+export const getLists = (id:number) => (dispatch:any) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/lists/user/${id}`)
     .then(
         res => dispatch({
-            type: SEARCH_FOR_MANGA,
+            type: GET_LISTS,
             payload: res.data
         })
+    ).catch(
+        err => {
+            dispatch({
+                type: CLEAR_LIST,
+                payload: null
+            });
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        }
+    );
+}
+
+export const delList = (id:number,user_id:number) => (dispatch:any) => {
+    axios.delete(`${process.env.REACT_APP_API_URL}/api/lists/${id}`)
+    .then(
+        res => dispatch(getLists(user_id))
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
@@ -54,6 +78,72 @@ export const searchForManga = (manga:string) => (dispatch:any) => {
     );
 }
 
+
+export const addList = (user_id:number,list_name:string,visibility:number) => (dispatch:any) => {
+    axios.post(`${process.env.REACT_APP_API_URL}/api/lists`,{
+        list_name: list_name,
+        visibility: visibility
+    })
+    .then(
+        res => dispatch(getLists(user_id))
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
+}
+
+export const editList = (user_id:number,list_id:number,list_name:string,visibility:number) => (dispatch:any) => {
+    axios.put(`${process.env.REACT_APP_API_URL}/api/lists/${list_id}`,{
+        list_name:list_name,
+        visibility:visibility
+    })
+    .then(
+        res => dispatch(getLists(user_id))
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
+}
+
+export const delListEntry = (user_id:number,list_id:number,ld_id:number) => (dispatch:any) => {
+    axios.delete(`${process.env.REACT_APP_API_URL}/api/lists/entry/${list_id}/${ld_id}`)
+    .then(
+        res => dispatch(getLists(user_id))
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
+}
+
+export const addListEntry = (user_id:number,list_id:number,manga_id:string,manga_name:string) => (dispatch:any) => {
+    axios.post(`${process.env.REACT_APP_API_URL}/api/lists/${list_id}`,{
+        manga_id:manga_id,
+        manga_name:manga_name
+    })
+    .then(
+        res => {
+            dispatch({
+                type: CLEAR_MANGA,
+                payload: null
+            })
+            dispatch(getLists(user_id));
+        }
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
+}
+
+/* Custom LISTS END*/
+
 export const addMangaProfile = (id:number,detail_type:number,manga_id:string,manga_name:string) => (dispatch:any) => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/user/details`,{
         dt_id: detail_type,
@@ -61,6 +151,10 @@ export const addMangaProfile = (id:number,detail_type:number,manga_id:string,man
     })
     .then(
         res => {
+            dispatch({
+                type: CLEAR_MANGA,
+                payload: null
+            });
             dispatch(getProfileNoLoading(id));
         }
     ).catch(

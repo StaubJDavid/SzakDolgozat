@@ -121,30 +121,54 @@ router.get('/user/:user_id', verify, async (req, res) => {
         res.status(400).json(errors);
     }else{
         if(user_id == friend_id){
-            db.query(lq.sql_getLists, [user_id], (errC, resultsC) => {
-                if(errC){
-                    console.log(errC);
+            db.query(lq.sql_getLists, [user_id,user_id], (err1, results1) => {
+                if(err1){
+                    console.log(err1);
                     errors.query = "sql_getLists query error";
-                    errors.log = errC;
+                    errors.log = err1;
     
                     res.status(400).json(errors);
                 }else{
-                    if(resultsC.length == 0){
-                        errors.query = "You have no lists";
+                    if(results1.length == 0){
+                        errors.list = "You have no lists";
                         res.status(400).json(errors);
                     }else{
-                        res.json(resultsC);
+                        let lists = {
+                            list_array: {},
+                            owner: user_id,
+                            owned: true
+                        };
+                        for(let i = 0; i < results1[0].length; i++){
+                            lists.list_array[results1[0][i].list_id] = {
+                                list_id: results1[0][i].list_id,
+                                list_name: results1[0][i].list_name,
+                                visibility: results1[0][i].visibility,
+                                created: results1[0][i].created,
+                                data:[]
+                            };
+                        }
+
+
+                        for(let i = 0; i < results1[1].length; i++){
+                            lists.list_array[results1[1][i].list_id].data.push({
+                                ld_id:results1[1][i].ld_id,
+                                manga_id:results1[1][i].manga_id,
+                                manga_name:results1[1][i].manga_name
+                            });
+                        }
+
+                        res.json(lists);
                     }
                 }
             });
         }else{
             try {
-                console.log("before await");
+                //console.log("before await");
                 const areFriends = await checkIfFriends(user_id, friend_id);
-                console.log("after await");
-                console.log(areFriends);
+                /*console.log("after await");
+                console.log(areFriends);*/
                 if(areFriends == 1){
-                    db.query(lq.sql_getFriendsLists, [friend_id], (err2, results2) => {
+                    db.query(lq.sql_getFriendsLists, [friend_id, friend_id], (err2, results2) => {
                         if(err2){
                             console.log(err2);
                             errors.query = "sql_getFriendsLists query error";
@@ -152,11 +176,36 @@ router.get('/user/:user_id', verify, async (req, res) => {
                 
                             res.status(400).json(errors);
                         }else{
-                            if(results2.length != 0){
-                                res.json(results2);
+                            if(results2[0].length != 0){
+                                //res.json(results2);
+                                let lists = {
+                                    list_array: {},
+                                    owner: friend_id,
+                                    owned: false
+                                };
+                                for(let i = 0; i < results2[0].length; i++){
+                                    lists.list_array[results2[0][i].list_id] = {
+                                        list_id: results2[0][i].list_id,
+                                        list_name: results2[0][i].list_name,
+                                        visibility: results2[0][i].visibility,
+                                        created: results2[0][i].created,
+                                        data:[]
+                                    };
+                                }
+        
+        
+                                for(let i = 0; i < results2[1].length; i++){
+                                    lists.list_array[results2[1][i].list_id].data.push({
+                                        ld_id:results2[1][i].ld_id,
+                                        manga_id:results2[1][i].manga_id,
+                                        manga_name:results2[1][i].manga_name
+                                    });
+                                }
+        
+                                res.json(lists);
                             }else{
-                                if(results2.length == 0){
-                                    errors.query = "This user: " + friend_id + " has no lists publicly/friendly";
+                                if(results2[0].length == 0){
+                                    errors.list = "This user: " + friend_id + " has no lists publicly/friendly";
                                 }
             
                                 res.status(400).json(errors);
@@ -164,7 +213,7 @@ router.get('/user/:user_id', verify, async (req, res) => {
                         }
                     });
                 }else if (areFriends == 0){
-                    db.query(lq.sql_getUsersLists, [friend_id], (err2, results2) => {
+                    db.query(lq.sql_getUsersLists, [friend_id, friend_id], (err2, results2) => {
                         if(err2){
                             console.log(err2);
                             errors.query = "sql_getUsersLists query error";
@@ -172,11 +221,35 @@ router.get('/user/:user_id', verify, async (req, res) => {
                 
                             res.status(400).json(errors);
                         }else{
-                            if(results2.length != 0){
-                                res.json(results2);
+                            if(results2[0].length != 0){
+                                let lists = {
+                                    list_array: {},
+                                    owner: friend_id,
+                                    owned: false
+                                };
+                                for(let i = 0; i < results2[0].length; i++){
+                                    lists.list_array[results2[0][i].list_id] = {
+                                        list_id: results2[0][i].list_id,
+                                        list_name: results2[0][i].list_name,
+                                        visibility: results2[0][i].visibility,
+                                        created: results2[0][i].created,
+                                        data:[]
+                                    };
+                                }
+        
+        
+                                for(let i = 0; i < results2[1].length; i++){
+                                    lists.list_array[results2[1][i].list_id].data.push({
+                                        ld_id:results2[1][i].ld_id,
+                                        manga_id:results2[1][i].manga_id,
+                                        manga_name:results2[1][i].manga_name
+                                    });
+                                }
+        
+                                res.json(lists);
                             }else{
-                                if(results2.length == 0){
-                                    errors.query = "This user: " + friend_id + " has no lists publicly";
+                                if(results2[0].length == 0){
+                                    errors.list = "This user: " + friend_id + " has no lists publicly";
                                 }
             
                                 res.status(400).json(errors);
@@ -200,7 +273,7 @@ router.get('/user/:user_id', verify, async (req, res) => {
 // -------------------------------
 router.get('/:list_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
-    const friend_id = req.params.user_id;
+    const friend_id = req.body.user_id;
     const errors = lv.listGetCurrentListsValidator(req.jwt, friend_id);
 
     if(!isEmpty(errors)){
@@ -436,7 +509,7 @@ router.delete('/:list_id', verify, (req, res) => {
             
                             res.status(400).json(errors);
                         }else{
-                            if(results2[0].affectedRows != 0 && results2[1].affectedRows != 0){
+                            if(results2[1].affectedRows == 1){
                                 res.json({success: "Deleted list: " + list_id})
                             }else{
                                 errors.query = "Didn't delete anything.";
@@ -462,7 +535,7 @@ router.delete('/:list_id', verify, (req, res) => {
 });
 
 // -------------------------------
-// DELETE api/lists/:list_id/:ld_id
+// DELETE api/lists/entry/:list_id/:ld_id
 // Delete the specified list entry based on the list_id and ld_id
 // Private
 // -------------------------------

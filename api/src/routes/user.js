@@ -117,7 +117,8 @@ router.get('/:u_id', verify, (req, res) => {
         bio: {},
         liked_manga: [],
         disliked_manga: [],
-        friends: []
+        friends: [],
+        owned: id==req.jwt.id
     };
 
     if(!isEmpty(errors)){

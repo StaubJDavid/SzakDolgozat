@@ -11,20 +11,29 @@ const listQueries = {
 
     //Getters
     sql_getLists :
-        'SELECT * FROM lists WHERE user_id = ?'
+        'SELECT * FROM `lists` WHERE user_id = ?;'+
+        'SELECT * FROM `lists_data` WHERE user_id = ? '
     ,
 
     sql_getFriendsLists :
-        "SELECT * FROM lists WHERE user_id = ? AND (visibility LIKE 'public' OR visibility LIKE 'friends')"
+        "SELECT * FROM `lists` WHERE user_id = ? AND (visibility LIKE 'public' OR visibility LIKE 'friends');"+
+        "SELECT ld.*, l.visibility FROM `lists_data` as ld JOIN `lists` as l ON ld.list_id = l.list_id WHERE ld.user_id = ? AND (visibility LIKE 'public' OR visibility LIKE 'friends')"
     ,
 
     sql_getUsersLists :
-        "SELECT * FROM lists WHERE user_id = ? AND visibility LIKE 'public'"
+        "SELECT * FROM `lists` WHERE user_id = ? AND (visibility LIKE 'public');"+
+        "SELECT ld.*, l.visibility FROM `lists_data` as ld JOIN `lists` as l ON ld.list_id = l.list_id WHERE ld.user_id = ? AND (visibility LIKE 'public')"
     ,
 
     sql_getUsersListsData :
         "SELECT * FROM lists_data WHERE user_id = ? AND visibility LIKE 'public'"
     ,
+
+    sql_getListFriends:
+        "SELECT * FROM lists WHERE "
+    ,
+
+    //sql_getListNotFriends:,
 
     //Add to list
     sql_checkBeforeAddingMangaToList :

@@ -1,29 +1,29 @@
 import React, { Component, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {getProfile, searchForManga, addMangaProfile,deleteMangaProfile,updateProfile} from '../actions/profileActions';
+import {getProfile, addMangaProfile,deleteMangaProfile,updateProfile} from '../../actions/profileActions';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import TextInput from '../common/TextInput';
-import isSameUser from '../helpers/isSameUser';
+import TextInput from '../../common/TextInput';
+import isSameUser from '../../helpers/isSameUser';
+import SearchBar from '../../common/SearchBar';
+import AddDelManga from './AddDelManga';
+import Lists from './Lists';
 
 type Props = {
     auth:any,
-    error:any,
+    errors:any,
     profile:any,
     history:any,
     match:any,
     getProfile:any,
-    searchForManga:any,
     addMangaProfile:any,
     deleteMangaProfile:any,
     updateProfile:any
 }
 
 type State = {
-    manga_search:string,
-    errors: any,
-    timer:any,
+    error: any,
     own:boolean,
     bio_l:string,
     bio_edit:boolean,
@@ -36,16 +36,13 @@ class Profile extends Component<Props,State> {
         super(props);
 
         this.state = {
-            manga_search: '',
-            errors: {},
-            timer: null,
+            error: {},
             own: false,
             bio_l:"",
             bio_edit:true,
             count:0
         }
         
-        this.onChangeManga = this.onChangeManga.bind(this);
         this.onAddMangaClick = this.onAddMangaClick.bind(this);
         this.onDeleteMangaClick = this.onDeleteMangaClick.bind(this);
         this.onEditClick = this.onEditClick.bind(this);
@@ -53,18 +50,6 @@ class Profile extends Component<Props,State> {
         this.onSaveClick = this.onSaveClick.bind(this);
     }
 
-
-    onChangeManga(e:any){
-        this.setState({[String(e.target.name)]: String(e.target.value)} as any);
-
-        clearTimeout(this.state.timer);
-
-        const newTimer = setTimeout(() => {
-            this.props.searchForManga(String(e.target.value))
-        }, 500)
-        
-        this.setState({timer: newTimer});
-    }
 
     onEditClick(e:any){
         console.log("Clicked on Edit");
@@ -135,9 +120,9 @@ class Profile extends Component<Props,State> {
             profileContent = <></>;
         }else{
             let {nickname, registered, last_login, bio, liked_manga, disliked_manga, friends} = this.props.profile.profile;
-            let manga_search_results = this.props.profile.manga_search.data;
+            //let manga_search_results = this.props.profile.manga_search.data;
 
-            if(this.state.count == 0){
+            if(this.state.count === 0){
                 if(this.props.profile.profile != null){
                     this.setState({bio_l: this.props.profile.profile.bio.value});
                     this.setState({count: 1});
@@ -156,7 +141,7 @@ class Profile extends Component<Props,State> {
                             <TextInput
                                 name="bio_l" 
                                 value={this.state.bio_l}
-                                error={this.state.errors.thing}
+                                error={this.state.error.thing}
                                 type="text"
                                 onChange={this.onChangeEdit}  
                                 placeholder="About me"
@@ -173,25 +158,8 @@ class Profile extends Component<Props,State> {
                             </button>
                         </p>
                         <div className="collapse" id="collapseLikeManga">
-                                <TextInput
-                                    name="manga_search" 
-                                    value={this.state.manga_search}
-                                    error={this.state.errors.thing}
-                                    type="text"
-                                    onChange={this.onChangeManga}  
-                                    placeholder="Manga"
-                                />
-                                <div>
-                                    <ul className="list-group list-group-flush">
-                                        {manga_search_results?manga_search_results.map((element:any, i:number) => {
-                                            return  <li key={element.id} className="list-group-item">
-                                                        {element.attributes.title.en}
-                                                        <i onClick={this.onAddMangaClick} data-type={2} data-id={element.id} data-name={element.attributes.title.en} className="bi bi-hand-thumbs-up fa-2x"/>
-                                                        <i onClick={this.onAddMangaClick} data-type={3} data-id={element.id} data-name={element.attributes.title.en} className="bi bi-hand-thumbs-down fa-5x"/>
-                                                    </li>
-                                        }):<></>}
-                                    </ul>
-                                </div>
+                                <SearchBar />
+                                <AddDelManga />
                         </div>
                     </div>):<></>}
 
@@ -218,6 +186,7 @@ class Profile extends Component<Props,State> {
                         return <li key={element.ud_id}><Link to={'/profile/'+ element.fid} >{element.fnickname}</Link></li>
                         })}
                     </ul>
+                    <Lists />
                 </>
                 );
         }
@@ -232,8 +201,8 @@ class Profile extends Component<Props,State> {
 
 const mapStateToProps = (state:any)=>({
     auth: state.auth,
-    error: state.error,
+    errors: state.errors,
     profile: state.profile
 });
 
-export default connect(mapStateToProps,{getProfile, searchForManga, addMangaProfile,deleteMangaProfile,updateProfile})(Profile);
+export default connect(mapStateToProps,{getProfile, addMangaProfile,deleteMangaProfile,updateProfile})(Profile);

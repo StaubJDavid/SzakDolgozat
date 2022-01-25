@@ -11,3 +11,12 @@ export const PROFILE_LOADING = 'PROFILE_LOADING';
 export const SEARCH_FOR_MANGA = 'SEARCH_FOR_MANGA';
 export const DELETE_MANGA_PROFILE = 'DELETE_MANGA_PROFILE';
 export const ADD_MANGA_PROFILE = 'ADD_MANGA_PROFILE';
+ 
+export const CREATE_LIST = 'CREATE_LIST';
+export const GET_LISTS = 'GET_LISTS';
+export const ADD_LIST_ENTRY = 'ADD_LIST_ENTRY';
+export const DEL_LIST_ENTRY = 'DEL_LIST_ENTRY';
+
+//CLEAR
+export const CLEAR_MANGA = 'CLEAR_MANGA';
+export const CLEAR_LIST = 'CLEAR_LIST';
