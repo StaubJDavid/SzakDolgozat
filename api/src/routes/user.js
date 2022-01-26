@@ -118,7 +118,8 @@ router.get('/:u_id', verify, (req, res) => {
         liked_manga: [],
         disliked_manga: [],
         friends: [],
-        owned: id==req.jwt.id
+        owned: id==req.jwt.id,
+        are_friends: false
     };
 
     if(!isEmpty(errors)){
@@ -170,12 +171,41 @@ router.get('/:u_id', verify, (req, res) => {
                                 }
                             }
 
-                            res.json(profile);
+                            if(req.jwt.id === id){
+                                profile.are_friends = false;
+                                res.json(profile);
+                            }else{
+                                db.query(frq.sql_checkIfFriends, [id], (err3, results3) => {
+                                    if(err3){
+                                        console.log(err3);
+                                        errors.query = "sql_checkIfFriends query error";
+                                        errors.log = err3;
+                        
+                                        res.status(400).json(errors);
+                                    }else{                                        
+                                        let friends = 0;
+                                        let fnickname = "";
+    
+                                        for(let i = 0; i < results3.length; i++){
+                                            let fid = results3[i].value.substring(0,results3[i].value.indexOf(' '));
+                                            fnickname = results3[i].value.substring(results3[i].value.indexOf(' ')+1)
+                                            if(parseInt(fid) == parseInt(req.jwt.id)){
+                                                friends = 1;
+                                                break;
+                                            }
+                                        }
+
+                                        friends === 1?profile.are_friends=true:profile.are_friends=false;
+                                        
+                                        res.json(profile);
+                                    }
+                                });
+                            }
                         }
                     });
                 }else{
                     if(results1.length === 0){
-                        errors.query = "No such user found";
+                        errors.no_user = "No such user found";
                     }
 
                     if(results1.length > 1){
@@ -372,7 +402,7 @@ router.post('/friend-request', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(frq.sql_checkBeforeSendFriendRequest, [user_id,reciever_id], (err1, results1) => {
+        db.query(frq.sql_checkBeforeSendFriendRequest, [user_id,reciever_id,reciever_id], (err1, results1) => {
             if(err1){
                 console.log(err1);
                 errors.query = "sql_checkBeforeSendFriendRequest query error";
@@ -380,7 +410,7 @@ router.post('/friend-request', verify, (req, res) => {
     
                 res.status(400).json(errors);
             }else{
-                if(results1.length === 0){
+                if(results1[0].length === 0 && results1[1].length === 1){
                     db.query(frq.sql_checkIfFriends, [user_id], (err2, results2) => {
                         if(err2){
                             console.log(err2);
@@ -435,12 +465,16 @@ router.post('/friend-request', verify, (req, res) => {
                         }
                     });
                 }else{
-                    if(results1.length === 1){
+                    if(results1[0].length === 1){
                         errors.query = "You already sent a friend request to this person";
                     }
     
-                    if(results1.length > 1){
+                    if(results1[0].length > 1){
                         errors.query = "There's more friend request sent to this person??";
+                    }
+
+                    if(results1[1].length === 0){
+                        errors.user = "No such user exists";
                     }
 
                     res.status(400).json(errors);
@@ -635,7 +669,6 @@ router.delete('/friend', verify, (req, res) => {
     const user_id = req.jwt.id;
     const {friend_id} = req.body;
     const errors = userDelFriendValidator(req.jwt,req.body);
-
 
     if(!isEmpty(errors)){
         res.status(400).json(errors);

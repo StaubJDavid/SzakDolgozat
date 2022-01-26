@@ -2,6 +2,7 @@ import axios from 'axios';
 import {GET_PROFILE,
         PROFILE_LOADING,
         GET_ERRORS,
+        CLEAR_ERRORS,
         CLEAR_PROFILE,
         
         CREATE_LIST,
@@ -21,10 +22,16 @@ export const getProfile = (id:number) => (dispatch:any) => {
             payload: res.data
         })
     ).catch(
-        err => dispatch({
-            type: GET_PROFILE,
-            payload: null
-        })
+        err => {
+            dispatch({
+                type: GET_PROFILE,
+                payload: null
+            });
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        }
     );
 }
 
@@ -36,10 +43,16 @@ export const getProfileNoLoading = (id:number) => (dispatch:any) => {
             payload: res.data
         })
     ).catch(
-        err => dispatch({
-            type: GET_PROFILE,
-            payload: null
-        })
+        err => {
+            dispatch({
+                type: GET_PROFILE,
+                payload: null
+            });
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        }
     );
 }
 
@@ -202,5 +215,11 @@ export const setProfileLoading = () => {
 export const clearProfile = () => {
     return {
         type: CLEAR_PROFILE
+    }
+}
+
+export const clearError = () => {
+    return {
+        type: CLEAR_ERRORS
     }
 }

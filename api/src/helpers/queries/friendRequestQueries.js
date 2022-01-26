@@ -1,7 +1,8 @@
 const friendRequestQueries = {
     //Sending
     sql_checkBeforeSendFriendRequest : 
-        "SELECT * FROM `friend_requests` WHERE sender_id = ? AND reciever_id = ?"
+        "SELECT * FROM `friend_requests` WHERE sender_id = ? AND reciever_id = ? ;"+
+        "SELECT * FROM `users` WHERE user_id = ?"
     ,
 
     sql_checkIfFriends : 

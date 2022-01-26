@@ -44,6 +44,7 @@ const userQueries = {
         'SELECT * from user_details WHERE user_id = ? AND dt_id = 4 ;'
     ,
 
+
     sql_deleteFriend :
         'DELETE FROM user_details WHERE ud_id = ? OR ud_id = ?'
     ,
