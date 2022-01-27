@@ -1,3 +1,4 @@
+//export const SCHEME = 'SCHEME';
 //ERROR TYPES
 export const GET_ERRORS = 'GET_ERRORS';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
@@ -26,3 +27,13 @@ export const CLEAR_LIST = 'CLEAR_LIST';
 //FRIEND REQUESTS
 export const GET_FRIEND_REQUESTS = 'GET_FRIEND_REQUESTS';
 export const CLEAR_FRIEND_REQUESTS = 'CLEAR_FRIEND_REQUESTS';
+
+//THREAD
+export const GET_THREADS = 'GET_THREADS';
+export const GET_THREAD = 'GET_THREAD';
+export const CLEAR_THREADS = 'CLEAR_THREADS';
+export const CLEAR_THREAD = 'CLEAR_THREAD';
+
+//COMMENT
+export const GET_COMMENTS = 'GET_COMMENTS';
+export const CLEAR_COMMENTS = 'CLEAR_COMMENTS';

@@ -23,6 +23,8 @@ import { ParentTest } from './modules/ParentTest'
 import Login from './modules/auth/Login'
 import Register from './modules/auth/Register'
 import Profile from './modules/Profile/Profile'
+import Threads from './modules/Thread/Threads';
+import Thread from './modules/Thread/Thread';
 import { clearProfile } from './actions/profileActions';
 
 import SearchTest from './modules/SearchTest';
@@ -68,6 +70,8 @@ const App: React.FC<State> = ({basename}) =>  {
           <Route path='/register' exact component={Register} /> 
           <Route path='/login' exact component={Login} />
           <Route path='/profile/:id' exact component={withRouter(Profile)} />
+          <Route path='/threads' exact component={Threads} />
+          <Route path='/thread/:thread_id' exact component={Thread} />
           <Route path='/stest' exact component={SearchTest} />
         </div>
         

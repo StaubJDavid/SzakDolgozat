@@ -5,6 +5,7 @@ const db = require('../database/db');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const verify = require('../helpers/verify');
+const verify_check = require('../helpers/verify_check');
 const isEmpty = require('../helpers/isEmpty');
 const getVisibility = require('../helpers/getVisibility');
 const checkIfFriends = require('../helpers/checkIfFriends');
@@ -20,14 +21,19 @@ require('dotenv').config();
 // Get the comments from the target_id in the database
 // Public
 // -------------------------------
-router.get('/:target_id', (req, res) => {
+router.get('/:target_id', verify_check, (req, res) => {
     const target_id = req.params.target_id;
     const errors = cv.commentGetCommentsValidator(target_id);
 
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(cq.sql_getComments, [target_id], (err1, results1) => {
+        let id = 0;
+        if(req.jwt){
+            id = req.jwt.id;
+        }
+
+        db.query(cq.sql_getComments, [id,target_id], (err1, results1) => {
             if(err1){
                 console.log(err1);
                 errors.query = "sql_getComments query error";
@@ -39,6 +45,42 @@ router.get('/:target_id', (req, res) => {
             }
         });
     }
+});
+//get api/comments/test/xddd
+router.get('/manage/like', (req, res) => {
+    // "INC_LIKE" = increase like
+    // "DEC_LIKE" = decrease like
+    // "INC_DISLIKE" = increase dislike
+    // "DEC_DISLIKE" = decrease dislike
+    //console.log("I got called");
+    //Comment Exists CHECK NEEDED
+    db.query(cq.sql_manageCommentLikes, [1,"INC_DISLIKE"], (err1, results1) => {
+        //console.log("Inside querry");
+        if(err1){
+            console.log(err1);
+            errors.query = "sql_manageCommentLikes query error";
+            errors.log = err1;
+
+            res.status(400).json(errors);
+        }else{
+            //console.log("Inside else");
+            if(results1[2][0]){
+                console.log(results1[2][0]);
+                errors.query = results1[2][0].message;
+                
+            }else{
+                if(results1[3][0].Q_STATUS === 1){
+                    res.json({success: "Successfull likes management"})
+                }else if(results1[3][0].Q_STATUS === 2){
+                    res.json({success: "Couldnt lower likes/dislikes under 0"})
+                }else{
+                    errors.query = "Hehe something wrong";
+                    res.status(400).json(errors);
+                }
+            }
+            
+        }
+    });
 });
 
 // -------------------------------

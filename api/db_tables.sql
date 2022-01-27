@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS `comments` (
     `target_id` VARCHAR(255),
     `comment` VARCHAR(255),
     `timestamp` DATETIME,
+    `likes` INT DEFAULT 0,
+    `dislikes` INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
@@ -69,6 +71,9 @@ CREATE TABLE IF NOT EXISTS `threads` (
     `title` VARCHAR(255),
     `text` VARCHAR(255),
     `created` DATETIME,
+    `views` INT DEFAULT 0,
+    `likes` INT DEFAULT 0,
+    `dislikes` INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

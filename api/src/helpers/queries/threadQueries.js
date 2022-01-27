@@ -9,12 +9,24 @@ const threadQueries = {
     ,
 
     sql_getAllThreads : 
-        "SELECT * FROM `threads`"
+        "SELECT t.*,u.nickname FROM `threads` t JOIN `users` u ON t.user_id = u.user_id"
+    ,
+
+    sql_getAllThreadsLiked : 
+        "SELECT t.*,u.nickname, l.like FROM `threads` t "+
+        "JOIN `users` u ON t.user_id = u.user_id "+
+        "LEFT JOIN `likes` l ON l.target_id = t.thread_id AND l.user_id = ? "+
+        "ORDER BY t.created ASC"
     ,
 
     sql_getThread:
-        'SELECT * FROM `threads` WHERE thread_id LIKE ?'
+        "SELECT t.*,u.nickname, l.like FROM `threads` t "+
+        "JOIN `users` u ON t.user_id = u.user_id "+
+        "LEFT JOIN `likes` l ON l.target_id = t.thread_id AND l.user_id = ? "+
+        "WHERE t.thread_id = ? "
     ,
+
+    
 
     sql_checkBeforeDelThread:
         'SELECT * FROM `threads` WHERE user_id = ? && thread_id LIKE ?'

@@ -5,6 +5,7 @@ const db = require('../database/db');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const verify = require('../helpers/verify');
+const verify_check = require('../helpers/verify_check');
 const isEmpty = require('../helpers/isEmpty');
 const {threadCreateThreadValidator,
     threadGetThreadsValidator,
@@ -76,14 +77,29 @@ router.post('/', verify, (req, res) => {
 // Get all of the threads
 // Private
 // -------------------------------
-router.get('/', verify, (req, res) => {
-    const user_id = req.jwt.id;
-    const errors = threadGetThreadsValidator(req.jwt);
-
-
-    if(!isEmpty(errors)){
-        res.status(400).json(errors);
+router.get('/', verify_check, (req, res) => {
+    const errors = {}
+    //If user is logged in
+    /*if(req.jwt){
+        db.query(tq.sql_getAllThreadsLiked, (err1, results1) => {
+            if(err1){
+                console.log(err1);
+                errors.query = "sql_getAllThreadsLiked query error";
+                errors.log = err1;
+    
+                res.status(400).json(errors);
+            }else{                
+                if(results1.length > 0){
+                    res.json(results1);
+                }else{
+                    errors.query = "No threads available";
+    
+                    res.status(400).json(errors);
+                }
+            }
+        });
     }else{
+        // If user is not logged on
         db.query(tq.sql_getAllThreads, (err1, results1) => {
             if(err1){
                 console.log(err1);
@@ -96,12 +112,36 @@ router.get('/', verify, (req, res) => {
                     res.json(results1);
                 }else{
                     errors.query = "No threads available";
-
+    
                     res.status(400).json(errors);
                 }
             }
         });
+    }*/
+
+    let id = 0;
+    if(req.jwt){
+        id = req.jwt.id;
     }
+
+    db.query(tq.sql_getAllThreadsLiked, [id], (err1, results1) => {
+        if(err1){
+            console.log(err1);
+            errors.query = "sql_getAllThreadsLiked query error";
+            errors.log = err1;
+
+            res.status(400).json(errors);
+        }else{                
+            if(results1.length > 0){
+                res.json(results1);
+                //console.log(results1);
+            }else{
+                errors.query = "No threads available";
+
+                res.status(400).json(errors);
+            }
+        }
+    });
 });
 
 // -------------------------------
@@ -109,37 +149,39 @@ router.get('/', verify, (req, res) => {
 // Get aspecified thread
 // Private
 // -------------------------------
-router.get('/:t_id', verify, (req, res) => {
-    const user_id = req.jwt.id;
+router.get('/:t_id', verify_check, (req, res) => {
+    //const user_id = req.jwt.id;
     const thread_id = req.params.t_id;
-    const errors = threadGetThreadValidator(user_id,thread_id);
+    //const errors = threadGetThreadValidator(user_id,thread_id);
 
+    const errors = {};
 
-    if(!isEmpty(errors)){
-        res.status(400).json(errors);
-    }else{
-        db.query(tq.sql_getThread, [thread_id], (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_getThread query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
-            }else{                
-                if(results1.length == 1){
-                    res.json(results1);
-                }else{
-                    if(results1.length == 0){
-                        errors.query = "No threads available";
-                    }else{
-                        errors.query = "There's more than one thread with id: " + thread_id;
-                    }
-                    
-                    res.status(400).json(errors);
-                }
-            }
-        });
+    let id = 0;
+    if(req.jwt){
+        id = req.jwt.id;
     }
+
+    db.query(tq.sql_getThread, [id,thread_id], (err1, results1) => {
+        if(err1){
+            console.log(err1);
+            errors.query = "sql_getThread query error";
+            errors.log = err1;
+
+            res.status(400).json(errors);
+        }else{                
+            if(results1.length == 1){
+                res.json(results1[0]);
+            }else{
+                if(results1.length == 0){
+                    errors.query = "No threads available";
+                }else{
+                    errors.query = "There's more than one thread with id: " + thread_id;
+                }
+                
+                res.status(400).json(errors);
+            }
+        }
+    });
 });
 
 // -------------------------------

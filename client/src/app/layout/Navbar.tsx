@@ -69,6 +69,12 @@ class Navbar extends Component<Props,State> {
                             </li>
                         </ul>
 
+                        <ul className="navbar-nav mr-auto">
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/threads">Threads</Link>
+                            </li>
+                        </ul>
+
                         {isAuthenticated?authLinks:guestLinks}
                     </div>
                 </div>

@@ -13,7 +13,7 @@ const voteQueries = {
     ,
 
     sql_updateLike :
-        'UPDATE `likes` SET like = ? WHERE user_id = ? AND target_id LIKE ? '
+        'UPDATE `likes` SET `like` = ? WHERE user_id = ? AND target_id = ? ;'
     ,
     sql_getAllLikes :
         'SET @dlike = (SELECT COUNT(*) FROM `likes` l WHERE l.target_id = ? AND l.like = 0);'+
