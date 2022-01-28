@@ -3,9 +3,11 @@ import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {getThreads} from '../../actions/threadActions';
 import ThreadCard from './ThreadCard';
+import {CreateThread} from './CreateThread';
 
 type Props = {
     thread:any,
+    auth:any,
     getThreads:any
 }
 
@@ -35,6 +37,7 @@ class Threads extends Component<Props,State> {
         if(thread_list != null){
             threadsContent = (
             <>
+                {this.props.auth.isAuthenticated?<CreateThread />:<></>}
                 {thread_list.map((element:any, i:number) => {
                 return  <ThreadCard thread={element} key={`thread${i}`}/>
                 })}
@@ -51,7 +54,8 @@ class Threads extends Component<Props,State> {
 }
 
 const mapStateToProps = (state:any)=>({
-    thread: state.thread
+    thread: state.thread,
+    auth: state.auth
 });
 
 export default connect(mapStateToProps,{getThreads})(Threads);

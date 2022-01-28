@@ -12,6 +12,7 @@ const voteValidations = require('../helpers/validations/voteValidations');
 const vv = new voteValidations();
 const vq = require('../helpers/queries/voteQueries');
 const cq = require('../helpers/queries/commentQueries');
+const verify_check = require('../helpers/verify_check');
 
 require('dotenv').config();
 
@@ -384,48 +385,6 @@ router.post('/like', verify, (req, res) => {
     }
 });
 
-/*db.query(cq.sql_manageCommentLikes, [1,"INC_DISLIKE"], (err1, results1) => {
-    //console.log("Inside querry");
-    if(err1){
-        console.log(err1);
-        errors.query = "sql_manageCommentLikes query error";
-        errors.log = err1;
-
-        res.status(400).json(errors);
-    }else{
-        //console.log("Inside else");
-        if(results1[2][0]){
-            console.log(results1[2][0]);
-            errors.query = results1[2][0].message;
-            
-        }else{
-            if(results1[3][0].Q_STATUS === 1){
-                res.json({success: "Successfull likes management"})
-            }else if(results1[3][0].Q_STATUS === 2){
-                res.json({success: "Couldnt lower likes/dislikes under 0"})
-            }else{
-                errors.query = "Hehe something wrong";
-                res.status(400).json(errors);
-            }
-        }
-        
-    }
-});*/
-
-/*
-db.query(vq.sql_getLike, [user_id,target_id], (errX, resultsX) => {
-            //console.log("Inside querry");
-            if(errX){
-                console.log(errX);
-                errors.query = "sql_getLike query error";
-                errors.log = errX;
-        
-                res.status(400).json(errors);
-            }else{
-            }
-        });
-*/
-
 // -------------------------------
 // GET api/votes/like/:target_id
 // Get the likes of a comment
@@ -463,14 +422,19 @@ router.get('/like/:target_id', (req, res) => {
 // Get the ratings of a manga
 // Public
 // -------------------------------
-router.get('/rate/:manga_id', (req, res) => {
+router.get('/rate/:manga_id', verify_check, (req, res) => {
     const manga_id = req.params.manga_id;
     const errors = vv.voteGetRatingsValidator(manga_id);
+
+    let id = 0;
+    if(req.jwt){
+        id = req.jwt.id;
+    }
 
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(vq.sql_getMangaRatings, [manga_id], (err1, results1) => {
+        db.query(vq.sql_getMangaRatings, [manga_id,manga_id,id], (err1, results1) => {
             if(err1){
                 console.log(err1);
                 errors.query = "sql_getMangaRatings query error";
@@ -478,8 +442,21 @@ router.get('/rate/:manga_id', (req, res) => {
 
                 res.status(400).json(errors);
             }else{
-                if(results1.length == 1){
-                    res.json(results1[0]);
+                if(results1[0].length === 1){
+                    let rating = {
+                        avg:results1[0][0].atlag,
+                        ratings_count:results1[0][0].db
+                    };
+
+                    if(results1[1].length === 1){
+                        rating.user = results1[1][0].user_id;
+                        rating.score = results1[1][0].score;
+                    }else{
+                        rating.user = null;
+                        rating.score = null;
+                    }
+
+                    res.json(rating);
                 }else{
                     errors.query = "Get all likes error";
 
@@ -513,6 +490,7 @@ router.post('/rate/:manga_id', verify, (req, res) => {
                 res.status(400).json(errors);
             }else{
                 if(results1.length == 0){
+                    //Havent rated the manga yet
                     db.query(vq.sql_postMangaRating, [user_id, manga_name, manga_id, parseInt(score)], (err2, results2) => {
                         if(err2){
                             console.log(err2);
@@ -531,9 +509,24 @@ router.post('/rate/:manga_id', verify, (req, res) => {
                         }
                     });
                 }else{
-                    errors.query = "You already rated this manga";
-
-                    res.status(400).json(errors);
+                    //Already rated the manga
+                    db.query(vq.sql_updateMangaRating, [score, user_id, manga_id], (err2, results2) => {
+                        if(err2){
+                            console.log(err2);
+                            errors.query = "sql_updateMangaRating query error";
+                            errors.log = err2;
+            
+                            res.status(400).json(errors);
+                        }else{
+                            if(results2.affectedRows == 1){
+                                res.json({success: "Sikeres manga ertekeles update"});
+                            }else{
+                                errors.query = "Update rating error";
+            
+                                res.status(400).json(errors);
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -545,7 +538,7 @@ router.post('/rate/:manga_id', verify, (req, res) => {
 // Edit the score of a manga based on the m_id, request body, authorization header
 // Private
 // -------------------------------
-router.put('/rate/:manga_id', verify, (req, res) => {
+/*router.put('/rate/:manga_id', verify, (req, res) => {
     const user_id = req.jwt.id;
     const manga_id = req.params.manga_id;
     const {manga_name, score} = req.body;
@@ -572,7 +565,7 @@ router.put('/rate/:manga_id', verify, (req, res) => {
             }
         });
     }
-});
+});*/
 
 // -------------------------------
 // DELETE api/votes/rate/:m_id
@@ -596,7 +589,36 @@ router.delete('/rate/:manga_id', verify, (req, res) => {
                 res.status(400).json(errors);
             }else{
                 if(results1.affectedRows == 1){
-                    res.json({success: "Sikeres manga ertekeles update"});
+                    db.query(vq.sql_getMangaRatings, [manga_id,manga_id,user_id], (err2, results2) => {
+                        if(err2){
+                            console.log(err2);
+                            errors.query = "sql_getMangaRatings query error";
+                            errors.log = err2;
+
+                            res.status(400).json(errors);
+                        }else{
+                            if(results2[0].length === 1){
+                                let rating = {
+                                    avg:results2[0][0].atlag,
+                                    ratings_count:results2[0][0].db
+                                };
+
+                                if(results2[1].length === 1){
+                                    rating.user = results2[1][0].user_id;
+                                    rating.score = results2[1][0].score;
+                                }else{
+                                    rating.user = null;
+                                    rating.score = null;
+                                }
+                                
+                                res.json(rating);
+                            }else{
+                                errors.query = "Get all likes error";
+
+                                res.status(400).json(errors);
+                            }
+                        }
+                    });
                 }else{
                     errors.query = "Delete rating error";
 

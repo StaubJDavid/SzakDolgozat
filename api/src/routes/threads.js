@@ -28,7 +28,6 @@ router.post('/', verify, (req, res) => {
     const {title, text} = req.body;
     const errors = threadCreateThreadValidator(req.jwt,req.body);
 
-
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
@@ -41,7 +40,8 @@ router.post('/', verify, (req, res) => {
                 res.status(400).json(errors);
             }else{                
                 if(results1.length == 0){
-                    db.query(tq.sql_createThread, [uuidv4(), user_id, title, text], (err2, results2) => {
+                    const thread_id = uuidv4();
+                    db.query(tq.sql_createThread, [thread_id, user_id, title, text], (err2, results2) => {
                         if(err2){
                             console.log(err2);
                             errors.query = "sql_createThread query error";
@@ -50,7 +50,33 @@ router.post('/', verify, (req, res) => {
                             res.status(400).json(errors);
                         }else{
                             if(results2.affectedRows == 1){
-                                res.json({success: "Successfully created thread"});
+                                let id = 0;
+                                if(req.jwt){
+                                    id = req.jwt.id;
+                                }
+
+                                db.query(tq.sql_getThread, [id,thread_id], (err3, results3) => {
+                                    if(err3){
+                                        console.log(err3);
+                                        errors.query = "sql_getThread query error";
+                                        errors.log = err3;
+                            
+                                        res.status(400).json(errors);
+                                    }else{                
+                                        if(results3.length == 1){
+                                            //console.log(results3[0].created);
+                                            res.json(results3[0]);
+                                        }else{
+                                            if(results3.length == 0){
+                                                errors.query = "No threads available";
+                                            }else{
+                                                errors.query = "There's more than one thread with id: " + thread_id;
+                                            }
+                                            
+                                            res.status(400).json(errors);
+                                        }
+                                    }
+                                });
                             }else{
                                 if(results2.affectedRows == 0){
                                     errors.query = "Thread creation was unsuccessful";
@@ -79,45 +105,6 @@ router.post('/', verify, (req, res) => {
 // -------------------------------
 router.get('/', verify_check, (req, res) => {
     const errors = {}
-    //If user is logged in
-    /*if(req.jwt){
-        db.query(tq.sql_getAllThreadsLiked, (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_getAllThreadsLiked query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
-            }else{                
-                if(results1.length > 0){
-                    res.json(results1);
-                }else{
-                    errors.query = "No threads available";
-    
-                    res.status(400).json(errors);
-                }
-            }
-        });
-    }else{
-        // If user is not logged on
-        db.query(tq.sql_getAllThreads, (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_getAllThreads query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
-            }else{                
-                if(results1.length > 0){
-                    res.json(results1);
-                }else{
-                    errors.query = "No threads available";
-    
-                    res.status(400).json(errors);
-                }
-            }
-        });
-    }*/
 
     let id = 0;
     if(req.jwt){
@@ -170,6 +157,7 @@ router.get('/:t_id', verify_check, (req, res) => {
             res.status(400).json(errors);
         }else{                
             if(results1.length == 1){
+                //console.log(results1[0].created);
                 res.json(results1[0]);
             }else{
                 if(results1.length == 0){

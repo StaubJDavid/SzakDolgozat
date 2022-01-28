@@ -2,6 +2,9 @@ import {FC, useState, useEffect} from 'react'
 import axios from 'axios'
 import {Cover} from './Cover'
 import {MangaChapters} from './MangaChapters'
+import CommentInput from '../common/CommentInput';
+import Comments from '../common/Comments';
+import Rating from '../common/Rating';
 
 function getMangaPage(manga_id:string) {
   return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>(`https://api.mangadex.org/manga/${manga_id}`)
@@ -58,6 +61,7 @@ const MangaPage: FC = () => {
                   <div className="card card-body bg-light mb-3">
                     <h3 className="text-center text-info">Description</h3>
                     <p className="lead">{data.data.attributes.description.en}</p>
+                    <Rating manga_id={data.data.id} manga_name={data.data.attributes.title.en}/>
                     <hr />
                     <div className="row">
                       <div className="d-flex flex-wrap justify-content-center align-items-center">
@@ -116,7 +120,8 @@ const MangaPage: FC = () => {
           </div>
           <MangaChapters manga_id={data.data.id} />
         </div>
-        
+        <CommentInput target_id={data.data.id} />
+        <Comments target_id={data.data.id} />
     </>
   )
 

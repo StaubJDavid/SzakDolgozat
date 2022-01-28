@@ -10,10 +10,15 @@ import {getThread, getThreads} from './threadActions';
 export const getComments = (target_id:string) => (dispatch:any) => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/comments/${target_id}`)
     .then(
-        res => dispatch({
-            type: GET_COMMENTS,
-            payload: res.data
-        })
+        res => {
+            dispatch({
+                type: CLEAR_COMMENTS
+            })
+            dispatch({
+                type: GET_COMMENTS,
+                payload: res.data
+            })
+        }
     ).catch(
         err => {
             dispatch({
@@ -40,6 +45,22 @@ export const likeTarget = (target_id:string,like:number,target:string,parent:str
                 dispatch(getThreads());
             }
         }
+    ).catch(
+        err => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        }
+    );
+}
+
+export const postComment = (target_id:string,text:string) => (dispatch:any) => {
+    axios.post(`${process.env.REACT_APP_API_URL}/api/comments/${target_id}`,{
+        message:text
+    })
+    .then(
+        res => dispatch(getComments(target_id))
     ).catch(
         err => {
             dispatch({

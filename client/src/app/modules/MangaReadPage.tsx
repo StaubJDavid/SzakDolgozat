@@ -2,6 +2,8 @@ import {FC, useState, useEffect} from 'react'
 import axios from 'axios'
 import { useLocation } from "react-router-dom";
 import {Img} from './Img';
+import CommentInput from '../common/CommentInput';
+import Comments from '../common/Comments';
 
 type Props = {
   chapter_id:any,
@@ -58,6 +60,8 @@ const MangaReadPage: FC = (props) => {
             ))}
             </tbody>
         </table>
+        <CommentInput target_id={chapter_id} />
+        <Comments target_id={chapter_id} />
     </>
   )
 

@@ -5,6 +5,7 @@ import {setThread,getThread} from '../../actions/threadActions';
 import {getComments} from '../../actions/commentActions';
 import Comment from '../../common/Comment';
 import LikeButtons from '../../common/LikeButtons';
+import CommentInput from '../../common/CommentInput';
 
 type Props = {
     thread:any,
@@ -37,16 +38,17 @@ class Thread extends Component<Props,State> {
             url = url.slice(url.lastIndexOf('/')+1,url.length);
             this.props.getThread(url);
         }
-
     }
 
     render() {
 
         let threadContent = <></>;
         let commentContent = <></>;
+        let commentInput = <></>;
 
         if(this.props.thread.thread != null){
             const {nickname,thread_id,title,text,created,views,likes,dislikes,like} = this.props.thread.thread;
+            commentInput = (<CommentInput target_id={thread_id} />)
             threadContent = (
             <>
             <hr/>
@@ -78,6 +80,7 @@ class Thread extends Component<Props,State> {
         return (
             <div>
                 {threadContent}
+                {commentInput}
                 {commentContent}
             </div>
         )

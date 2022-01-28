@@ -53,3 +53,22 @@ export const setThread = (thread:any) => (dispatch:any) => {
     })
     dispatch(getComments(thread.thread_id));
 }
+
+export const createThread = (title:string,text:string,history:any) => (dispatch:any) => {
+    axios.post(`${process.env.REACT_APP_API_URL}/api/threads`,{
+        title:title,
+        text:text
+    })
+    .then(
+        res => {
+            history.push(`/thread/${res.data.thread_id}`, { thread: res.data});
+        }
+    ).catch(
+        err => {
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            });
+        }
+    );
+}

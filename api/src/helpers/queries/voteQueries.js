@@ -22,7 +22,8 @@ const voteQueries = {
     ,
 
     sql_getMangaRatings :
-        'SELECT AVG(score) AS atlag , COUNT(*) as db FROM `ratings` WHERE manga_id LIKE ? '
+        'SELECT AVG(score) AS atlag , COUNT(*) as db FROM `ratings` WHERE manga_id LIKE ? ;' +
+        'SELECT * FROM `ratings` WHERE manga_id LIKE ? AND user_id = ? '
     ,
 
     sql_checkBeforeMangaRatingPost:

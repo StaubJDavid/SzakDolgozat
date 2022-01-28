@@ -16,7 +16,7 @@ const threadQueries = {
         "SELECT t.*,u.nickname, l.like FROM `threads` t "+
         "JOIN `users` u ON t.user_id = u.user_id "+
         "LEFT JOIN `likes` l ON l.target_id = t.thread_id AND l.user_id = ? "+
-        "ORDER BY t.created ASC"
+        "ORDER BY t.created DESC"
     ,
 
     sql_getThread:

@@ -47,7 +47,7 @@ router.get('/:target_id', verify_check, (req, res) => {
     }
 });
 //get api/comments/test/xddd
-router.get('/manage/like', (req, res) => {
+/*router.get('/manage/like', (req, res) => {
     // "INC_LIKE" = increase like
     // "DEC_LIKE" = decrease like
     // "INC_DISLIKE" = increase dislike
@@ -81,7 +81,7 @@ router.get('/manage/like', (req, res) => {
             
         }
     });
-});
+});*/
 
 // -------------------------------
 // POST api/comments/:target_id

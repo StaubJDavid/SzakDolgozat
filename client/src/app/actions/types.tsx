@@ -23,6 +23,7 @@ export const DEL_LIST_ENTRY = 'DEL_LIST_ENTRY';
 //CLEAR
 export const CLEAR_MANGA = 'CLEAR_MANGA';
 export const CLEAR_LIST = 'CLEAR_LIST';
+export const CLEAR_RATING = 'CLEAR_RATING';
 
 //FRIEND REQUESTS
 export const GET_FRIEND_REQUESTS = 'GET_FRIEND_REQUESTS';
@@ -37,3 +38,6 @@ export const CLEAR_THREAD = 'CLEAR_THREAD';
 //COMMENT
 export const GET_COMMENTS = 'GET_COMMENTS';
 export const CLEAR_COMMENTS = 'CLEAR_COMMENTS';
+
+//MANGA
+export const GET_RATING = 'GET_RATING';

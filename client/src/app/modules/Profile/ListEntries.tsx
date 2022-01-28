@@ -2,9 +2,6 @@ import React, { Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {delListEntry, addListEntry} from '../../actions/profileActions';
-import SearchBar from '../../common/SearchBar';
-import InputEditList from '../../common/InputEditList';
-import InputAddList from '../../common/InputAddList';
 
 type Props = {
     auth:any,
