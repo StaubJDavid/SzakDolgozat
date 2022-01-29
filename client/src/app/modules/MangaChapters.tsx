@@ -1,110 +1,98 @@
-import {FC, useState, useEffect} from 'react'
+import {FC, useState, useEffect, Component} from 'react'
+import {connect, useDispatch} from 'react-redux';
 import axios from 'axios'
-import {useHistory} from "react-router-dom";
+import {Link} from "react-router-dom";
 import { PageNavBar } from './PageNavBar';
+import {getChapters, setCurrentPage} from '../actions/mangaActions';
 
 type Props = {
-  manga_id: string
+  manga:any,
+  manga_id: string,
+  getChapters:any,
+  setCurrentPage:any
 }
 
-function getMangaChapters(manga_id:string, offset:number) {
+type State = {
+}
+
+/*function getMangaChapters(manga_id:string, offset:number) {
   return axios.get<{data:any, result: any, limit: any, total:any, offset:any}>(`https://api.mangadex.org/manga/${manga_id}/feed?order[volume]=desc&order[chapter]=desc&offset=${offset}`)
-}
+}*/
 
-const MangaChapters: FC<Props> = ({manga_id}) => {
-  const history = useHistory();
+class MangaChapters extends Component<Props,State> {
+  constructor(props:any){
+    super(props);
 
-  const [data, setData] = useState<[any]>();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState<any>();
-  const [offset, setOffset] = useState<any>();
-  const [result, setResult] = useState<any>();
-  const [total, setTotal] = useState<any>();
-  const [isLoading, setLoading] = useState(true);
-
-  function nav(_chapter_id:any, _chapter_hash:any, _chapter_data:any, _chapter_data_saver:any) {
-    history.push({
-      pathname: `/manga/read/${_chapter_id}`,
-      state: {
-        chapter_id: _chapter_id,
-        chapter_hash: _chapter_hash,
-        chapter_data: _chapter_data,
-        chapter_data_saver: _chapter_data_saver
-      }
-    });
-  }
-  
-  // const [showSplashScreen, setShowSplashScreen] = useState(true)
-  useEffect(() => {
-      const Data = async () => {
-        try {
-          const response = await getMangaChapters(manga_id,0*100);
-          // console.log("MangaChapt");
-          // console.log(response.data);
-          setCurrentPage(1);
-          setData(response.data.data);
-          setLimit(response.data.limit);
-          setOffset(response.data.offset);
-          setResult(response.data.result);
-          setTotal(response.data.total);
-
-          setLoading(false)
-        } catch (error) {
-          console.log(error)
-        }
-      }
-  
-      Data()
-    }, []);
-
-  function handlePage(page:number) {
-    console.log(`Page number: ${page}`);
-    setLoading(true);
-    setCurrentPage(page);
-
-    getMangaChapters(manga_id,(page - 1)*100)
-    .then(({data}) => {
-      // console.log(data.data);
-      setData(data.data);
-      setLimit(data.limit);
-      setOffset(data.offset);
-      setResult(data.result);
-      setTotal(data.total);
-      setLoading(false);
-    })
-    .catch((error) => {
-      console.log(error.response.status);     
-      setLoading(true);   
-    })
+    this.state = {
+    }
+    this.handlePage = this.handlePage.bind(this);
   }
 
-  return isLoading ? <></> : (
-    <>   
-        <table className="table table-responsive">
-            <tbody>
-            {data!.map((ch:any) => (
-              <tr key={ch.id}>
-                <td>
-                  Volume: {ch.attributes.volume}
-                </td>
-                <td>
-                  Chapter: {ch.attributes.chapter}
-                </td>
-                <td onClick={() => {nav(ch.id, ch.attributes.hash, ch.attributes.data, ch.attributes.dataSaver);}}>
-                  Title: {ch.attributes.title === null ? ("Chapter " + ch.attributes.chapter):ch.attributes.title}
-                </td>
-                <td>
-                  Language: {ch.attributes.translatedLanguage}
-                </td>
-              </tr>
-            ))}
-            </tbody>
-        </table>
-        {isLoading === false && (<PageNavBar passedFc={handlePage} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />)}
-    </>
-  )
+  componentDidMount() {
+    this.props.setCurrentPage(1);
+    this.props.getChapters(this.props.manga_id, 0);
+  }
 
+  handlePage(page:number) {
+    //console.log(`Page number: ${page}`);
+    this.props.setCurrentPage(page);
+    /*console.log("CurrentPage: ", this.props.manga.manga_search.currentPage);
+    console.log("Offset: ",(page-1)*20);*/
+
+    this.props.getChapters(this.props.manga.manga.data.id,(page-1)*100,page)
   
+  }
+
+  render() {
+    let chaptersContent = <></>;
+
+    if(this.props.manga.chapters != null){
+      let {data, limit, total} = this.props.manga.chapters;
+      let currentPage = this.props.manga.currentPage;
+
+      chaptersContent = (
+        <>   
+          <table className="table table-responsive">
+              <tbody>
+              {data.map((ch:any) => (
+                <tr key={ch.id}>
+                  <td>
+                    Volume: {ch.attributes.volume}
+                  </td>
+                  <td>
+                    Chapter: {ch.attributes.chapter}
+                  </td>
+                  <td>
+                    <Link className="text-center"
+                    to={{
+                      pathname: `/manga/read/${ch.id}`,
+                      state: {
+                        chapter_id: ch.id
+                      }
+                    }}>{ch.attributes.title === "" || ch.attributes.title === null ? ("Chapter " + ch.attributes.chapter):ch.attributes.title}</Link>
+                  </td>
+                  <td>
+                    Language: {ch.attributes.translatedLanguage}
+                  </td>
+                </tr>
+              ))}
+              </tbody>
+          </table>
+          <PageNavBar passedFc={this.handlePage} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />
+      </>
+      )
+    }
+
+    return (
+      <>
+        {chaptersContent}
+      </>
+    )
+  }  
 }
 
-export {MangaChapters}
+const mapStateToProps = (state:any)=>({
+  manga: state.manga
+});
+
+export default connect(mapStateToProps, {getChapters,setCurrentPage})(MangaChapters);

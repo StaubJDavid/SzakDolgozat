@@ -1,74 +1,87 @@
-import {useState, FC} from 'react'
+import { Component, useState, FC} from 'react'
+import {connect, useDispatch} from 'react-redux';
 import axios from 'axios'
 import {useHistory } from 'react-router-dom'
 import { PageNavBar } from './PageNavBar';
-import { SearchResult } from './TableRows/SearchResult';
+import SearchResult from './TableRows/SearchResult';
+import SearchBar from '../common/SearchBar';
+import {searchForMangaPage, setCurrentPage} from '../actions/mangaActions';
+import isEmpty from '../helpers/isEmpty';
 
-function getMangas(title:string, offset:number) {
+/*function getMangas(title:string, offset:number) {
   return axios.get<{data:any, limit:any, offset:any, response:any, result: any, total:any}>('https://api.mangadex.org/manga', {params: {title: title, limit: 20, offset: offset}})
-}
+}*/
 
 type Props = {
-  className: string
+  auth:any,
+  errors:any,
+  manga:any,
+  searchForMangaPage:any,
+  setCurrentPage:any
 }
 
-const Search: FC = () => {
-  let history = useHistory();
-
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [title, setTitle] = useState('')
-  const [data, setData] = useState<[any]>();
-  const [limit, setLimit] = useState<any>();
-  const [offset, setOffset] = useState<any>();
-  const [response, setResponse] = useState<any>();
-  const [result, setResult] = useState<any>();
-  const [total, setTotal] = useState<any>();
-  const [cover, setCover] = useState<any>();
-  const [loading, setLoading] = useState(true);
-
-  function handleSearch(page:number) {
-    console.log(`Page number: ${page}`);
-    setLoading(true);
-    setCurrentPage(page);
-
-    getMangas(title,(page - 1)*10)
-    .then(({data}) => {
-      // console.log(data.data);
-      setData(data.data);
-      setLimit(data.limit);
-      setOffset(data.offset);
-      setResponse(data.response);
-      setResult(data.result);
-      setTotal(data.total);
-      setLoading(false);
-    })
-    .catch((error) => {
-      // console.log(error.response.status);     
-      setLoading(true);   
-    })
-  }
-
-  function onMangaNameClick(manga_id:string){
-    history.push(`/manga/${manga_id}`);
-  }
-
-  return (
-    <div className="d-flex flex-column justify-content-center">
-      <div className="d-inline-flex flex-row justify-content-center">
-        <div className="p-2 justify-content-center"><input type="text" onChange={event => setTitle(event.target.value)} className="form-control" id="Search" placeholder="Manga name" /></div>
-        <div className="p-2 justify-content-center"><button type="button" onClick={() => handleSearch(1)} className="btn btn-primary">Search</button></div>
-      </div>
-        {loading === false && (
-        <div className="posts">
-              {data?.map((d:any) => (
-                <SearchResult passFc={onMangaNameClick} id={d.id} demography={d.attributes.publicationDemographic} description={d.attributes.description.en} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
-              ))}                  
-        </div>)}
-        {loading === false && (<PageNavBar passedFc={handleSearch} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />)}
-    </div>
-  )
+type State = {
 }
 
-//{passedFc, currentPage, total, limit, maxPage}
-export {Search}
+class Search extends Component<Props,State> {
+  constructor(props:any){
+    super(props);
+
+    this.state = {
+    }
+    this.handleSearch = this.handleSearch.bind(this);
+  }
+
+  handleSearch(page:number) {
+    //console.log(`Page number: ${page}`);
+    this.props.setCurrentPage(page);
+    /*console.log("CurrentPage: ", this.props.manga.manga_search.currentPage);
+    console.log("Offset: ",(page-1)*20);*/
+
+    this.props.searchForMangaPage(this.props.manga.manga_search.manga_name,(page-1)*20,page)
+  }
+
+  render() {
+    let mangaSearchContent = <></>;
+
+    if(!isEmpty(this.props.manga.manga_search)){
+      const {data,limit,total} = this.props.manga.manga_search;
+      const currentPage = this.props.manga.currentPage;
+
+      if(data.length === 0){
+        mangaSearchContent = (
+        <div className="d-flex flex-column justify-content-center">
+          No Results Found
+        </div>);
+      }else{
+        mangaSearchContent = (
+          <>
+          <div className="d-flex flex-column justify-content-center">
+            <div className="posts">
+                    {data.map((d:any) => (
+                      <SearchResult id={d.id} demography={d.attributes.publicationDemographic} description={d.attributes.description.en} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
+                    ))}                  
+              </div>
+              <PageNavBar passedFc={this.handleSearch} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />
+          </div>
+          </>
+          )
+      }
+    }
+
+    return (
+      <>
+      <SearchBar />
+      {mangaSearchContent}
+      </>
+    )
+  }
+}
+
+const mapStateToProps = (state:any)=>({
+  auth: state.auth,
+  errors: state.errors,
+  manga: state.manga
+});
+
+export default connect(mapStateToProps, {searchForMangaPage,setCurrentPage})(Search);

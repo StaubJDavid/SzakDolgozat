@@ -36,7 +36,7 @@ class SearchBar extends Component<Props,State> {
         clearTimeout(this.state.timer);
 
         const newTimer = setTimeout(() => {
-            this.props.searchForManga(String(e.target.value))
+            this.props.searchForManga(String(e.target.value),0);
         }, 500)
         
         this.setState({timer: newTimer});

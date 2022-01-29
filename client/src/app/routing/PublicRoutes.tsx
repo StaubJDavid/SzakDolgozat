@@ -1,9 +1,9 @@
 import {Route, Switch} from 'react-router-dom'
 
 import {SearchContent} from '../modules/SearchContent'
-import {Search} from '../modules/Search'
-import {MangaPage} from '../modules/MangaPage'
-import { MangaReadPage } from '../modules/MangaReadPage'
+import Search from '../modules/Search'
+import MangaPage from '../modules/MangaPage'
+import MangaReadPage from '../modules/MangaReadPage'
 import { ParentTest } from '../modules/ParentTest'
 
 export function PublicRoutes() {

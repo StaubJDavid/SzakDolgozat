@@ -16,9 +16,9 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import {SearchContent} from './modules/SearchContent'
-import {Search} from './modules/Search'
-import {MangaPage} from './modules/MangaPage'
-import { MangaReadPage } from './modules/MangaReadPage'
+import Search from './modules/Search'
+import MangaPage from './modules/MangaPage'
+import MangaReadPage from './modules/MangaReadPage'
 import { ParentTest } from './modules/ParentTest'
 import Login from './modules/auth/Login'
 import Register from './modules/auth/Register'

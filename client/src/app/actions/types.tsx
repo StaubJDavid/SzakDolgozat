@@ -41,3 +41,7 @@ export const CLEAR_COMMENTS = 'CLEAR_COMMENTS';
 
 //MANGA
 export const GET_RATING = 'GET_RATING';
+export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+export const GET_MANGA = 'GET_MANGA';
+export const GET_CHAPTERS = 'GET_CHAPTERS';
+export const GET_MANGA_IMAGES = 'GET_MANGA_IMAGES';
