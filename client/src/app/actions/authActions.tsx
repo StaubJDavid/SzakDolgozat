@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {GET_ERRORS, SET_CURRENT_USER} from './types';
+import {GET_ERRORS, SET_CURRENT_USER, LOGOUT_MIDDLEWARE, SET_USER_MIDDLEWARE} from './types';
 import setAuthToken from '../helpers/setAuthToken';
 import jwt_decode from 'jwt-decode';
 
@@ -50,3 +50,18 @@ export const logoutUser = () => (dispatch:any) => {
     setAuthToken(false);
     dispatch(setCurrentUser({}));
 }
+
+
+export const setCurrentUserMiddleware = (decoded:any) => {
+    return {
+        type: SET_USER_MIDDLEWARE,
+        payload: decoded
+    }
+}
+
+export const logoutUserMiddleware = () => (dispatch:any) => {
+    localStorage.removeItem('JWT');
+    setAuthToken(false);
+    dispatch(setCurrentUserMiddleware({}));
+}
+

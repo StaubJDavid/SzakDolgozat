@@ -8,7 +8,8 @@ import {GET_PROFILE,
         GET_LISTS,
         ADD_LIST_ENTRY,
         DEL_LIST_ENTRY,
-        CLEAR_LIST
+        CLEAR_LIST,
+        CLEAR_PROFILE_MIDDLEWARE
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
@@ -50,6 +51,10 @@ export default function(state = initialState, action:any){
             }
         };*/
         case CLEAR_PROFILE: return {
+            ...state,
+            profile: null
+        };
+        case CLEAR_PROFILE_MIDDLEWARE: return {
             ...state,
             profile: null
         };

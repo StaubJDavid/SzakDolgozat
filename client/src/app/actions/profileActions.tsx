@@ -10,7 +10,9 @@ import {GET_PROFILE,
         ADD_LIST_ENTRY,
         DEL_LIST_ENTRY,
         CLEAR_MANGA,
-        CLEAR_LIST
+        CLEAR_LIST,
+
+        CLEAR_PROFILE_MIDDLEWARE
 } from './types';
 
 export const getProfile = (id:number) => (dispatch:any) => {
@@ -221,5 +223,12 @@ export const clearProfile = () => {
 export const clearError = () => {
     return {
         type: CLEAR_ERRORS
+    }
+}
+
+//MIDDLEWARE
+export const clearProfileMiddleware = () => {
+    return {
+        type: CLEAR_PROFILE_MIDDLEWARE
     }
 }
