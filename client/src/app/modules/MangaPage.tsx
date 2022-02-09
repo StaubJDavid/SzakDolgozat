@@ -1,17 +1,18 @@
 import {FC, useState, useEffect, Component} from 'react';
 import {connect} from 'react-redux';
-import axios from 'axios';
 import Cover from './Cover';
 import MangaChapters from './MangaChapters';
 import CommentInput from '../common/CommentInput';
 import Comments from '../common/Comments';
 import Rating from '../common/Rating';
-import {getManga} from '../actions/mangaActions';
+import {getManga,clearMangaSearch} from '../actions/mangaActions';
+import Author from '../common/Author';
 
 type Props = {
   manga:any,
   location:any,
-  getManga:any
+  getManga:any,
+  clearMangaSearch:any
 }
 
 type State = {
@@ -21,16 +22,18 @@ type State = {
 class MangaPage extends Component<Props,State> {
 
   componentDidMount() {
+    this.props.clearMangaSearch();
     if(this.props.location.state){
-      console.log("Doing the link state: ", this.props.location.state.manga_id)
+      //console.log("Doing the link state: ", this.props.location.state.manga_id)
       this.props.getManga(this.props.location.state.manga_id);
     }else{
         let url = window.location.href;
         url = url.slice(url.lastIndexOf('/')+1,url.length);
-        console.log("Doing the not link thing: ", url)
+        //console.log("Doing the not link thing: ", url)
         this.props.getManga(url);
     }
   }
+
 
   render(){
 
@@ -49,7 +52,7 @@ class MangaPage extends Component<Props,State> {
                   <div className="card card-body bg-info text-white mb-3">
                     <div className="row">
                       <div className="col-4 col-md-3 m-auto">
-                        <Cover width={100} height={100} manga_id={data.id} cover_id={data.relationships.find((o:any) => o.type === 'cover_art').id} />
+                        <Cover width={100} height={100} manga_id={data.id} cover_id={data.relationships.find((o:any) => o.type === "cover_art")?data.relationships.find((o:any) => o.type === "cover_art").id:""} />
                       </div>
                     </div>
                     <div className="text-center">
@@ -100,9 +103,9 @@ class MangaPage extends Component<Props,State> {
                 <div className="col-md-6">
                   <h3 className="text-center text-info">Alternative titles</h3>
                   <ul className="list-group">
-                    {data.attributes.altTitles.map((at:any) => (
-                      <li className="list-group-item">                    
-                        <p>{at.en}</p>
+                    {data.attributes.altTitles.map((at:any,i:number) => (
+                      <li key={`titles${i}`} className="list-group-item">                    
+                        <p>{at[Object.getOwnPropertyNames(at)[0]]}</p>
                       </li>
                       ))}
                   </ul>
@@ -110,9 +113,9 @@ class MangaPage extends Component<Props,State> {
                 <div className="col-md-6">
                   <h3 className="text-center text-info">Extra details</h3>
                   <ul className="list-group">
-                    <li className="list-group-item">
-                      <p>Author: {data.relationships.find((o:any) => o.type === 'author').id}</p>
-                      <p>Author: {data.relationships.find((o:any) => o.type === 'artist').id}</p>
+                    <li key={"Author_List"} className="list-group-item">
+                      <p>Author: <Author author_id={data.relationships.find((o:any) => o.type === 'author').id} /></p>
+                      <p>Artist: <Author author_id={data.relationships.find((o:any) => o.type === 'artist').id} /></p>
                     </li>
                   </ul>
                 </div>
@@ -140,4 +143,4 @@ const mapStateToProps = (state:any)=>({
   manga: state.manga
 });
 
-export default connect(mapStateToProps,{getManga})(MangaPage);
+export default connect(mapStateToProps,{getManga,clearMangaSearch})(MangaPage);

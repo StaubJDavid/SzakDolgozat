@@ -6447,6 +6447,11 @@
   "resolved" "https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz"
   "version" "2.0.0"
 
+"iso-639-1@^2.1.13":
+  "integrity" "sha512-stYt3u6OnVDNcK4IWARGXmTOOY5Wa5g4bUmBsttZp/55ZiEjDUibR3C59ZnorKoSS0tfJmFuGMST3ksnY1zu7Q=="
+  "resolved" "https://registry.npmjs.org/iso-639-1/-/iso-639-1-2.1.13.tgz"
+  "version" "2.1.13"
+
 "isobject@^2.0.0":
   "integrity" "sha1-8GVWEJaj8dou9GJy+BXIQNh+DIk="
   "resolved" "https://registry.npmjs.org/isobject/-/isobject-2.1.0.tgz"

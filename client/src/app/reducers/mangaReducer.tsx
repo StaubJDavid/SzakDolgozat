@@ -7,7 +7,11 @@ import {
         SET_CURRENT_PAGE,
         GET_MANGA,
         GET_CHAPTERS,
-        GET_MANGA_IMAGES
+        GET_MANGA_IMAGES,
+        GET_READING_CHAPTERS,
+        CLEAR_READING_CHAPTERS,
+        ADD_READING_CHAPTERS,
+        GET_READING_CHAPTER
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
@@ -17,6 +21,7 @@ const initialState = {
     chapters:null,
     rating: null,
     reading: null,
+    reading_chapters: {chapter:{},chapters:[]},
     currentPage: 1
 }
 
@@ -57,6 +62,32 @@ export default function(state = initialState, action:any){
         case SET_CURRENT_PAGE: return {
             ...state,
             currentPage: action.payload
+        };
+        case CLEAR_READING_CHAPTERS: return {
+            ...state,
+            reading_chapters: {chapter:{},chapters:[]}
+        };
+        case GET_READING_CHAPTERS: return {
+            ...state,
+            reading_chapters: {
+                ...state.reading_chapters,
+                chapters: action.payload
+            }
+        };
+        case ADD_READING_CHAPTERS: return {
+            ...state,
+            reading_chapters: {
+                ...state.reading_chapters,
+                chapters: [...state.reading_chapters.chapters,...action.payload]
+            }
+        };
+        case GET_READING_CHAPTER: return {
+            ...state,
+            reading_chapters: {
+                ...state.reading_chapters,
+                chapter: action.payload,
+                chapters: [...state.reading_chapters.chapters]
+            }
         };
         default: return state;
     }

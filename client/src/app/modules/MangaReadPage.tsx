@@ -6,10 +6,14 @@ import {getMangaImages} from '../actions/mangaActions';
 import {Img} from './Img';
 import CommentInput from '../common/CommentInput';
 import Comments from '../common/Comments';
+import MangaReadingNav from '../common/MangaReadingNav';
+import NextPrevChapter from '../common/NextPrevChapter';
 
 type Props = {
   manga:any,
   location:any,
+  match:any,
+  history:any,
   getMangaImages:any,
   chapter_id:any,
   chapter_hash:any,
@@ -18,51 +22,38 @@ type Props = {
 }
 
 type State = {
-}
-
-
-function getMangaServer(chapter_id:any) {
-  return axios.get<{baseUrl:any, result: any}>(`https://api.mangadex.org/at-home/server/${chapter_id}`)
+  ch_id:string
 }
 
 class MangaReadPage extends Component<Props,State>{
-  /*const location:any = useLocation();
-  //const {chapter_id, chapter_hash, chapter_data, chapter_data_saver} = location.state;
-  const [chapter_id, setChapterId] = useState<any>(location.state.chapter_id);
-  const [chapter_hash, setChapterHash] = useState<any>(location.state.chapter_hash);
-  const [chapter_data, setChapterData] = useState<[any]>(location.state.chapter_data);
-  const [chapter_data_saver, setChapterDataSaver] = useState<[any]>(location.state.chapter_data_saver);
+  constructor(props:any){
+    super(props);
 
-  const [isLoading, setLoading] = useState(true);
-  // const [showSplashScreen, setShowSplashScreen] = useState(true)
-  const [data, setData] = useState<any>();
-  useEffect(() => {
-      const Data = async () => {
-        try {
-          
-          const response = await getMangaServer(chapter_id);
-          console.log("MangaRead");
-          console.log(response.data);
-          setData(response.data);
-          // console.log(data);
-          setLoading(false)
-        } catch (error) {
-          console.log(error)
-        }
-      }
-  
-      Data()
-    }, []);
-  */
+    this.state = {
+      ch_id:""
+    }
+  }
 
     componentDidMount() {
       if(this.props.location.state){
+        //console.log(this.props.location.state);
         this.props.getMangaImages(this.props.location.state.chapter_id);
+        this.setState({ch_id: this.props.location.state.chapter_id});
       }else{
           let url = window.location.href;
           url = url.slice(url.lastIndexOf('/')+1,url.length);
           //console.log("Doing the not link thing: ", url)
           this.props.getMangaImages(url);
+          this.setState({ch_id: url});
+      }
+    }
+
+    componentDidUpdate(prevProps:any) {
+      if(this.props.match.params.chapterid !== prevProps.match.params.chapterid){
+        let url = window.location.href;
+        url = url.slice(url.lastIndexOf('/')+1,url.length);
+        this.props.getMangaImages(url);
+        this.setState({ch_id: url});
       }
     }
 
@@ -74,7 +65,10 @@ class MangaReadPage extends Component<Props,State>{
       let {chapter_id,baseUrl,chapter} = this.props.manga.reading;
 
       imageContent = (
-        <>   
+        <>
+          <div>{this.state.ch_id}</div>
+          <MangaReadingNav location={this.props.location} history={this.props.history} chapter_id={chapter_id} />   
+          <NextPrevChapter history={this.props.history} />
           <table className="table table-responsive">
               <tbody>          
               {chapter.data.map((chd:any) => (
@@ -86,6 +80,7 @@ class MangaReadPage extends Component<Props,State>{
               ))}
               </tbody>
           </table>
+          <NextPrevChapter history={this.props.history} />
           <CommentInput target_id={chapter_id} />
           <Comments target_id={chapter_id} />
         </>

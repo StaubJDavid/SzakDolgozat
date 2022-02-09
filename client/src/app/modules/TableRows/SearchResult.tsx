@@ -17,11 +17,12 @@ type State = {}
 class SearchResult extends Component<Props,State> {
   render() {
     const {id,title,status,relationships,demography,description} = this.props;
+    //console.log(this.props);
     return (
       <div className="card card-body">
         <div className="row justify-content-md-center">
           <div className="d-flex justify-content-center col-md-2 align-self-center">
-            <Cover height={50} width={50} manga_id={id} cover_id={relationships.find((o:any) => o.type === 'cover_art').id} />
+            <Cover height={50} width={50} manga_id={id} cover_id={relationships.find((o:any) => o.type === "cover_art")?relationships.find((o:any) => o.type === "cover_art").id:""} />
           </div>
           <div className="col-sm-2 align-self-center">
             <Link className="text-center"
@@ -38,7 +39,7 @@ class SearchResult extends Component<Props,State> {
             <p className="align-middle">{description}</p>
           </div>
         </div>
-      </div>                
+      </div>               
     )
   }
   

@@ -1,6 +1,6 @@
 import {FC, useState, useEffect, Component} from 'react'
 import {connect, useDispatch} from 'react-redux';
-import axios from 'axios'
+import ISO6391 from 'iso-639-1';
 import {Link} from "react-router-dom";
 import { PageNavBar } from './PageNavBar';
 import {getChapters, setCurrentPage} from '../actions/mangaActions';
@@ -31,6 +31,13 @@ class MangaChapters extends Component<Props,State> {
   componentDidMount() {
     this.props.setCurrentPage(1);
     this.props.getChapters(this.props.manga_id, 0);
+  }
+
+  componentDidUpdate(prevProps:any) {
+    if (this.props.manga_id !== prevProps.manga_id) {
+      this.props.setCurrentPage(1);
+      this.props.getChapters(this.props.manga_id, 0);
+    }
   }
 
   handlePage(page:number) {
@@ -72,7 +79,7 @@ class MangaChapters extends Component<Props,State> {
                     }}>{ch.attributes.title === "" || ch.attributes.title === null ? ("Chapter " + ch.attributes.chapter):ch.attributes.title}</Link>
                   </td>
                   <td>
-                    Language: {ch.attributes.translatedLanguage}
+                    Language: {ISO6391.getName(ch.attributes.translatedLanguage)}
                   </td>
                 </tr>
               ))}

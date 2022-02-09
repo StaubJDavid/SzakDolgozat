@@ -58,11 +58,11 @@ class Search extends Component<Props,State> {
           <>
           <div className="d-flex flex-column justify-content-center">
             <div className="posts">
-                    {data.map((d:any) => (
-                      <SearchResult id={d.id} demography={d.attributes.publicationDemographic} description={d.attributes.description.en} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
-                    ))}                  
-              </div>
-              <PageNavBar passedFc={this.handleSearch} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />
+              {data.map((d:any) => (
+                <SearchResult key={d.id} id={d.id} demography={d.attributes.publicationDemographic} description={d.attributes.description.en} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
+              ))}                  
+            </div>
+            <PageNavBar passedFc={this.handleSearch} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />
           </div>
           </>
           )
