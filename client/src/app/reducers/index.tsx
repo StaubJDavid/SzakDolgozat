@@ -6,6 +6,7 @@ import mangaReducer from './mangaReducer';
 import friendReducer from './friendReducer';
 import threadReducer from './threadReducer';
 import commentReducer from './commentReducer';
+import mainPageReducer from './mainPageReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
     manga: mangaReducer,
     friend_requests: friendReducer,
     thread: threadReducer,
-    comments: commentReducer
+    comments: commentReducer,
+    mainPage: mainPageReducer
 });

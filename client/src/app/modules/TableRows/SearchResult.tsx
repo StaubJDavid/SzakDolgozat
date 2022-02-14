@@ -9,7 +9,8 @@ type Props = {
   status: string,
   relationships: any,
   demography:any,
-  description:any
+  description:any,
+  desc_length:number
 }
 
 type State = {}
@@ -17,6 +18,15 @@ type State = {}
 class SearchResult extends Component<Props,State> {
   render() {
     const {id,title,status,relationships,demography,description} = this.props;
+    let desc = "";
+    //obj[Object.keys(obj)[0]];
+    if(description.hasOwnProperty('en')){
+      desc = description.en.slice(0,this.props.desc_length) + "...";
+    }else{
+      console.log("Has no en: ");
+      console.log(id);
+      desc = description[Object.keys(description)[0]].slice(0,this.props.desc_length) + "...";
+    }
     //console.log(this.props);
     return (
       <div className="card card-body">
@@ -35,9 +45,9 @@ class SearchResult extends Component<Props,State> {
             <p className="text-center">{status}</p>
             <p className="text-center">{demography}</p>
           </div>
-          <div className="col-md-8 align-self-center">
-            <p className="align-middle">{description}</p>
-          </div>
+          {description!==""?(<div className="col-md-8 align-self-center">
+            <p className="align-middle">{desc}</p>
+          </div>):(<></>)}
         </div>
       </div>               
     )

@@ -57,9 +57,17 @@ class Search extends Component<Props,State> {
         mangaSearchContent = (
           <>
           <div className="d-flex flex-column justify-content-center">
-            <div className="posts">
+            <div>
               {data.map((d:any) => (
-                <SearchResult key={d.id} id={d.id} demography={d.attributes.publicationDemographic} description={d.attributes.description.en} title={d.attributes.title.en} status={d.attributes.status} relationships={d.relationships}/>
+                <SearchResult key={d.id}
+                  id={d.id}
+                  demography={d.attributes.publicationDemographic}
+                  description={d.attributes.description}
+                  title={d.attributes.title[Object.getOwnPropertyNames(d.attributes.title)[0]]}
+                  status={d.attributes.status}
+                  relationships={d.relationships}
+                  desc_length={200}
+                />
               ))}                  
             </div>
             <PageNavBar passedFc={this.handleSearch} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />

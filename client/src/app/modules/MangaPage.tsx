@@ -56,7 +56,7 @@ class MangaPage extends Component<Props,State> {
                       </div>
                     </div>
                     <div className="text-center">
-                      <h1 className="display-4 text-center">{data.attributes.title.en}</h1>
+                      <h1 className="display-4 text-center">{data.attributes.title[Object.getOwnPropertyNames(data.attributes.title)[0]]}</h1>
                     </div>
                   </div>
                 </div>
