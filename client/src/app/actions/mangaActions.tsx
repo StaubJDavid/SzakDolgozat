@@ -17,7 +17,7 @@ import {
 import store from '../store';
 
 export const searchForManga = (manga:string,offset:number) => (dispatch:any) => {
-    axios.get('https://api.mangadex.org/manga',{params:{title: manga, limit:20, offset:offset}})
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga`,{params:{title: manga, limit:20, offset:offset}})
     .then(
         res => {
             dispatch(setCurrentPage(1));
@@ -36,7 +36,7 @@ export const searchForManga = (manga:string,offset:number) => (dispatch:any) => 
 }
 
 export const getManga = (manga_id:string) => (dispatch:any) => {
-    axios.get(`https://api.mangadex.org/manga/${manga_id}`)
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga/${manga_id}?includes[]=artist&includes[]=author&includes[]=cover_art`)
     .then(
         res => {
             dispatch({
@@ -53,7 +53,7 @@ export const getManga = (manga_id:string) => (dispatch:any) => {
 }
 
 export const getChapters = (manga_id:string, offset:number) => (dispatch:any) => {
-    axios.get(`https://api.mangadex.org/manga/${manga_id}/feed?order[volume]=desc&order[chapter]=desc&offset=${offset}`)
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga/${manga_id}/feed?includes[]=scanlation_group&includes[]=user&order[volume]=desc&order[chapter]=desc&offset=${offset}`)
     .then(
         res => {
             dispatch({
@@ -70,7 +70,7 @@ export const getChapters = (manga_id:string, offset:number) => (dispatch:any) =>
 }
 
 export const getMangaImages = (chapter_id:string) => (dispatch:any) => {
-    axios.get(`https://api.mangadex.org/at-home/server/${chapter_id}`)
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/at-home/server/${chapter_id}`)
     .then(
         res => {
             res.data.chapter_id = chapter_id;
@@ -101,7 +101,7 @@ export const setCurrentPage = (page:number) => (dispatch:any) => {
 }
 
 export const searchForMangaPage = (manga:string,offset:number, currentPage:number) => (dispatch:any) => {
-    axios.get('https://api.mangadex.org/manga',{params:{title: manga, limit:20, offset:offset}})
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga`,{params:{title: manga, limit:20, offset:offset}})
     .then(
         res => {
             res.data.currentPage = currentPage;
@@ -175,7 +175,7 @@ export const deleteMangaRating = (manga_id:string) => (dispatch:any) => {
 }
 
 export const getReadingChapters = (chapter_id:string,manga_id:string) => (dispatch:any) => {
-    axios.get(`https://api.mangadex.org/chapter/${chapter_id}`)
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/chapter/${chapter_id}`)
         .then(
             res => {
                 
@@ -197,7 +197,7 @@ export const getReadingChapters = (chapter_id:string,manga_id:string) => (dispat
                     //console.log("Diff Manga");
                     clearReadingChapters();
                     //Get all chapters
-                    axios.get(`https://api.mangadex.org/manga/${m_id}/feed?limit=500&order[volume]=desc&order[chapter]=desc&offset=0&translatedLanguage[]=${res.data.data.attributes.translatedLanguage}`)
+                    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga/${m_id}/feed?limit=500&order[volume]=desc&order[chapter]=desc&offset=0&translatedLanguage[]=${res.data.data.attributes.translatedLanguage}`)
                     .then(
                         res2 => {
                             //setChapters(res2.data.data);
@@ -224,7 +224,7 @@ export const getReadingChapters = (chapter_id:string,manga_id:string) => (dispat
                             //console.log(requestOccurence);
                             for(let i = 1; i <= requestOccurence; i++){
                                 //console.log("Im IN THE THING");
-                                axios.get(`https://api.mangadex.org/manga/${m_id}/feed?limit=500&order[volume]=desc&order[chapter]=desc&offset=${500*i}&translatedLanguage[]=${res.data.data.attributes.translatedLanguage}`)
+                                axios.get(`${process.env.REACT_APP_PROXY_URL}/manga/${m_id}/feed?limit=500&order[volume]=desc&order[chapter]=desc&offset=${500*i}&translatedLanguage[]=${res.data.data.attributes.translatedLanguage}`)
                                 .then(
                                     res3 => {
                                         //console.log(i," Offset");

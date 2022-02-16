@@ -1,5 +1,6 @@
 import React, {FC} from 'react'
 import SearchResult from '../../modules/TableRows/SearchResult';
+import getTitle from '../../helpers/getTitle';
 
 type Props = {
     mangas:any
@@ -23,7 +24,7 @@ const MostFollowedMangas: FC<Props> = ({mangas}) => {
                     id={m.id}
                     demography={m.attributes.publicationDemographic}
                     description={m.attributes.description}
-                    title={m.attributes.title[Object.getOwnPropertyNames(m.attributes.title)[0]]}
+                    title={getTitle(m.attributes.title)}
                     status={m.attributes.status}
                     relationships={m.relationships}
                     desc_length={100}

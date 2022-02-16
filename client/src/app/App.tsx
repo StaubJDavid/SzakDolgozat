@@ -26,6 +26,8 @@ import Profile from './modules/Profile/Profile'
 import Threads from './modules/Thread/Threads';
 import Thread from './modules/Thread/Thread';
 import { clearProfile } from './actions/profileActions';
+import Creator from './common/Creator';
+import ScanGroup from './common/ScanGroup';
 
 import SearchTest from './modules/SearchTest';
 
@@ -73,6 +75,8 @@ const App: React.FC<State> = ({basename}) =>  {
           <Route path='/threads' exact component={Threads} />
           <Route path='/thread/:thread_id' exact component={Thread} />
           <Route path='/stest' exact component={SearchTest} />
+          <Route path='/god/:creator_id' exact component={Creator} />
+          <Route path='/scangroup/:scangroup_id' exact component={ScanGroup} />
         </div>
         
         {/*<Footer />*/}

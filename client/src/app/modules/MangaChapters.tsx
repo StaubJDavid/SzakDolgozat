@@ -16,7 +16,7 @@ type State = {
 }
 
 /*function getMangaChapters(manga_id:string, offset:number) {
-  return axios.get<{data:any, result: any, limit: any, total:any, offset:any}>(`https://api.mangadex.org/manga/${manga_id}/feed?order[volume]=desc&order[chapter]=desc&offset=${offset}`)
+  return axios.get<{data:any, result: any, limit: any, total:any, offset:any}>(`${process.env.REACT_APP_PROXY_URL}/manga/${manga_id}/feed?order[volume]=desc&order[chapter]=desc&offset=${offset}`)
 }*/
 
 class MangaChapters extends Component<Props,State> {
@@ -61,7 +61,10 @@ class MangaChapters extends Component<Props,State> {
         <>   
           <table className="table table-responsive">
               <tbody>
-              {data.map((ch:any) => (
+              {data.map((ch:any) => {
+                let scangroup:any = ch.relationships.find((o:any) => o.type === 'scanlation_group');
+                console.log(scangroup);
+                return (
                 <tr key={ch.id}>
                   <td>
                     Volume: {ch.attributes.volume}
@@ -79,10 +82,19 @@ class MangaChapters extends Component<Props,State> {
                     }}>{ch.attributes.title === "" || ch.attributes.title === null ? ("Chapter " + ch.attributes.chapter):ch.attributes.title}</Link>
                   </td>
                   <td>
+                    {scangroup?<Link className="text-center"
+                      to={{
+                          pathname: `/scangroup/${scangroup.id}`,
+                          state: {
+                              scangroup: scangroup
+                          }
+                      }}>{scangroup.attributes.name}</Link>:<>No Group</>}
+                  </td>
+                  <td>
                     Language: {ISO6391.getName(ch.attributes.translatedLanguage)}
                   </td>
                 </tr>
-              ))}
+              )})}
               </tbody>
           </table>
           <PageNavBar passedFc={this.handlePage} currentPage={currentPage} total={total} limit={limit} maxPage={Math.trunc(total/limit) + 1} />

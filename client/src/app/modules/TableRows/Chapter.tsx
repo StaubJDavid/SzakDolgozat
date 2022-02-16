@@ -31,9 +31,9 @@ const Chapter: FC<Props> = ({chapter}) => {
           <br />
           {scanlation_group?(<Link className="text-center"
           to={{
-            pathname: `/scanlation/${scanlation_group.id}`,
+            pathname: `/scangroup/${scanlation_group.id}`,
             state: {
-              group_id: scanlation_group.id
+              scangroup: scanlation_group
             }
           }}>{scanlation_group.attributes.name}</Link>):<>No Scan group</>}
           <div>{getChapterTitle(chapter.attributes)}</div>

@@ -1,12 +1,17 @@
 import {FC, useState, useEffect, Component} from 'react';
 import {connect} from 'react-redux';
+import {Link} from "react-router-dom";
 import Cover from './Cover';
 import MangaChapters from './MangaChapters';
 import CommentInput from '../common/CommentInput';
 import Comments from '../common/Comments';
 import Rating from '../common/Rating';
 import {getManga,clearMangaSearch} from '../actions/mangaActions';
-import Author from '../common/Author';
+import Creator from '../common/Creator';
+import CreatorButton from '../common/CreatorButton';
+import getDescription from '../helpers/getDescription';
+import ReactMarkdown from 'react-markdown';
+import getTitle from '../helpers/getTitle';
 
 type Props = {
   manga:any,
@@ -56,7 +61,7 @@ class MangaPage extends Component<Props,State> {
                       </div>
                     </div>
                     <div className="text-center">
-                      <h1 className="display-4 text-center">{data.attributes.title[Object.getOwnPropertyNames(data.attributes.title)[0]]}</h1>
+                      <h1 className="display-4 text-center">{getTitle(data.attributes.title)}</h1>
                     </div>
                   </div>
                 </div>
@@ -66,8 +71,8 @@ class MangaPage extends Component<Props,State> {
                 <div className="col-md-12">
                   <div className="card card-body bg-light mb-3">
                     <h3 className="text-center text-info">Description</h3>
-                    <p className="lead">{data.attributes.description.en}</p>
-                    <Rating manga_id={data.id} manga_name={data.attributes.title.en}/>
+                    <p className="lead"><ReactMarkdown children={getDescription(data.attributes.description)} /></p>
+                    <Rating manga_id={data.id} manga_name={getTitle(data.attributes.title)}/>
                     <hr />
                     <div className="row">
                       <div className="d-flex flex-wrap justify-content-center align-items-center">
@@ -114,8 +119,10 @@ class MangaPage extends Component<Props,State> {
                   <h3 className="text-center text-info">Extra details</h3>
                   <ul className="list-group">
                     <li key={"Author_List"} className="list-group-item">
-                      <p>Author: <Author author_id={data.relationships.find((o:any) => o.type === 'author').id} /></p>
-                      <p>Artist: <Author author_id={data.relationships.find((o:any) => o.type === 'artist').id} /></p>
+                      {/*<p>Author: <Creator author_id={data.relationships.find((o:any) => o.type === 'author').id} /></p>
+                      <p>Artist: <Creator author_id={data.relationships.find((o:any) => o.type === 'artist').id} /></p>*/}
+                      <p>Author: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'author')} /></p>
+                      <p>Artis: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'artist')} /></p>
                     </li>
                   </ul>
                 </div>

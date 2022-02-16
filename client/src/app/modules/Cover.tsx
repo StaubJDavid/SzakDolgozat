@@ -15,7 +15,7 @@ type State = {
 }
 
 function getCover(cover_id:string) {
-  return axios.get<{data:any, result: any}>(`https://api.mangadex.org/cover/${cover_id}`)
+  return axios.get<{data:any, result: any}>(`${process.env.REACT_APP_PROXY_URL}/cover/${cover_id}`)
 }
 
 function changeRes(url:string,res:string){
@@ -62,10 +62,11 @@ class Cover extends Component<Props,State> {
           this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
           this.setState({isLoading:false});
         }else{
-          const response = await getCover(this.props.cover_id);
+          //const response = await getCover(this.props.cover_id);++
           //console.log('Cover response: ',response.data);
-          //console.log(`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`)
-          this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`});
+          //console.log(`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`)++
+          //this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`});
+          this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
           this.setState({isLoading:false});
         }
         //console.log(this.props.cover_id);
@@ -84,10 +85,11 @@ class Cover extends Component<Props,State> {
             this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
             this.setState({isLoading:false});
           }else{
-            const response = await getCover(this.props.cover_id);
+            //const response = await getCover(this.props.cover_id);++
             //console.log('Cover response: ',response.data);
             //console.log(`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`)
-            this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`});
+            //this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`});++
+            this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
             this.setState({isLoading:false});
           }
           //console.log(this.props.cover_id);
@@ -106,7 +108,7 @@ class Cover extends Component<Props,State> {
       <>
       {this.state.isLoading ? <></> : (
       <>   
-          <img width={`${this.props.width}%`} height={`${this.props.height}%`} src={this.props.cover_id===""?this.state.data:changeRes(this.state.data,"256")} alt="Waaaa"></img>
+          <img width={`${this.props.width}%`} height={`${this.props.height}%`} src={this.props.cover_id===""?this.state.data:changeRes(this.state.data,"og")} alt="Waaaa"></img>
       </>)}
       </>
     )

@@ -7,6 +7,7 @@ import friendReducer from './friendReducer';
 import threadReducer from './threadReducer';
 import commentReducer from './commentReducer';
 import mainPageReducer from './mainPageReducer';
+import creatorReducer from './creatorReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -16,5 +17,6 @@ export default combineReducers({
     friend_requests: friendReducer,
     thread: threadReducer,
     comments: commentReducer,
-    mainPage: mainPageReducer
+    mainPage: mainPageReducer,
+    creator: creatorReducer
 });

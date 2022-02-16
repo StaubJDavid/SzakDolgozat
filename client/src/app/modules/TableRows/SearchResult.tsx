@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {FC, Component} from 'react'
-import Cover from '../Cover'
+import {FC, Component} from 'react';
+import Cover from '../Cover';
 import {Link} from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 type Props = {
   id: string,
@@ -46,7 +47,7 @@ class SearchResult extends Component<Props,State> {
             <p className="text-center">{demography}</p>
           </div>
           {description!==""?(<div className="col-md-8 align-self-center">
-            <p className="align-middle">{desc}</p>
+            <p className="align-middle"><ReactMarkdown children={desc} /></p>
           </div>):(<></>)}
         </div>
       </div>               

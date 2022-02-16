@@ -12,7 +12,7 @@ import store from '../store';
 //?includes[]=author&includes[]=artist&includes[]=cover_art&limit=10&contentRating[]=safe
 //&contentRating[]=suggestive&order[relevance]=desc&ids[]=3e80185a-416e-496f-94a3-423efec8cd50
 export const getMostFollowed = () => (dispatch:any) => {
-    axios.get('https://api.mangadex.org/manga',{params:{
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga`,{params:{
         includes: ["author","artist","cover_art"], limit:10, contentRating:["safe","suggestive"],
         "order[followedCount]":"desc"
     }})
@@ -32,12 +32,12 @@ export const getMostFollowed = () => (dispatch:any) => {
 }
 
 
-//https://api.mangadex.org/chapter?
+//${process.env.REACT_APP_PROXY_URL}/chapter?
 //includes[]=manga&includes[]=scanlation_group&limit=10
 //&contentRating[]=safe&contentRating[]=suggestive
 //&order[readableAt]=desc
 export const getLatestUpload = () => (dispatch:any) => {
-    axios.get('https://api.mangadex.org/chapter',{params:{
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/chapter`,{params:{
         includes: ["manga","scanlation_group"],
         limit:24,
         contentRating:["safe","suggestive"],
@@ -52,7 +52,7 @@ export const getLatestUpload = () => (dispatch:any) => {
             ))
             /*console.log("?" + req.substring(1,req.length));
             console.log(res.data);*/
-            axios.get(`https://api.mangadex.org/manga${"?" + req.substring(1,req.length)}&limit=24&includes[]=cover_art`)
+            axios.get(`${process.env.REACT_APP_PROXY_URL}/manga${"?" + req.substring(1,req.length)}&limit=24&includes[]=cover_art`)
             .then(
                 res2 => {
                     /*dispatch({
@@ -100,7 +100,7 @@ export const getSeasonals = () => (dispatch:any) => {
     dispatch({
         type:CLEAR_SEASONAL
     })
-    axios.get('https://api.mangadex.org/user/d2ae45e0-b5e2-4e7f-a688-17925c2d7d6b/list')
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/user/d2ae45e0-b5e2-4e7f-a688-17925c2d7d6b/list`)
     .then(
         res => {
             /*dispatch({
@@ -127,7 +127,7 @@ export const getSeasonals = () => (dispatch:any) => {
                     }   
                 })
                 //console.log(req);
-                axios.get(`https://api.mangadex.org/manga?includes[]=cover_art&order[followedCount]=desc&limit=${res.data.data[i].relationships.length}${req}`)
+                axios.get(`${process.env.REACT_APP_PROXY_URL}/manga?includes[]=cover_art&order[followedCount]=desc&limit=${res.data.data[i].relationships.length}${req}`)
                 .then(
                     res2 => {
                         let seasonal:any = {};
