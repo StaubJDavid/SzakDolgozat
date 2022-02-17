@@ -82,7 +82,7 @@ class Creator extends Component<Props,State> {
                         //console.log("xd");
                         return (
                             <div>
-                                <Cover height={50} width={50} manga_id={r.id} cover_id={""} />
+                                <Cover height={50} width={50} manga_id={r.id} relationships={[]} />
                                 <Link to={'/manga/'+ r.id}><h1 className="display-4 text-center">{getTitle(r.attributes.title)}</h1></Link>
                                 <p className="lead"><ReactMarkdown children={getDescription(r.attributes.description)} /></p>
                             </div>

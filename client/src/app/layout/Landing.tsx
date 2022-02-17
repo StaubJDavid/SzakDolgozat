@@ -7,6 +7,7 @@ import Seasonals from './MainPageComponents/Seasonals';
 
 type Props = {
     mainPage:any,
+    errors:any,
     getMostFollowed:any,
     getLatestUpload:any,
     getSeasonals:any
@@ -25,6 +26,7 @@ class Landing extends Component<Props,State> {
     render() {
         return (
             <>
+            {this.props.errors.statusText === "Not Found"?<div>Chapter not found</div>:<></>}
             <div>Landing LMAO</div>
             <MostFollowedMangas mangas={this.props.mainPage.most_followed} />
             <LatestChapters chapters={this.props.mainPage.latest_chapters} />
@@ -35,7 +37,8 @@ class Landing extends Component<Props,State> {
 }
 
 const mapStateToProps = (state:any)=>({
-    mainPage: state.mainPage
+    mainPage: state.mainPage,
+    errors: state.errors
   });
 
 export default connect(mapStateToProps, {getSeasonals,getMostFollowed,getLatestUpload})(Landing);;

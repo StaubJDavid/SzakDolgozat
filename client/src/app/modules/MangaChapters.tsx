@@ -4,6 +4,7 @@ import ISO6391 from 'iso-639-1';
 import {Link} from "react-router-dom";
 import { PageNavBar } from './PageNavBar';
 import {getChapters, setCurrentPage} from '../actions/mangaActions';
+import ReadChapterButton from '../common/ReadChapterButton';
 
 type Props = {
   manga:any,
@@ -63,7 +64,7 @@ class MangaChapters extends Component<Props,State> {
               <tbody>
               {data.map((ch:any) => {
                 let scangroup:any = ch.relationships.find((o:any) => o.type === 'scanlation_group');
-                console.log(scangroup);
+                //console.log(scangroup);
                 return (
                 <tr key={ch.id}>
                   <td>
@@ -73,13 +74,7 @@ class MangaChapters extends Component<Props,State> {
                     Chapter: {ch.attributes.chapter}
                   </td>
                   <td>
-                    <Link className="text-center"
-                    to={{
-                      pathname: `/manga/read/${ch.id}`,
-                      state: {
-                        chapter_id: ch.id
-                      }
-                    }}>{ch.attributes.title === "" || ch.attributes.title === null ? ("Chapter " + ch.attributes.chapter):ch.attributes.title}</Link>
+                    <ReadChapterButton chapter={ch} />
                   </td>
                   <td>
                     {scangroup?<Link className="text-center"

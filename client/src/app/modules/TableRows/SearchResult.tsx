@@ -33,7 +33,7 @@ class SearchResult extends Component<Props,State> {
       <div className="card card-body">
         <div className="row justify-content-md-center">
           <div className="d-flex justify-content-center col-md-2 align-self-center">
-            <Cover height={50} width={50} manga_id={id} cover_id={relationships.find((o:any) => o.type === "cover_art")?relationships.find((o:any) => o.type === "cover_art").id:""} />
+            <Cover height={50} width={50} manga_id={id} relationships={relationships} />
           </div>
           <div className="col-sm-2 align-self-center">
             <Link className="text-center"

@@ -2,19 +2,22 @@ import {FC, useState, useEffect, Component} from 'react'
 import {connect} from 'react-redux';
 import axios from 'axios'
 import { useLocation } from "react-router-dom";
-import {getMangaImages} from '../actions/mangaActions';
+import {getMangaImages, clearErrors} from '../actions/mangaActions';
 import {Img} from './Img';
 import CommentInput from '../common/CommentInput';
 import Comments from '../common/Comments';
 import MangaReadingNav from '../common/MangaReadingNav';
 import NextPrevChapter from '../common/NextPrevChapter';
+import { CLEAR_ERRORS } from '../actions/types';
 
 type Props = {
   manga:any,
+  errors:any,
   location:any,
   match:any,
   history:any,
   getMangaImages:any,
+  clearErrors:any,
   chapter_id:any,
   chapter_hash:any,
   chapter_data:any,
@@ -35,6 +38,7 @@ class MangaReadPage extends Component<Props,State>{
   }
 
     componentDidMount() {
+      this.props.clearErrors();
       if(this.props.location.state){
         //console.log(this.props.location.state);
         this.props.getMangaImages(this.props.location.state.chapter_id);
@@ -50,6 +54,7 @@ class MangaReadPage extends Component<Props,State>{
 
     componentDidUpdate(prevProps:any) {
       if(this.props.match.params.chapterid !== prevProps.match.params.chapterid){
+        this.props.clearErrors();
         let url = window.location.href;
         url = url.slice(url.lastIndexOf('/')+1,url.length);
         this.props.getMangaImages(url);
@@ -61,7 +66,9 @@ class MangaReadPage extends Component<Props,State>{
 
     let imageContent = <></>;
 
-    if(this.props.manga.reading != null){
+    if(this.props.errors.statusText === "Not Found"){
+      this.props.history.push("/");
+    }else if(this.props.manga.reading != null){
       let {chapter_id,baseUrl,chapter} = this.props.manga.reading;
 
       imageContent = (
@@ -97,7 +104,8 @@ class MangaReadPage extends Component<Props,State>{
 }
 
 const mapStateToProps = (state:any)=>({
-  manga: state.manga
+  manga: state.manga,
+  errors: state.errors
 });
 
-export default connect(mapStateToProps, {getMangaImages})(MangaReadPage);
+export default connect(mapStateToProps, {getMangaImages,clearErrors})(MangaReadPage);

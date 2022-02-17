@@ -12,12 +12,13 @@ import {
         GET_READING_CHAPTERS,
         CLEAR_READING_CHAPTERS,
         ADD_READING_CHAPTERS,
-        GET_READING_CHAPTER
+        GET_READING_CHAPTER,
+        CLEAR_ERRORS
 } from './types';
 import store from '../store';
 
 export const searchForManga = (manga:string,offset:number) => (dispatch:any) => {
-    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga`,{params:{title: manga, limit:20, offset:offset}})
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga`,{params:{title: manga, limit:20, offset:offset, includes: ["cover_art"]}})
     .then(
         res => {
             dispatch(setCurrentPage(1));
@@ -82,7 +83,7 @@ export const getMangaImages = (chapter_id:string) => (dispatch:any) => {
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response
         })
     );
 }
@@ -101,7 +102,7 @@ export const setCurrentPage = (page:number) => (dispatch:any) => {
 }
 
 export const searchForMangaPage = (manga:string,offset:number, currentPage:number) => (dispatch:any) => {
-    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga`,{params:{title: manga, limit:20, offset:offset}})
+    axios.get(`${process.env.REACT_APP_PROXY_URL}/manga`,{params:{title: manga, limit:20, offset:offset, includes: ["cover_art"]}})
     .then(
         res => {
             res.data.currentPage = currentPage;
@@ -290,5 +291,11 @@ export const getReadingChapters = (chapter_id:string,manga_id:string) => (dispat
 export const clearReadingChapters = () => (dispatch:any) => {
     dispatch({
         type: CLEAR_READING_CHAPTERS
+    })
+}
+
+export const clearErrors = () => (dispatch:any) => {
+    dispatch({
+        type: CLEAR_ERRORS
     })
 }

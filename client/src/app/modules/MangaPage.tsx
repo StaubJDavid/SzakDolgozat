@@ -57,7 +57,7 @@ class MangaPage extends Component<Props,State> {
                   <div className="card card-body bg-info text-white mb-3">
                     <div className="row">
                       <div className="col-4 col-md-3 m-auto">
-                        <Cover width={100} height={100} manga_id={data.id} cover_id={data.relationships.find((o:any) => o.type === "cover_art")?data.relationships.find((o:any) => o.type === "cover_art").id:""} />
+                        <Cover width={100} height={100} manga_id={data.id} relationships={data.relationships} />
                       </div>
                     </div>
                     <div className="text-center">
@@ -119,8 +119,6 @@ class MangaPage extends Component<Props,State> {
                   <h3 className="text-center text-info">Extra details</h3>
                   <ul className="list-group">
                     <li key={"Author_List"} className="list-group-item">
-                      {/*<p>Author: <Creator author_id={data.relationships.find((o:any) => o.type === 'author').id} /></p>
-                      <p>Artist: <Creator author_id={data.relationships.find((o:any) => o.type === 'artist').id} /></p>*/}
                       <p>Author: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'author')} /></p>
                       <p>Artis: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'artist')} /></p>
                     </li>

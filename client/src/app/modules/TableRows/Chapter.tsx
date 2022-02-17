@@ -4,6 +4,7 @@ import Cover from '../Cover'
 import {Link} from 'react-router-dom';
 import getTitle from '../../helpers/getTitle';
 import getChapterTitle from '../../helpers/getChapterTitle';
+import ReadChapterButton from '../../common/ReadChapterButton';
 
 type Props = {
   chapter:any
@@ -12,13 +13,13 @@ type Props = {
 const Chapter: FC<Props> = ({chapter}) => {
   let scanlation_group = chapter.relationships.find((o:any) => o.type === "scanlation_group");
   let manga = chapter.relationships.find((o:any) => o.type === "manga");
-  let cover_art = chapter.relationships.find((o:any) => o.type === "cover_art");
+  //let cover_art = chapter.relationships.find((o:any) => o.type === "cover_art");
 
   return (<>{
     <div className="card card-body">
       <div className="row justify-content-md-center">
         <div className="d-flex justify-content-center col-md-2 align-self-center">
-          <Cover height={50} width={50} manga_id={manga.id} cover_id={cover_art===undefined?"":cover_art.id} />
+          <Cover height={50} width={50} manga_id={manga.id} relationships={chapter.relationships} />
         </div>
         <div className="col-sm-2 align-self-center">
           <Link className="text-center"
@@ -36,7 +37,7 @@ const Chapter: FC<Props> = ({chapter}) => {
               scangroup: scanlation_group
             }
           }}>{scanlation_group.attributes.name}</Link>):<>No Scan group</>}
-          <div>{getChapterTitle(chapter.attributes)}</div>
+          <div><ReadChapterButton chapter={chapter}/></div>
         </div>
       </div>
         </div>}
