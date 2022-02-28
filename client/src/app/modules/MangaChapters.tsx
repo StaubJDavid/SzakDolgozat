@@ -62,31 +62,38 @@ class MangaChapters extends Component<Props,State> {
         <>   
           <table className="table table-responsive">
               <tbody>
+              <tr>
+                <th className="text-center">Volume</th>
+                <th className="text-center">Chapter</th>
+                <th className="text-left">Chapter Name</th>
+                <th className="text-center">Scanlation group</th>
+                <th className="text-center">Language</th>
+              </tr>
               {data.map((ch:any) => {
                 let scangroup:any = ch.relationships.find((o:any) => o.type === 'scanlation_group');
                 //console.log(scangroup);
                 return (
                 <tr key={ch.id}>
-                  <td>
+                  <td className="text-center align-middle">
                     Volume: {ch.attributes.volume}
                   </td>
-                  <td>
+                  <td className="text-center align-middle">
                     Chapter: {ch.attributes.chapter}
                   </td>
-                  <td>
+                  <td className="text-left align-middle">
                     <ReadChapterButton chapter={ch} />
                   </td>
-                  <td>
-                    {scangroup?<Link className="text-center"
+                  <td className="text-center align-middle">
+                    {scangroup?<Link
                       to={{
                           pathname: `/scangroup/${scangroup.id}`,
                           state: {
                               scangroup: scangroup
                           }
-                      }}>{scangroup.attributes.name}</Link>:<>No Group</>}
+                      }}><p className="text-center align-middle">{scangroup.attributes.name}</p></Link>:<p className="text-center align-middle">No Group</p>}
                   </td>
-                  <td>
-                    Language: {ISO6391.getName(ch.attributes.translatedLanguage)}
+                  <td className="text-center align-middle">
+                    {ISO6391.getName(ch.attributes.translatedLanguage)}
                   </td>
                 </tr>
               )})}

@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux';
-import {getMostFollowed,getLatestUpload,getSeasonals} from '../actions/mainPageActions';
+import {getMostFollowed,getLatestUpload,getSeasonals, sortSeasonals} from '../actions/mainPageActions';
 import MostFollowedMangas from './MainPageComponents/MostFollowedMangas';
 import LatestChapters from './MainPageComponents/LatestChapters';
 import Seasonals from './MainPageComponents/Seasonals';
+import {withRouter} from 'react-router-dom';
 
 type Props = {
     mainPage:any,
+    history:any,
     errors:any,
     getMostFollowed:any,
     getLatestUpload:any,
-    getSeasonals:any
+    getSeasonals:any,
+    sortSeasonals:any
   }
   
   type State = {
@@ -27,10 +30,11 @@ class Landing extends Component<Props,State> {
         return (
             <>
             {this.props.errors.statusText === "Not Found"?<div>Chapter not found</div>:<></>}
-            <div>Landing LMAO</div>
-            <MostFollowedMangas mangas={this.props.mainPage.most_followed} />
-            <LatestChapters chapters={this.props.mainPage.latest_chapters} />
-            <Seasonals seasonals={this.props.mainPage.seasonal_list} />
+            {this.props.mainPage.seasonal_sorted === this.props.mainPage.seasonal_count?<Seasonals seasonals={this.props.mainPage.seasonal_list} history={this.props.history}/>:<></>}
+            <hr />
+            <MostFollowedMangas mangas={this.props.mainPage.most_followed} history={this.props.history}/>
+            <hr />
+            <LatestChapters chapters={this.props.mainPage.latest_chapters} />          
             </>
         )
     }
@@ -41,4 +45,4 @@ const mapStateToProps = (state:any)=>({
     errors: state.errors
   });
 
-export default connect(mapStateToProps, {getSeasonals,getMostFollowed,getLatestUpload})(Landing);;
+export default connect(mapStateToProps, {getSeasonals,getMostFollowed,getLatestUpload,sortSeasonals})(Landing);;

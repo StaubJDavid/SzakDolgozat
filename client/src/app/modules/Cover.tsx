@@ -61,20 +61,7 @@ class Cover extends Component<Props,State> {
     async componentDidMount(){
       try {
         let cover = this.props.relationships.find((o:any) => o.type === "cover_art")
-        //console.log(cover);
-        /*if(!cover){
-          this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
-          this.setState({isLoading:false});
-        }else{
-          //const response = await getCover(this.props.cover_id);++
-          //console.log('Cover response: ',response.data);
-          //console.log(`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`)++
-          //this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`});
-          this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
-          this.setState({isLoading:false});
-        }*/
-        //console.log(this.props.cover_id);
-        if(cover){
+        if(cover.attributes){
           this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${cover.attributes.fileName}`});
           this.setState({isLoading:false});
         }else{
@@ -102,33 +89,10 @@ class Cover extends Component<Props,State> {
     }
 
     async componentDidUpdate(prevProps:any){
-      /*let cover = this.props.relationships.find((o:any) => o.type === "cover_art")
-      console.log(cover);*/
-      /*if (this.props.cover_id !== prevProps.cover_id) {
-        try {
-          if(this.props.cover_id === ""){
-            this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
-            this.setState({isLoading:false});
-          }else{
-            //const response = await getCover(this.props.cover_id);++
-            //console.log('Cover response: ',response.data);
-            //console.log(`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`)
-            //this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${response.data.data.attributes.fileName}`});++
-            this.setState({data: "https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg"})
-            this.setState({isLoading:false});
-          }
-          //console.log(this.props.cover_id);
-        } catch (error) {
-          store.dispatch({
-            type:"GET_ERRORS",
-            payload:error
-          })
-        }
-      }  */ 
       if(this.props.relationships !== prevProps.relationships){
         try {
           let cover = this.props.relationships.find((o:any) => o.type === "cover_art")
-          if(cover){
+          if(cover.attributes){
             this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${cover.attributes.fileName}`});
             this.setState({isLoading:false});
           }else{

@@ -26,6 +26,7 @@ class Comments extends Component<Props,State> {
             
             commentsContent = (
             <>
+            <hr />
             {cms.map((element:any, i:number) => {
                 return  <Comment data={element} key={`comment${i}`}/>
                 })}

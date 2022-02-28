@@ -77,7 +77,6 @@ class Register extends Component<Props,State> {
                     <div className="row">
                         <div className="col-md-8 m-auto">
                             <h1 className="display-4 text-center">Sign Up</h1>
-                            <p className="lead text-center">Create your DevConnector account</p>
                             <form onSubmit={this.onSubmit}>
                                 <TextInput
                                     name="nickname" 
@@ -87,6 +86,7 @@ class Register extends Component<Props,State> {
                                     onChange={this.onChange}  
                                     placeholder="Nickname"
                                 />
+                                <br />
                                 <TextInput
                                     name="email" 
                                     value={this.state.email}
@@ -95,6 +95,7 @@ class Register extends Component<Props,State> {
                                     onChange={this.onChange}  
                                     placeholder="Email Address"
                                 />
+                                <br />
                                 <TextInput
                                     name="password" 
                                     value={this.state.password}
@@ -103,6 +104,7 @@ class Register extends Component<Props,State> {
                                     onChange={this.onChange}  
                                     placeholder="Password"
                                 />
+                                <br />
                                 <TextInput
                                     name="password2" 
                                     value={this.state.password2}
@@ -111,7 +113,10 @@ class Register extends Component<Props,State> {
                                     onChange={this.onChange}  
                                     placeholder="Repeat password"
                                 />
-                                <input type="submit" className="btn btn-info btn-block mt-4" />
+                                
+                                <div className="d-flex justify-content-center">
+                                    <input type="submit" className="btn btn-info btn-block m-4" />
+                                </div>
                             </form>
                         </div>
                     </div>

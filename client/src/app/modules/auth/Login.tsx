@@ -73,8 +73,7 @@ class Login extends Component<Props,State> {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-8 m-auto">
-                            <h1 className="display-4 text-center">Log In</h1>
-                            <p className="lead text-center">Sign in to your DevConnector account</p>
+                            <h1 className="display-4 text-center">Login</h1>
                             <form onSubmit={this.onSubmit}>
                                 <TextInput
                                     name="email" 
@@ -84,6 +83,7 @@ class Login extends Component<Props,State> {
                                     onChange={this.onChange}  
                                     placeholder="Email Address"
                                 />
+                                <br />
                                 <TextInput 
                                     type="password"
                                     name="password"
@@ -92,7 +92,10 @@ class Login extends Component<Props,State> {
                                     error={errors.password}
                                     placeholder="Password"
                                 />
-                                <input type="submit" className="btn btn-info btn-block mt-4" />
+                                
+                                <div className="d-flex justify-content-center">
+                                    <input type="submit" className="btn btn-info btn-block mt-4" />
+                                </div>
                             </form>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
-import {FC, useState} from 'react'
+import {FC, useState} from 'react';
 import TextInput from './TextInput';
+import TextArea from './TextArea';
 import {connect, useDispatch} from 'react-redux';
 import {postComment} from '../actions/commentActions';
 
@@ -16,17 +17,17 @@ const CommentInput: FC<Props> = ({target_id, postComment, auth}) => {
     return (
         <> 
             {auth.isAuthenticated?<div>
-                <TextInput
+                <TextArea
                     name="text" 
+                    maxlength={255}
                     value={text}
                     error={null} 
-                    type="text"
-                    onChange={(e:any) => setText(e.target.value)}    
+                    onChange={(e:any) => setText(e.target.value)}  
                     placeholder="Text"
                 />
                 <button onClick={(e:any) => {postComment(target_id,text);setText("")}}
                 className="btn btn-primary"
-                type="button">Create</button>
+                type="button">Post Comment</button>
             </div>:<></>}
         </>
     )

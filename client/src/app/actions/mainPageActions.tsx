@@ -5,9 +5,13 @@ import {
         GET_SEASONAL_LISTS,
         GET_MOST_FOLLOWED_MANGAS,
         CLEAR_MAIN_PAGE,
-        CLEAR_SEASONAL
+        CLEAR_SEASONAL,
+        SORT_SEASONAL,
+        SEASONAL_SORTED,
+        SEASONAL_COUNT
 } from './types';
 import store from '../store';
+import sortSeasonal from '../helpers/sortSeasonal';
 
 //?includes[]=author&includes[]=artist&includes[]=cover_art&limit=10&contentRating[]=safe
 //&contentRating[]=suggestive&order[relevance]=desc&ids[]=3e80185a-416e-496f-94a3-423efec8cd50
@@ -99,14 +103,22 @@ export const getLatestUpload = () => (dispatch:any) => {
 export const getSeasonals = () => (dispatch:any) => {
     dispatch({
         type:CLEAR_SEASONAL
-    })
+    });
+    dispatch({
+        type:SEASONAL_COUNT,
+        payload: 0
+    });
+    dispatch({
+        type:SEASONAL_SORTED,
+        payload: 0
+    });
     axios.get(`${process.env.REACT_APP_PROXY_URL}/user/d2ae45e0-b5e2-4e7f-a688-17925c2d7d6b/list`)
     .then(
         res => {
-            /*dispatch({
-                type: GET_SEASONAL_LISTS,
-                payload: res.data.data
-            })*/
+            dispatch({
+                type:SEASONAL_COUNT,
+                payload: res.data.data.length
+            });
             console.log(res.data.data);
             for(let i = 0; i< res.data.data.length;i++){
                 
@@ -138,6 +150,7 @@ export const getSeasonals = () => (dispatch:any) => {
                             type: GET_SEASONAL_LISTS,
                             payload: seasonal
                         });
+                        dispatch(sortSeasonals());
                     }
                 ).catch(
                     err2 => dispatch({
@@ -154,4 +167,18 @@ export const getSeasonals = () => (dispatch:any) => {
             payload: null
         })
     );
+}
+
+export const sortSeasonals = () => (dispatch:any) => {
+    let seasonals = store.getState().mainPage.seasonal_list;
+    let sorted = store.getState().mainPage.seasonal_sorted;
+    seasonals.sort(sortSeasonal);
+    dispatch({
+        type: SORT_SEASONAL,
+        payload: seasonals
+    });
+    dispatch({
+        type: SEASONAL_SORTED,
+        payload: sorted + 1
+    });
 }

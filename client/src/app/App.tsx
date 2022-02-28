@@ -1,12 +1,12 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, withRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import store from './store';
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './helpers/setAuthToken';
 import { logoutUser, setCurrentUser } from './actions/authActions';
-import {withRouter} from 'react-router';
+//import {withRouter} from 'react-router';
 
 import {Routes} from './routing/Routes'
 import Navbar from './layout/Navbar';
@@ -63,7 +63,7 @@ const App: React.FC<State> = ({basename}) =>  {
         </Navbar> */}
         <Navbar />
         {/*<Routes />*/}
-        <Route path='/' exact component={Landing} />
+        <Route path='/' exact component={withRouter(Landing)} />
         <div className="container">
           <Route path='/search' exact component={Search} />
           <Route path='/manga/:id' exact component={MangaPage} />

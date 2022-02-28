@@ -1,5 +1,7 @@
 import React, {FC} from 'react'
 import Chapter from '../../modules/TableRows/Chapter';
+import FourColumnGridRow from '../../modules/TableRows/FourColumnGridRow';
+import parse from 'html-react-parser';
 
 type Props = {
     chapters:any
@@ -16,19 +18,21 @@ const LatestChapters: FC<Props> = ({chapters}) => {
     if(chapters.length===0){
         return (
             <div>
-                Latest Updates
+                <h1 className={"text-center"}>Latest Updates</h1>
             </div>
         )
     }else{
+
+          let html = [];
+          for(let i = 0; i < 24; i+=4){
+              html.push(<FourColumnGridRow chapters={chapters} index={i} />);
+          }
+
         return (
             <>
-            <div>Latest Updates</div>
-            <div className="d-flex flex-column justify-content-center">
-              {chapters.map((c:any) => (
-                <Chapter key={"mfm"+c.id}
-                    chapter={c}
-                />
-              ))}                  
+            <h1 className={"text-center"}>Latest Updates</h1>
+            <div className="container-fluid">
+              {html}                  
             </div>
             </>
         )

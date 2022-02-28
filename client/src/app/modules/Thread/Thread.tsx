@@ -6,6 +6,7 @@ import {getComments} from '../../actions/commentActions';
 import Comment from '../../common/Comment';
 import LikeButtons from '../../common/LikeButtons';
 import CommentInput from '../../common/CommentInput';
+import timeFormat from '../../helpers/timeFormat';
 
 type Props = {
     thread:any,
@@ -53,13 +54,29 @@ class Thread extends Component<Props,State> {
             <>
             <hr/>
             <div className="container-fluid">
-                <p>Creator: {nickname}</p>
-                <p>Title: {title}</p>
-                <p>Views: {views}</p>
-                <p>Created: {created}</p>
-                <p>{text}</p>
-                {/*At like button the parent is thread_id */}
-                <LikeButtons target_id={thread_id} like={like} likes={likes} dislikes={dislikes} parent={thread_id} type={"THREAD"} />
+                <div className="row">
+                    <div className="col-md-3 text-break align-middle">
+                        {nickname}
+                    </div>
+                    <div className="col-md-3 text-break align-middle">
+                        {title}
+                    </div>
+                    <div className="col-md-3 align-middle">
+                        Views: {views}
+                    </div>
+                    <div className="col-md-3 align-middle text-right">
+                        {timeFormat(created)}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-2">
+                        {/*At like button the parent is thread_id */}
+                        <LikeButtons target_id={thread_id} like={like} likes={likes} dislikes={dislikes} parent={thread_id} type={"THREAD"} />
+                    </div>
+                    <div className="col-md-10 text-break border border-dark rounded">
+                        {text}
+                    </div>
+                </div>
             </div>
             <hr/>
             </>

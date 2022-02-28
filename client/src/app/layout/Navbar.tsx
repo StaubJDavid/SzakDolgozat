@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {logoutUser} from '../actions/authActions';
 import {clearProfile} from '../actions/profileActions';
+import "bootstrap/js/src/collapse.js";
 
 type Props = {
     auth:any,
@@ -52,7 +53,7 @@ class Navbar extends Component<Props,State> {
             <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
                 <div className="container">
                     <Link className="navbar-brand" to="/">PetyDex</Link>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#mobile-nav">
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav" aria-expanded="false" aria-controls="mobileNav">
                         <span className="navbar-toggler-icon"></span>
                     </button>
 

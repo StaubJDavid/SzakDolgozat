@@ -1,36 +1,60 @@
 import React, {FC} from 'react'
 import SearchResult from '../../modules/TableRows/SearchResult';
+import CarouselItem from '../../modules/TableRows/Carousel_Item';
 import getTitle from '../../helpers/getTitle';
+import {withRouter} from 'react-router-dom';
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+const responsive = {
+  superLargeDesktop: {
+    // the naming can be any, depends on you.
+    breakpoint: { max: 4000, min: 3000 },
+    items: 5
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1
+  }
+};
 
 type Props = {
-    mangas:any
+    mangas:any,
+    history:any
 }
 
-const MostFollowedMangas: FC<Props> = ({mangas}) => {
-
+const MostFollowedMangas: FC<Props> = ({mangas, history}) => {
     if(mangas.length===0){
         return (
-            <div>
-                Most Followed Mangas
-            </div>
+            <>
+                <h1 className={"text-center"}>Most Followed Mangas</h1>
+            </>
         )
     }else{
         return (
             <>
-            <div>Most Followed Mangas</div>
-            <div className="d-flex flex-column justify-content-center">
-              {mangas.map((m:any) => (
-                <SearchResult key={"mfm"+m.id}
-                    id={m.id}
-                    demography={m.attributes.publicationDemographic}
-                    description={m.attributes.description}
-                    title={getTitle(m.attributes.title)}
-                    status={m.attributes.status}
-                    relationships={m.relationships}
-                    desc_length={100}
-                />
-              ))}                  
-            </div>
+                <h1 className={"text-center"}>Most Followed Mangas</h1>
+                <Carousel responsive={responsive}>
+                {mangas.map((m:any) => (
+                    <div><CarouselItem key={"mfm"+m.id}
+                        history={history}
+                        id={m.id}
+                        demography={m.attributes.publicationDemographic}
+                        description={m.attributes.description}
+                        title={getTitle(m.attributes.title)}
+                        status={m.attributes.status}
+                        relationships={m.relationships}
+                        desc_length={100}
+                    /></div>
+                ))}
+                </Carousel>
             </>
         )
     }  
