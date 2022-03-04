@@ -37,11 +37,11 @@ class CarouselItem extends Component<Props,State> {
     }
     //console.log(this.props);
     return (  
-        <div onClick={() => this.onCarouselItemClick(id)} className="container-fluid">
-          <div className="row">
+        <div onClick={() => this.onCarouselItemClick(id)} className="container align-items-stretch">
+          <div className="row align-items-center">
             <div className="col-md-12">
-              <div className="row">
-                <div className="col-md-6">
+              <div className="row align-items-center">
+                <div style={{height:"285px"}} className="col-md-6">
                   <Cover height={100} width={100} manga_id={id} relationships={relationships} />
                 </div>
                 <div className="col-md-6">

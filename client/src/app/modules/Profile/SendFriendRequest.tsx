@@ -4,6 +4,7 @@ import {sendFriendRequest} from '../../actions/friendActions';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import TextInput from '../../common/TextInput';
+import TextArea from '../../common/TextArea';
 
 type Props = {
     auth:any,
@@ -24,7 +25,7 @@ class SendFriendRequest extends Component<Props,State> {
 
         this.state = {
             error: {},
-            message: "Hello the person sending this request didn't want to write their own first message to you, pwease accept UwU!"
+            message: ""
         }
         
         this.onSendFRClick = this.onSendFRClick.bind(this);
@@ -37,6 +38,7 @@ class SendFriendRequest extends Component<Props,State> {
             this.props.profile.profile.id,
             this.state.message
         );
+        this.setState({message: ""});
     }
 
     onChangeEdit(e:any){
@@ -59,13 +61,14 @@ class SendFriendRequest extends Component<Props,State> {
                     </button>
                 </p>
                 <div className="collapse" id="collapseSendFriendRequest">
-                    <TextInput
-                        name="message" 
+                    <TextArea
+                        name="text" 
+                        maxlength={255}
                         value={this.state.message}
-                        error={this.state.error.thing}
-                        type="text"
+                        error={this.state.error.thing} 
                         onChange={this.onChangeEdit}  
-                        placeholder="Write your first message!"
+                        placeholder="Hello the person sending this request didn't want to write their own first message to you, pwease accept UwU!"
+                        disabled={false}
                     />
                     <button onClick={this.onSendFRClick}
                         className="btn btn-primary"

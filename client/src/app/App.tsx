@@ -29,7 +29,7 @@ import { clearProfile } from './actions/profileActions';
 import Creator from './common/Creator';
 import ScanGroup from './common/ScanGroup';
 
-import SearchTest from './modules/SearchTest';
+import Test from './modules/Test';
 
 type State = {
   basename: string
@@ -64,9 +64,9 @@ const App: React.FC<State> = ({basename}) =>  {
         <Navbar />
         {/*<Routes />*/}
         <Route path='/' exact component={withRouter(Landing)} />
-        <div className="container">
+        <div className="container-fluid">
           <Route path='/search' exact component={Search} />
-          <Route path='/manga/:id' exact component={MangaPage} />
+          <Route path='/manga/:id' exact component={withRouter(MangaPage)} />
           <Route path='/manga/read/:chapterid' exact component={MangaReadPage} />
           <Route path='/test' exact component={ParentTest} /> 
           <Route path='/register' exact component={Register} /> 
@@ -74,7 +74,7 @@ const App: React.FC<State> = ({basename}) =>  {
           <Route path='/profile/:id' exact component={withRouter(Profile)} />
           <Route path='/threads' exact component={Threads} />
           <Route path='/thread/:thread_id' exact component={Thread} />
-          <Route path='/stest' exact component={SearchTest} />
+          <Route path='/stest' exact component={Test} />
           <Route path='/god/:creator_id' exact component={Creator} />
           <Route path='/scangroup/:scangroup_id' exact component={ScanGroup} />
         </div>

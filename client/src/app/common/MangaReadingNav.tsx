@@ -60,17 +60,11 @@ class MangaReadingNav extends Component<Props,State> {
             chapterNavContent = (
             <>
             <div>
-                {chapter.attributes.translatedLanguage}
-                <br/>
-                {chapter.id}
-                <br/>
                 Title: {chapter.attributes.title}
                 <br/>
-                Volume: {chapter.attributes.volume}
-                <br/>
+
                 Chapter: {chapter.attributes.chapter}
                 <br/>
-                {chapter.manga_id}
                 <select value={chapter.id} onChange={this.onChangeChapter} id="chapters" name="chapters">
                     {chapters.map((ch:any,i:any) => (
                         <option key={i} value={ch.id}>{ch.attributes.chapter} + {i}</option>

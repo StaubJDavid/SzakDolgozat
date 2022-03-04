@@ -1,6 +1,7 @@
 import React, { Component} from 'react';
 import {connect} from 'react-redux';
 import TextInput from './TextInput';
+import TextArea from './TextArea';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {listVisibilityTextToNum,listVisibilityNumToText} from '../helpers/listVisibility';
@@ -59,22 +60,32 @@ class InputAddList extends Component<Props,State> {
 
         return (
             <div>
-                {owned?(<div>
-                            <TextInput
+                {owned?(
+                <div className="container-fluid">
+                    <div className="row align-items-center">
+                        <div className="col-md-8">
+                            <TextArea
                                 name="value" 
+                                maxlength={255}
                                 value={this.state.value}
-                                error={this.state.errors.thing}
-                                type="text"
+                                error={this.state.errors.thing} 
                                 onChange={this.onChangeEdit}  
                                 placeholder="List Name"
+                                disabled={false}
                             />
+                        </div>
+                        <div className="col-md-2 align-middle text-center">
                             <select onChange={this.onSelectEdit} value={this.state.visibility} id="l_visibility">
                                 <option value={0} >Private</option>
                                 <option value={1} >Public</option>
                                 <option value={2} >Friends</option>
                             </select>
+                        </div>
+                        <div className="col-md-2 text-center">
                             <button onClick={this.onSaveClick} className="btn btn-primary" type="button" >Create</button>
                         </div>
+                    </div>
+                    </div>
                     ):<></>}
             </div>
         )

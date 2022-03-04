@@ -1,7 +1,9 @@
 import React, { Component} from 'react';
 import {connect} from 'react-redux';
 import {likeTarget} from '../actions/commentActions';
+import classnames from 'classnames';
 import TextInput from './TextInput';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 type Props = {
     errors:any,
@@ -35,7 +37,7 @@ class LikeButtons extends Component<Props,State> {
         if(this.props.auth.isAuthenticated){
             this.props.likeTarget(
                 this.props.target_id,
-                e.target.getAttribute('data-val'),
+                e,
                 this.props.type,
                 this.props.parent
             )
@@ -45,23 +47,14 @@ class LikeButtons extends Component<Props,State> {
 
     render() {
         let {like,likes,dislikes} = this.props;
-        //<i class="bi bi-hand-thumbs-up-fill"></i>
-        //<i class="bi bi-hand-thumbs-down-fill"></i>
+        
         let likeButtons = (<>
-            <div>
-                <i
-                data-val={1}
-                onClick={this.onLikeClicked}
-                className={like===0||like==null?"bi bi-hand-thumbs-up":"bi bi-hand-thumbs-up-fill"}
-                ></i>{likes}
-            </div>
-            <div>
-                <i
-                data-val={0}
-                onClick={this.onLikeClicked}
-                className={like===1||like==null?"bi bi-hand-thumbs-down":"bi bi-hand-thumbs-down-fill"}
-                ></i>{dislikes}
-            </div>
+            <button data-val={1} onClick={() => this.onLikeClicked(1)} type="button" className={classnames("btn btn-light mr-1",{"bg-success":like===1})}>
+                <i className={classnames("fas fa-thumbs-up",{"text-success":like==null || like===0, "text-light":like===1})}>  {likes}</i>
+            </button>
+            <button data-val={0} onClick={() => this.onLikeClicked(0)} type="button" className={classnames("btn btn-light mr-1",{"bg-danger":like===0})}>
+                <i className={classnames("fas fa-thumbs-down",{"text-danger":like==null || like===1, "text-light":like===0})}>  {dislikes}</i>
+            </button>
         </>);
 
         return (

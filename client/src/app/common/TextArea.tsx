@@ -7,6 +7,7 @@ type Props = {
     value:any,       
     error:any,
     onChange:any,
+    disabled:any,
     placeholder?:any,
     info?:any
 }
@@ -18,7 +19,8 @@ const TextArea: FC<Props> = ({
         error,
         onChange,
         placeholder,
-        info
+        info,
+        disabled
     }) => (
         <div className="form-group">
             <textarea 
@@ -28,7 +30,9 @@ const TextArea: FC<Props> = ({
             placeholder={placeholder}
             value={value} 
             onChange={onChange}
-            name={name} />
+            name={name} 
+            disabled={disabled}
+            />
             {info && <small className='form-text text-muted'>{info}</small>}
             {error && (<div className='invalid-feedback'>{error}</div>)}
         </div>

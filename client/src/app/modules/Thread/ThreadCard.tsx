@@ -31,17 +31,17 @@ class ThreadCard extends Component<Props,State> {
             <div className="container-fluid">
                 <div className="row justify-content-end">
                     <div className="col-md-2 text-break align-middle">
-                        {nickname}
+                        <h2>{nickname}</h2>
                     </div>
-                    <div className="col-md-2 text-break align-middle">
+                    <div className="col-md-4 text-break align-middle">
                         <Link to={{
                             pathname: `/thread/${thread_id}`,
                             state: {
                                 thread: this.props.thread
                             }
-                        }}>{title}</Link>
+                        }}><p>{title}</p></Link>
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-6">
                         {timeFormat(created)}
                     </div>
                 </div>
@@ -59,7 +59,7 @@ class ThreadCard extends Component<Props,State> {
                         </div>
                     </div>
                     <div className="col-md-10 text-break border border-dark rounded">
-                        {text}
+                        <textarea className="form-control form-control-lg" placeholder="">{text}</textarea>
                     </div>
                 </div>
             </div>

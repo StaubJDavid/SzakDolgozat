@@ -1,6 +1,6 @@
 import {FC, useState, useEffect, Component} from 'react';
 import {connect} from 'react-redux';
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import Cover from './Cover';
 import MangaChapters from './MangaChapters';
 import CommentInput from '../common/CommentInput';
@@ -12,10 +12,12 @@ import CreatorButton from '../common/CreatorButton';
 import getDescription from '../helpers/getDescription';
 import ReactMarkdown from 'react-markdown';
 import getTitle from '../helpers/getTitle';
+import isEmpty from '../helpers/isEmpty';
 
 type Props = {
   manga:any,
   location:any,
+  history:any,
   getManga:any,
   clearMangaSearch:any
 }
@@ -28,8 +30,8 @@ class MangaPage extends Component<Props,State> {
 
   componentDidMount() {
     this.props.clearMangaSearch();
-    if(this.props.location.state){
-      //console.log("Doing the link state: ", this.props.location.state.manga_id)
+    if(this.props.location.state && !isEmpty(this.props.location.state)){
+      console.log("Doing the link state: ", this.props.location.state.manga_id)
       this.props.getManga(this.props.location.state.manga_id);
     }else{
         let url = window.location.href;
@@ -129,7 +131,7 @@ class MangaPage extends Component<Props,State> {
               
             </div>
           </div>
-          <MangaChapters manga_id={data.id} />
+          <MangaChapters history={this.props.history} manga_id={data.id} />
         </div>
         <CommentInput target_id={data.id} />
         <Comments target_id={data.id} />

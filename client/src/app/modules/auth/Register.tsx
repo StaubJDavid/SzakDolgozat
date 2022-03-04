@@ -115,7 +115,7 @@ class Register extends Component<Props,State> {
                                 />
                                 
                                 <div className="d-flex justify-content-center">
-                                    <input type="submit" className="btn btn-info btn-block m-4" />
+                                    <input value="Register" type="submit" className="btn btn-info btn-block m-4" />
                                 </div>
                             </form>
                         </div>

@@ -6,12 +6,15 @@ import { deleteFriend } from '../../actions/friendActions';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import TextInput from '../../common/TextInput';
+import TextArea from '../../common/TextArea';
 import isSameUser from '../../helpers/isSameUser';
 import SearchBar from '../../common/SearchBar';
 import AddDelManga from './AddDelManga';
 import Lists from './Lists';
 import FriendRequests from './FriendRequests';
 import SendFriendRequest from './SendFriendRequest';
+import timeFormat from '../../helpers/timeFormat';
+import TextLinkDelete from '../../common/TextLinkDelete';
 
 type Props = {
     auth:any,
@@ -86,14 +89,14 @@ class Profile extends Component<Props,State> {
 
     onDeleteMangaClick(e:any){
         this.props.deleteMangaProfile(Number(this.props.auth.user.id),
-            Number(e.target.getAttribute("data-id"))
+            Number(e)
         )
     }
 
     onDeleteFriendClick(e:any){
         this.props.deleteFriend(
             Number(this.props.auth.user.id),
-            Number(e.target.getAttribute("data-fid"))
+            Number(e)
         )
     }
 
@@ -154,78 +157,222 @@ class Profile extends Component<Props,State> {
                 }
             }
 
+            let ldmangaContent = <></>
+            if(this.state.own) {
+                ldmangaContent = (<>
+                    <div className="col-md-8">
+                        <div className="row">
+                            <div className="col-md-6">
+                                <h4 className='text-center'>Liked Manga</h4>
+                            </div>
+                            <div className="col-md-6">
+                                <h4 className='text-center'>Disiked Manga</h4>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6 d-flex align-items-stretch">
+                                <div className="card">
+                                    {this.props.profile.profile.liked_manga.map((element:any, i:number) => {
+                                        return  <TextLinkDelete key={element.ud_id}
+                                                    url={'/manga/'+ element.manga_id}  
+                                                    state_object={{}}
+                                                    owned={this.state.own}
+                                                    text={element.value}
+                                                    onClick={this.onDeleteMangaClick}
+                                                    onClickData={element.ud_id}
+                                                />
+                                        })}
+                                </div>
+                            </div>
+                            <div className="col-md-6 d-flex align-items-stretch">
+                                <div className="card">
+                                    {this.props.profile.profile.disliked_manga.map((element:any, i:number) => {
+                                        return  <TextLinkDelete key={element.ud_id}
+                                                    url={'/manga/'+ element.manga_id}  
+                                                    state_object={{}}
+                                                    owned={this.state.own}
+                                                    text={element.value}
+                                                    onClick={this.onDeleteMangaClick}
+                                                    onClickData={element.ud_id}
+                                                />
+                                        })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        {this.state.own?(<div>
+                                <p>
+                                    <button className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLikeManga" aria-expanded="false" aria-controls="collapseLikeManga">
+                                        Add Manga to Like/Dislike
+                                    </button>
+                                </p>
+                                <div className="collapse" id="collapseLikeManga">
+                                        <SearchBar />
+                                        <AddDelManga />
+                                </div>
+                            </div>):<></>
+                        }
+                    </div>
+                    </>
+                )
+            }else{
+                ldmangaContent = (<>
+                    <div className="col-md-12">
+                        <div className="row">
+                            <div className="col-md-6">
+                                <h4 className='text-center'>Liked Manga</h4>
+                            </div>
+                            <div className="col-md-6">
+                                <h4 className='text-center'>Disiked Manga</h4>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6 d-flex align-items-stretch">
+                                <div className="card">
+                                    {this.props.profile.profile.liked_manga.map((element:any, i:number) => {
+                                        return  <TextLinkDelete key={element.ud_id}
+                                                    url={'/manga/'+ element.manga_id}  
+                                                    state_object={{}}
+                                                    owned={this.state.own}
+                                                    text={element.value}
+                                                    onClick={this.onDeleteMangaClick}
+                                                    onClickData={element.ud_id}
+                                                />
+                                        })}
+                                </div>
+                            </div>
+                            <div className="col-md-6 d-flex align-items-stretch">
+                                <div className="card">
+                                    {this.props.profile.profile.disliked_manga.map((element:any, i:number) => {
+                                        return  <TextLinkDelete key={element.ud_id}
+                                                    url={'/manga/'+ element.manga_id}  
+                                                    state_object={{}}
+                                                    owned={this.state.own}
+                                                    text={element.value}
+                                                    onClick={this.onDeleteMangaClick}
+                                                    onClickData={element.ud_id}
+                                                />
+                                        })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </>
+                )
+            }
+
             profileContent = (
                 <>
-                    <p>Nickname: {nickname}</p>
-                    <p>Registered: {registered}</p>
-                    <p>Last logged in: {last_login}</p>
-                    <p key={bio.ud_id}>Bio: {bio.value}</p>
-                    {!this.state.own&&!this.props.profile.profile.are_friends?
-                        <SendFriendRequest />:<></>
-                    }   
-                    {this.state.own?<FriendRequests />:<></>}
-                    {this.state.own?(<><i onClick={this.onEditClick} className="bi bi-pencil fa-5x" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave"/>
-                    <div> 
-                        <div className="collapse" id="collapseEditSave">
-                            <TextInput
-                                name="bio_l" 
-                                value={this.state.bio_l}
-                                error={this.state.error.thing}
-                                type="text"
-                                onChange={this.onChangeEdit}  
-                                placeholder="About me"
-                                disabled={this.state.bio_edit}
-                            />
-                            <button onClick={this.onSaveClick} className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave">Save</button>
+                <div className="container-fluid">
+                    <div className="row gx-5">
+                        <div className="col-md-9">
+                            <div className="row border rounded mb-4 p-4 bg-light">
+                                <div className="col-md-4">
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <h3>{nickname}</h3>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <p>Registered<br/>{timeFormat(registered)}</p>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <p>Last login<br />{timeFormat(last_login)}</p>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            {!this.state.own&&!this.props.profile.profile.are_friends?
+                                                <SendFriendRequest />:<></>
+                                            }  
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-8">
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div key={bio.ud_id} className="form-group">
+                                                <textarea 
+                                                disabled={true}
+                                                rows={4}
+                                                maxLength={255}
+                                                className={"form-control form-control-lg"} 
+                                                value={bio.value} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            {this.state.own?(<><i onClick={this.onEditClick} className="bi bi-pencil" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave"/>
+                                                <div> 
+                                                    <div className="collapse" id="collapseEditSave">
+                                                        <TextArea
+                                                            name="bio_l"  
+                                                            maxlength={255}
+                                                            value={this.state.bio_l}
+                                                            error={this.state.error.thing} 
+                                                            onChange={this.onChangeEdit}  
+                                                            placeholder="About me"
+                                                            disabled={false}
+                                                        />
+                                                        <button onClick={this.onSaveClick} className="btn btn-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave">Save about me changes</button>
+                                                    </div>
+                                                </div></>):<></>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {this.state.own?<div className="row border rounded mb-4 p-4 bg-light">
+                                <div className="col-md-12 text-center">
+                                    <div className="container">
+                                        {this.state.own?<FriendRequests />:<></>}
+                                    </div>
+                                </div>
+                            </div>:<></>}
+                            
+                            <div className="row border rounded mb-4 p-4 bg-light">
+                                {ldmangaContent}
+                            </div>
+
+                            <div className="row border rounded mb-4 p-4 bg-light">
+                                <div className="col-md-12">
+                                    <Lists />
+                                </div>
+                            </div>
                         </div>
-                    </div></>):<></>}
-
-                    {this.state.own?(<div>
-                        <p>
-                            <button className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLikeManga" aria-expanded="false" aria-controls="collapseLikeManga">
-                                Add Manga to Like/Dislike
-                            </button>
-                        </p>
-                        <div className="collapse" id="collapseLikeManga">
-                                <SearchBar />
-                                <AddDelManga />
+                        <div className="col-md-3 border rounded p-2 bg-light">
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <h3 className="text-center">Friendlist</h3>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div className="card">
+                                        {friends.map((element:any, i:number) => {
+                                            return (
+                                                    <TextLinkDelete key={element.fid}
+                                                        url={'/profile/'+ element.fid}  
+                                                        state_object={{}}
+                                                        owned={this.state.own}
+                                                        text={element.fnickname}
+                                                        onClick={this.onDeleteFriendClick}
+                                                        onClickData={element.fid}
+                                                    />
+                                            )
+                                            })}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>):<></>}
-
-                    <p>Liked Manga:</p>
-                    <ul>{this.props.profile.profile.liked_manga.map((element:any, i:number) => {
-                        return  <li key={element.ud_id}>
-                                    <Link to={'/manga/'+ element.manga_id} >{element.value}</Link>
-                                    {this.state.own?<button onClick={this.onDeleteMangaClick} data-id={element.ud_id} type="button" className="btn-close" aria-label="Close"></button>:<></>}
-                                </li>
-                        })}
-                    </ul>
-
-                    <p>Disliked Manga:</p>
-                    <ul>{this.props.profile.profile.disliked_manga.map((element:any, i:number) => {
-                        return  <li key={element.ud_id}>
-                                    <Link to={'/manga/'+ element.manga_id} >{element.value}</Link>
-                                    {this.state.own?<button onClick={this.onDeleteMangaClick} data-id={element.ud_id} type="button" className="btn-close" aria-label="Close"></button>:<></>}
-                                </li>
-                        })}
-                    </ul>
-
-                    <p>Friends:</p>
-                    <ul>{friends.map((element:any, i:number) => {
-                        return <li key={element.ud_id}>
-                            <Link to={'/profile/'+ element.fid} >{element.fnickname}</Link>
-                            {this.state.own?
-                                <button onClick={this.onDeleteFriendClick}
-                                    data-fid={element.fid}
-                                    type="button"
-                                    className="btn-close"
-                                    aria-label="Close">
-                                </button>:<></>
-                            }
-                        </li>
-                        })}
-                    </ul>
-                    <Lists />
+                    </div>
+                </div>
                 </>
                 );
         }

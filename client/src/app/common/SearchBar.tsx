@@ -45,7 +45,7 @@ class SearchBar extends Component<Props,State> {
 
     render() {
         return (
-            <div>
+            <div className="mb-2">
                 <TextInput
                     name="manga_search" 
                     value={this.state.manga_search}

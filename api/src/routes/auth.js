@@ -40,7 +40,7 @@ router.post('/login', (req, res) => {
                             nickname:   results1[0].nickname
                         }
 
-                        const token = jwt.sign(payload, process.env.SECRET_KEY,{expiresIn: "30m"});
+                        const token = jwt.sign(payload, process.env.SECRET_KEY,{expiresIn: "240m"});
 
                         res.json({
                             success: true,

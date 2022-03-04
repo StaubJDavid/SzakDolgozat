@@ -78,37 +78,89 @@ class FriendRequests extends Component<Props,State> {
                         </button>
                     </p>
                     <div className="collapse" id="collapseFriendRequests">
-                        <div>Recieved friend requests</div>
-                        <ul className="list-group list-group-flush">
-                        {recieved.map((element:any, i:number) => {
-                            return  <li key={`recieved${i}`} className="list-group-item">
-                                        <p>From: <Link to={'/profile/'+ element.sender_id} >{element.nickname}</Link></p>
-                                        <p>Message: {element.message}</p>
-                                        <i  onClick={this.onAcceptFRClick}
-                                            data-id={element.sender_id}
-                                            className="bi bi-plus"
-                                        />
-                                        <i  onClick={this.onDeleteFRClick}
-                                            data-id={element.sender_id}
-                                            className="bi bi-trash-fill"
-                                        />
-                                    </li>
-                        })}
-                        </ul>
-    
-                        <div>Sent friend requests</div>
-                        <ul className="list-group list-group-flush">
-                        {sent.map((element:any, i:number) => {
-                            return  <li key={`recieved${i}`} className="list-group-item">
-                                        <p>To: <Link to={'/profile/'+ element.reciever_id} >{element.nickname}</Link></p>
-                                        <p>Message: {element.message}</p>
-                                        <i  onClick={this.onDeleteFRClick}
-                                            data-id={element.reciever_id}
-                                            className="bi bi-trash-fill"
-                                        />
-                                    </li>
-                        })}
-                        </ul>
+                        {/*Recieved Friend Requests*/}
+                        <div className="row border rounded mb-4">
+                            <div className='border-bottom rounded mb-2 bg-secondary align-middle' 
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseRecieved"
+                                aria-expanded="false"
+                                aria-controls="collapseRecieved"><h4 className='text-light text-center m-1'>Recieved friend requests <span className="badge bg-primary">{recieved.length}</span></h4>
+                            </div>
+                            <hr />
+                            <div className="collapse" id="collapseRecieved">
+                                {recieved.map((element:any, i:number) => {
+                                    return  (<><div className="row mb-2" key={`recieved${i}`}>
+                                                <div className="col-md-4">
+                                                    <div className="row">
+                                                        <div className="col-md-12">
+                                                            <h4><Link to={'/profile/'+ element.sender_id} >{element.nickname}</Link></h4>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row align-items-end">
+                                                        <div className="col-md-6">
+                                                            <i  onClick={this.onAcceptFRClick}
+                                                                data-id={element.sender_id}
+                                                                className="bi bi-plus"
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <i  onClick={this.onDeleteFRClick}
+                                                                data-id={element.sender_id}
+                                                                className="bi bi-trash-fill"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-8">
+                                                    <textarea rows={4} disabled={true} className="form-control flex-grow-1">{element.message}</textarea>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            </>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        
+                        
+                        {/*Sent Friend Requests*/}
+                        <div className="row border rounded">
+                            <div className='border-bottom rounded mb-2 bg-secondary align-middle'
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseSent"
+                                aria-expanded="false"
+                                aria-controls="collapseSent"><h4 className='text-light text-center m-1'>Sent friend requests <span className="badge bg-primary">{sent.length}</span></h4>
+                            </div>
+                            <div className="collapse" id="collapseSent">
+                                <ul className="list-group list-group-flush">
+                                {sent.map((element:any, i:number) => {
+                                    return  (<><div className="row mb-2" key={`sent${i}`}>
+                                                <div className="col-md-4">
+                                                    <div className="row">
+                                                        <div className="col-md-12">
+                                                            <h4><Link to={'/profile/'+ element.reciever_id} >{element.nickname}</Link></h4>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row align-bottom mt-auto mb-0">
+                                                        <div className="col-md-12">
+                                                            <i  onClick={this.onDeleteFRClick}
+                                                                data-id={element.reciever_id}
+                                                                className="bi bi-trash-fill"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-8">
+                                                    <textarea rows={4} disabled={true} className="form-control flex-grow-1">{element.message}</textarea>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            </>
+                                    )
+                                })}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )

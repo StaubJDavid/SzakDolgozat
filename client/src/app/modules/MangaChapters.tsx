@@ -1,16 +1,18 @@
 import {FC, useState, useEffect, Component} from 'react'
 import {connect, useDispatch} from 'react-redux';
 import ISO6391 from 'iso-639-1';
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import { PageNavBar } from './PageNavBar';
 import {getChapters, setCurrentPage} from '../actions/mangaActions';
 import ReadChapterButton from '../common/ReadChapterButton';
+import getChapterTitle from '../helpers/getChapterTitle';
 
 type Props = {
   manga:any,
   manga_id: string,
   getChapters:any,
-  setCurrentPage:any
+  setCurrentPage:any,
+  history:any
 }
 
 type State = {
@@ -27,6 +29,8 @@ class MangaChapters extends Component<Props,State> {
     this.state = {
     }
     this.handlePage = this.handlePage.bind(this);
+    this.onReadChapterClick = this.onReadChapterClick.bind(this);
+    this.onScanGroupClick = this.onScanGroupClick.bind(this);
   }
 
   componentDidMount() {
@@ -42,13 +46,23 @@ class MangaChapters extends Component<Props,State> {
   }
 
   handlePage(page:number) {
-    //console.log(`Page number: ${page}`);
     this.props.setCurrentPage(page);
-    /*console.log("CurrentPage: ", this.props.manga.manga_search.currentPage);
-    console.log("Offset: ",(page-1)*20);*/
-
     this.props.getChapters(this.props.manga.manga.data.id,(page-1)*100,page)
   
+  }
+
+  onReadChapterClick(ch:any) {
+    if(ch.attributes.externalUrl === null){
+      this.props.history.push(`/manga/read/${ch.id}`,{chapter_id: ch.id})
+    }else{
+        this.props.history.push(ch.attributes.externalUrl)
+    } 
+  }
+
+  onScanGroupClick(scangroup:any) {
+    if(scangroup){
+      this.props.history.push(`/scangroup/${scangroup.id}`,{scangroup: scangroup})
+    }
   }
 
   render() {
@@ -74,23 +88,18 @@ class MangaChapters extends Component<Props,State> {
                 //console.log(scangroup);
                 return (
                 <tr key={ch.id}>
-                  <td className="text-center align-middle">
+                  <td style={{cursor:"pointer"}} onClick={() => this.onReadChapterClick(ch)} className="text-center align-middle">
                     Volume: {ch.attributes.volume}
                   </td>
-                  <td className="text-center align-middle">
+                  <td style={{cursor:"pointer"}} onClick={() => this.onReadChapterClick(ch)} className="text-center align-middle">
                     Chapter: {ch.attributes.chapter}
                   </td>
-                  <td className="text-left align-middle">
-                    <ReadChapterButton chapter={ch} />
+                  <td style={{cursor:"pointer"}} onClick={() => this.onReadChapterClick(ch)} className="text-left align-middle">
+                    {/*<ReadChapterButton chapter={ch} />*/}
+                    {getChapterTitle(ch.attributes)}
                   </td>
-                  <td className="text-center align-middle">
-                    {scangroup?<Link
-                      to={{
-                          pathname: `/scangroup/${scangroup.id}`,
-                          state: {
-                              scangroup: scangroup
-                          }
-                      }}><p className="text-center align-middle">{scangroup.attributes.name}</p></Link>:<p className="text-center align-middle">No Group</p>}
+                  <td onClick={() => this.onScanGroupClick(scangroup)} style={{cursor:scangroup?"pointer":"auto"}} className="text-center align-middle">
+                    {scangroup?scangroup.attributes.name:"No Group"}
                   </td>
                   <td className="text-center align-middle">
                     {ISO6391.getName(ch.attributes.translatedLanguage)}

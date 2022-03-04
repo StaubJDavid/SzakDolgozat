@@ -94,7 +94,7 @@ class Login extends Component<Props,State> {
                                 />
                                 
                                 <div className="d-flex justify-content-center">
-                                    <input type="submit" className="btn btn-info btn-block mt-4" />
+                                    <input value="Login" type="submit" className="btn btn-info btn-block mt-4" />
                                 </div>
                             </form>
                         </div>

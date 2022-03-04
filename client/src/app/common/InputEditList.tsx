@@ -1,6 +1,7 @@
 import React, { Component} from 'react';
 import {connect} from 'react-redux';
 import TextInput from './TextInput';
+import TextArea from './TextArea';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import {listVisibilityTextToNum,listVisibilityNumToText} from '../helpers/listVisibility';
@@ -79,14 +80,14 @@ class InputEditList extends Component<Props,State> {
 
         return (
             <div>
-                {owned?(<><i onClick={this.onEditClick} className="bi bi-pencil fa-5x" data-bs-toggle="collapse" data-bs-target={`#collapseEditSave${this.props.list_id}`} aria-expanded="false" aria-controls={`collapseEditSave${this.props.list_id}`}/>
+                {owned?(<><i onClick={this.onEditClick} className="bi bi-pencil" data-bs-toggle="collapse" data-bs-target={`#collapseEditSave${this.props.list_id}`} aria-expanded="false" aria-controls={`collapseEditSave${this.props.list_id}`}/>
                     <div> 
                         <div className="collapse" id={`collapseEditSave${this.props.list_id}`}>
-                            <TextInput
+                            <TextArea
                                 name="value" 
+                                maxlength={255}
                                 value={this.state.value}
-                                error={this.state.errors.thing}
-                                type="text"
+                                error={this.state.errors.thing} 
                                 onChange={this.onChangeEdit}  
                                 placeholder="List Name"
                                 disabled={this.state.edit_disabled}
@@ -96,6 +97,7 @@ class InputEditList extends Component<Props,State> {
                                 <option value={1} >Public</option>
                                 <option value={2} >Friends</option>
                             </select>
+                            <br />
                             <button onClick={this.onSaveClick} className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseEditSave${this.props.list_id}`} aria-expanded="false" aria-controls={`collapseEditSave${this.props.list_id}`}>Save</button>
                         </div>
         </div></>):<></>}

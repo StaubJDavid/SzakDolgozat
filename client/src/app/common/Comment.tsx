@@ -36,7 +36,7 @@ class Comment extends Component<Props,State> {
                     <div className="col-md-3 border border-dark rounded">
                         <div className="row">
                             <div className="col-md-12">
-                                {nickname}
+                                <h2>{nickname}</h2>
                             </div>
                             <hr/>
                         </div>

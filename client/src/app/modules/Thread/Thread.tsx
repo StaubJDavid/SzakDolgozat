@@ -56,10 +56,10 @@ class Thread extends Component<Props,State> {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-md-3 text-break align-middle">
-                        {nickname}
+                        <h1>{nickname}</h1>
                     </div>
                     <div className="col-md-3 text-break align-middle">
-                        {title}
+                        <h4>{title}</h4>
                     </div>
                     <div className="col-md-3 align-middle">
                         Views: {views}

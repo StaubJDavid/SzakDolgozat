@@ -2,6 +2,7 @@ import React, { Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {delListEntry, addListEntry} from '../../actions/profileActions';
+import TextLinkDelete from '../../common/TextLinkDelete';
 
 type Props = {
     auth:any,
@@ -33,7 +34,7 @@ class ListEntries extends Component<Props,State> {
         this.props.delListEntry(
             this.props.auth.user.id,
             this.props.list.list_id,
-            Number(e.target.getAttribute("data-id"))
+            Number(e)
         );
     }
 
@@ -42,17 +43,31 @@ class ListEntries extends Component<Props,State> {
 
         console.log(this.props.list);
 
+        let content = <></>
+        if(this.props.list.data.length === 0){
+            content = (
+                <div>This list contains no items</div>
+            )
+        }else{
+            content = (
+                <div className="container">
+                    {this.props.list.data.map((element:any, i:number) => {
+                                return  <TextLinkDelete key={element.ld_id}
+                                            url={'/manga/'+ element.manga_id}  
+                                            state_object={{}}
+                                            owned={owned}
+                                            text={element.manga_name}
+                                            onClick={this.onDeleteEntry}
+                                            onClickData={element.ld_id}
+                                        />
+                                })}
+                </div>
+            )
+        }
+
         return (
             <>
-            <ul>
-                {this.props.list.data.map((e:any)=>{
-                    return (
-                    <li key={e.ld_id}>
-                        <Link to={'/manga/'+ e.manga_id} >{e.manga_name}</Link>
-                        {owned?<button onClick={this.onDeleteEntry} data-id={e.ld_id} type="button" className="btn-close" aria-label="Close"></button>:<></>}
-                    </li>)
-                })}
-            </ul>
+                {content}
             </>
         )
     }
@@ -65,4 +80,14 @@ const mapStateToProps = (state:any)=>({
     profile: state.profile
 });
 //TODO: CLEAN UP REMAINING AUTH STATE
+/*
+                <ul>
+                    {this.props.list.data.map((e:any)=>{
+                        return (
+                        <li key={e.ld_id}>
+                            <Link to={'/manga/'+ e.manga_id} >{e.manga_name}</Link>
+                            {owned?<button onClick={this.onDeleteEntry} data-id={e.ld_id} type="button" className="btn-close" aria-label="Close"></button>:<></>}
+                        </li>)
+                    })}
+                </ul> */
 export default connect(mapStateToProps,{delListEntry,addListEntry})(ListEntries);

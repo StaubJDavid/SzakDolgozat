@@ -6,7 +6,7 @@ type Props = {
 
 const Img: FC<Props> = ({src}) => {
   return (
-    <img src={src} alt="Waaaa"></img>
+    <img className='mb-3' style={{maxWidth:"100%",maxHeight:"100vh",height:"auto"}} src={src} alt="Waaaa"></img>
   )  
 }
 

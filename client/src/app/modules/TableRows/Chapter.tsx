@@ -19,8 +19,8 @@ const Chapter: FC<Props> = ({chapter}) => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-12">
-            <div className="row">
-              <div className="col-md-6">
+            <div className="row align-items-center">
+              <div style={{height:"200px"}} className="col-md-6">
               <Cover height={100} width={100} manga_id={manga.id} relationships={chapter.relationships} />
               </div>
               <div className="col-md-6">
@@ -59,30 +59,3 @@ const Chapter: FC<Props> = ({chapter}) => {
 }
 
 export default Chapter;
-
-/*
-    <div className="card card-body">
-      <div className="row justify-content-md-center">
-        <div className="d-flex justify-content-center col-md-2 align-self-center">
-          <Cover height={50} width={50} manga_id={manga.id} relationships={chapter.relationships} />
-        </div>
-        <div className="col-sm-2 align-self-center">
-          <Link className="text-center"
-          to={{
-            pathname: `/manga/${manga.id}`,
-            state: {
-                manga_id: manga.id
-            }
-          }}>{getTitle(manga.attributes.title)}</Link>
-          <br />
-          {scanlation_group?(<Link className="text-center"
-          to={{
-            pathname: `/scangroup/${scanlation_group.id}`,
-            state: {
-              scangroup: scanlation_group
-            }
-          }}>{scanlation_group.attributes.name}</Link>):<>No Scan group</>}
-          <div><ReadChapterButton chapter={chapter}/></div>
-        </div>
-      </div>
-        </div>*/

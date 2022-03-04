@@ -5,6 +5,7 @@ import InputEditList from '../../common/InputEditList';
 import InputAddList from '../../common/InputAddList';
 import ListEntries from './ListEntries';
 import ListEntrySearch from './ListEntrySearch';
+import timeFormat from '../../helpers/timeFormat';
 
 type Props = {
     auth:any,
@@ -54,7 +55,7 @@ class Lists extends Component<Props,State> {
             listContent = (
                 <>
                     {owned?(<div>
-                        <p>
+                        <p className='text-center'>
                             <button className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddList" aria-expanded="false" aria-controls="collapseAddList">
                                 Create new list
                             </button>
@@ -63,30 +64,52 @@ class Lists extends Component<Props,State> {
                                 <InputAddList />
                         </div>
                     </div>):<></>}
-                    <ul>
-                        {Object.keys(list_data).map((keyName, i) => { 
-                            let cl = list_data[keyName]
-                            return (
-                            <li key={cl.list_id}>
-                                <span data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>Name: {cl.list_name} | </span>
-                                <span>Visibility: {cl.visibility} | </span>
-                                <span>Created at: {cl.created}</span>
-                                {owned?<button onClick={this.onDeleteListClick} data-id={cl.list_id} type="button" className="btn-close" aria-label="Close"></button>:<></>}
-                                <InputEditList list_id={cl.list_id} list_name={cl.list_name} list_visibility={cl.visibility}/>
-                                <div className="collapse" id={`collapseList${cl.list_id}`}>
-                                    <ListEntrySearch list_id={cl.list_id} />
-                                    <ListEntries list={cl}/>
-                                </div>
-                            </li>
-                        )})}
-                    </ul>
+                    <div className="table-responsive">
+                        <table className='table'>
+                            <tr>
+                            <th>List name</th>
+                            <th className="text-center">List visibility</th>
+                            <th className="text-center">List created</th>
+                            {owned?<th className="text-center">Delete List</th>:<></>}
+                            {owned?<th className="text-center">Edit List</th>:<></>}
+                            </tr>
+                            {Object.keys(list_data).map((keyName, i) => { 
+                                let cl = list_data[keyName]
+                                return (
+                                    <>
+                                <tr key={cl.list_id}>
+                                    <td data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
+                                        {cl.list_name}
+                                    </td>
+                                    <td className="text-center" data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
+                                        {cl.visibility}
+                                    </td>
+                                    <td className="text-center" data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
+                                        {timeFormat(cl.created)}
+                                    </td>
+                                    {owned?<td className="text-center"><button onClick={this.onDeleteListClick} data-id={cl.list_id} type="button" className="btn-close" aria-label="Close"></button></td>:<></>}
+                                    {owned?<td className="text-center"><InputEditList list_id={cl.list_id} list_name={cl.list_name} list_visibility={cl.visibility}/></td>:<></>}
+                                    
+                                </tr>
+                                <tr className='border-bottom' key={"c"+cl.list_id}>
+                                    <td colSpan={owned?5:3}>
+                                        <div className="collapse" id={`collapseList${cl.list_id}`}>
+                                            <ListEntrySearch list_id={cl.list_id} />
+                                            <ListEntries list={cl}/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </>
+                            )})}
+                        </table>
+                    </div>
                 </>
             )
         }
 
         return (
             <>
-                {list && <div>{list}</div>}
+                {list && <div>This user has no public/friendly lists</div>}
                 {listContent}
                 
             </>

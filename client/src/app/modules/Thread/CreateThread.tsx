@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import TextInput from '../../common/TextInput';
+import TextArea from '../../common/TextArea';
 import {useDispatch} from 'react-redux';
 import {createThread} from '../../actions/threadActions';
 
@@ -31,13 +32,14 @@ const CreateThread: FC<Props> = () => {
                     onChange={(e:any) => setTitle(e.target.value)}  
                     placeholder="Thread Title"
                 />
-                <TextInput
+                <TextArea
                     name="text" 
+                    maxlength={255}
                     value={text}
                     error={null} 
-                    type="text"
-                    onChange={(e:any) => setText(e.target.value)}    
+                    onChange={(e:any) => setText(e.target.value)}  
                     placeholder="Thread Text"
+                    disabled={false}
                 />
                 <button onClick={(e:any) => dispatch(createThread(title,text,history))}
                         className="btn btn-primary"
