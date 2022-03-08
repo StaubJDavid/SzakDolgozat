@@ -4,9 +4,12 @@ import {connect} from 'react-redux';
 import {getFriendRequests, acceptFriendRequest, deleteFriendRequest} from '../../actions/friendActions';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import classnames from 'classnames';
+import SimpleButton from '../../common/SimpleButton';
 
 type Props = {
     auth:any,
+    history:any,
     errors:any,
     profile:any,
     f_r:any,
@@ -17,6 +20,9 @@ type Props = {
 
 type State = {
     error: any,
+    acceptHover: boolean,
+    deleteHover: boolean,
+    refuseHover: boolean
 }
 
 
@@ -26,6 +32,9 @@ class FriendRequests extends Component<Props,State> {
 
         this.state = {
             error: {},
+            acceptHover:false,
+            deleteHover:false,
+            refuseHover:false
         }
         
         this.onAcceptFRClick = this.onAcceptFRClick.bind(this);
@@ -35,8 +44,8 @@ class FriendRequests extends Component<Props,State> {
     componentDidMount(){
         const {owned} = this.props.profile.profile;
 
-        console.log("Oned????")
-        console.log(owned);
+        //console.log("Oned????")
+        //console.log(owned);
 
         if(owned){
             this.props.getFriendRequests()
@@ -92,22 +101,30 @@ class FriendRequests extends Component<Props,State> {
                                     return  (<><div className="row mb-2" key={`recieved${i}`}>
                                                 <div className="col-md-4">
                                                     <div className="row">
-                                                        <div className="col-md-12">
-                                                            <h4><Link to={'/profile/'+ element.sender_id} >{element.nickname}</Link></h4>
+                                                        <div className="col-md-12 d-flex align-items-center justify-content-center">
+                                                            <h4><SimpleButton text={element.nickname} onClick={() => this.props.history.push('/profile/'+ element.sender_id)} /></h4>
                                                         </div>
                                                     </div>
                                                     <div className="row align-items-end">
-                                                        <div className="col-md-6">
-                                                            <i  onClick={this.onAcceptFRClick}
-                                                                data-id={element.sender_id}
+                                                        <div style={{cursor:"pointer"}}
+                                                            className={classnames("col-md-6 d-flex align-items-center justify-content-center",{"bg-success":this.state.acceptHover})}
+                                                            onClick={this.onAcceptFRClick}
+                                                            data-id={element.sender_id}
+                                                            onMouseEnter={() => this.setState({acceptHover:true})}
+                                                            onMouseLeave={() => this.setState({acceptHover:false})}
+                                                        >
+                                                            <i  
                                                                 className="bi bi-plus"
                                                             />
                                                         </div>
-                                                        <div className="col-md-6">
-                                                            <i  onClick={this.onDeleteFRClick}
-                                                                data-id={element.sender_id}
-                                                                className="bi bi-trash-fill"
-                                                            />
+                                                        <div style={{cursor:"pointer"}}
+                                                            data-id={element.sender_id}
+                                                            className={classnames("col-md-6 d-flex align-items-center justify-content-center",{"bg-danger":this.state.refuseHover})}
+                                                            onClick={this.onDeleteFRClick}
+                                                            onMouseEnter={() => this.setState({refuseHover:true})}
+                                                            onMouseLeave={() => this.setState({refuseHover:false})}
+                                                        >
+                                                            <i className="bi bi-trash-fill" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -137,16 +154,19 @@ class FriendRequests extends Component<Props,State> {
                                     return  (<><div className="row mb-2" key={`sent${i}`}>
                                                 <div className="col-md-4">
                                                     <div className="row">
-                                                        <div className="col-md-12">
-                                                            <h4><Link to={'/profile/'+ element.reciever_id} >{element.nickname}</Link></h4>
+                                                        <div className="col-md-12 d-flex align-items-center justify-content-center">
+                                                            <h4><SimpleButton text={element.nickname} onClick={() => this.props.history.push('/profile/'+ element.reciever_id)} /></h4>
                                                         </div>
                                                     </div>
                                                     <div className="row align-bottom mt-auto mb-0">
-                                                        <div className="col-md-12">
-                                                            <i  onClick={this.onDeleteFRClick}
-                                                                data-id={element.reciever_id}
-                                                                className="bi bi-trash-fill"
-                                                            />
+                                                        <div style={{cursor:"pointer"}}
+                                                            data-id={element.reciever_id}
+                                                            className={classnames("col-md-12 d-flex align-items-center justify-content-center",{"bg-danger":this.state.deleteHover})}
+                                                            onClick={this.onDeleteFRClick}
+                                                            onMouseEnter={() => this.setState({deleteHover:true})}
+                                                            onMouseLeave={() => this.setState({deleteHover:false})}
+                                                        >
+                                                            <i className="bi bi-trash-fill" />
                                                         </div>
                                                     </div>
                                                 </div>

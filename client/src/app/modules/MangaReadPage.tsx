@@ -41,10 +41,13 @@ class MangaReadPage extends Component<Props,State>{
     }
 
     this.onKeyPressed = this.onKeyPressed.bind(this);
+    this.onChangeChapter = this.onChangeChapter.bind(this);
   }
 
     componentDidMount() {
       //window.scrollTo(0, 0);
+      this.setState({index: 0});
+      this.setState({myRef: []});
       window.scrollTo(0,0);
       this.props.clearErrors();
       if(this.props.location.state){
@@ -69,7 +72,18 @@ class MangaReadPage extends Component<Props,State>{
         url = url.slice(url.lastIndexOf('/')+1,url.length);
         this.props.getMangaImages(url);
         this.setState({ch_id: url});
+        this.setState({index: 0});
+        this.setState({myRef: []});
       }
+    }
+
+    onChangeChapter(e:any){
+      let currentIndex = this.props.manga.reading_chapters.chapter.array_id;
+      //console.log(currentIndex+Number(e.target.value));
+
+      this.props.history.push(`/manga/read/${this.props.manga.reading_chapters.chapters[currentIndex+Number(e)].id}`,
+      {chapter_id: this.props.manga.reading_chapters.chapters[currentIndex+Number(e)].id}
+      );
     }
 
     onKeyPressed(e:any) {
@@ -80,17 +94,24 @@ class MangaReadPage extends Component<Props,State>{
       let localIndex = this.state.index;
       console.log(localIndex);
       let length = this.props.manga.reading.chapter.data.length;
+      console.log(length);
       if(e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === "s" || e.key === "d" || e.key === " "){
         console.log("NEXT");
         //console.log(this.state.myRef[0]);
-        if(localIndex < length){
+        if(localIndex < length-1){
           localIndex++;
           window.scrollTo(0, this.state.myRef[localIndex].offsetTop);
           this.setState({index:localIndex});
         }else{
-          localIndex = 0;
+          /*localIndex = 0;
           window.scrollTo(0, this.state.myRef[localIndex].offsetTop);
-          this.setState({index:localIndex});
+          this.setState({index:localIndex});*/
+          let {chapter} = this.props.manga.reading_chapters;
+          if(chapter.array_id===0){
+            this.props.history.push(`/manga/${chapter.manga_id}`);
+          }else{
+            this.onChangeChapter(-1);
+          }
         }
       }
 
@@ -104,6 +125,14 @@ class MangaReadPage extends Component<Props,State>{
           //this.state.myRef[localIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
           window.scrollTo(0, this.state.myRef[localIndex].offsetTop);
           this.setState({index:localIndex});
+        }else{
+          let {chapter,chapters} = this.props.manga.reading_chapters;
+          let max = chapters.length-1;
+          if(chapter.array_id===max){
+
+          }else{
+            this.onChangeChapter(1);
+          }
         }
       }
       //this.state.ref.current.scrollIntoView()
@@ -131,6 +160,7 @@ class MangaReadPage extends Component<Props,State>{
             <div className="text-center">
               {chapter.data.map((chd:any, i:any) => {
                 return (
+                  <>
                   <img 
                     ref={(ref) => {if(ref !== null)this.state.myRef.push(ref)}}
                     className='mb-3'
@@ -138,6 +168,8 @@ class MangaReadPage extends Component<Props,State>{
                     src={`${baseUrl}/data/${chapter.hash}/${chd}`}
                     alt="Waaaa">
                   </img>
+                  <br />
+                  </>
                 )})}
             </div>
 

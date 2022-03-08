@@ -39,7 +39,7 @@ const SearchResult: FC<Props> = ({id,title,status,relationships,demography,descr
     >
       <div className="row justify-content-md-center">
         <div className="d-flex justify-content-center col-md-2 align-self-center">
-          <Cover height={100} width={100} manga_id={id} relationships={relationships} />
+          <Cover height={100} width={100} manga_id={id} relationships={relationships} conform={true}/>
         </div>
         <div className="col-md-3 align-self-center">
           <div className="row justify-content-md-center">

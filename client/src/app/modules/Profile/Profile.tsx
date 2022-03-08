@@ -209,7 +209,7 @@ class Profile extends Component<Props,State> {
                                 </p>
                                 <div className="collapse" id="collapseLikeManga">
                                         <SearchBar />
-                                        <AddDelManga />
+                                        <AddDelManga history={this.props.history} />
                                 </div>
                             </div>):<></>
                         }
@@ -331,7 +331,7 @@ class Profile extends Component<Props,State> {
                             {this.state.own?<div className="row border rounded mb-4 p-4 bg-light">
                                 <div className="col-md-12 text-center">
                                     <div className="container">
-                                        {this.state.own?<FriendRequests />:<></>}
+                                        {this.state.own?<FriendRequests history={this.props.history} />:<></>}
                                     </div>
                                 </div>
                             </div>:<></>}

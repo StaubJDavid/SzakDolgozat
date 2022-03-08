@@ -34,27 +34,27 @@ const MostFollowedMangas: FC<Props> = ({mangas, history}) => {
     if(mangas.length===0){
         return (
             <>
-                <h1 className={"text-center"}>Most Followed Mangas</h1>
+                <h1 className={"bg-info rounded mb-2 pb-1 text-center"}>Most Followed Mangas</h1>
             </>
         )
     }else{
         return (
             <>
-                <h1 className={"text-center"}>Most Followed Mangas</h1>
-                <Carousel responsive={responsive}>
-                {mangas.map((m:any) => (
-                    <div><CarouselItem key={"mfm"+m.id}
-                        history={history}
-                        id={m.id}
-                        demography={m.attributes.publicationDemographic}
-                        description={m.attributes.description}
-                        title={getTitle(m.attributes.title)}
-                        status={m.attributes.status}
-                        relationships={m.relationships}
-                        desc_length={100}
-                    /></div>
-                ))}
-                </Carousel>
+              <h1 className={"bg-info rounded mb-2 pb-1 text-center"}>Most Followed Mangas</h1>
+              <Carousel responsive={responsive}>
+              {mangas.map((m:any) => (
+                  <div><CarouselItem key={"mfm"+m.id}
+                      history={history}
+                      id={m.id}
+                      demography={m.attributes.publicationDemographic}
+                      description={m.attributes.description}
+                      title={getTitle(m.attributes.title)}
+                      status={m.attributes.status}
+                      relationships={m.relationships}
+                      desc_length={100}
+                  /></div>
+              ))}
+              </Carousel>
             </>
         )
     }  

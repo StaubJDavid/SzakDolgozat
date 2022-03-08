@@ -7,18 +7,21 @@ import Comment from '../../common/Comment';
 import LikeButtons from '../../common/LikeButtons';
 import CommentInput from '../../common/CommentInput';
 import timeFormat from '../../helpers/timeFormat';
+import classnames from 'classnames';
 
 type Props = {
     thread:any,
+    auth:any,
     comments:any,
     location:any,
+    history:any,
     setThread:any,
     getThread:any,
     getComments:any
 }
 
 type State = {
-
+    nameHover:boolean
 }
 
 class Thread extends Component<Props,State> {
@@ -26,9 +29,10 @@ class Thread extends Component<Props,State> {
         super(props);
 
         this.state = {
-
+            nameHover:false
         }
         
+        this.toProfileClick = this.toProfileClick.bind(this);
     }
 
     componentDidMount() {
@@ -41,6 +45,12 @@ class Thread extends Component<Props,State> {
         }
     }
 
+    toProfileClick(id:any){
+        if(this.props.auth.isAuthenticated){
+            this.props.history.push('/profile/'+ id,{})
+        }
+    }
+
     render() {
 
         let threadContent = <></>;
@@ -48,14 +58,20 @@ class Thread extends Component<Props,State> {
         let commentInput = <></>;
 
         if(this.props.thread.thread != null){
-            const {nickname,thread_id,title,text,created,views,likes,dislikes,like} = this.props.thread.thread;
+            const {nickname,thread_id,title,text,created,views,likes,dislikes,like,user_id} = this.props.thread.thread;
             commentInput = (<CommentInput target_id={thread_id} />)
             threadContent = (
             <>
             <hr/>
             <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-3 text-break align-middle">
+                <div className="row mb-2">
+                    <div
+                        style={{cursor:this.props.auth.isAuthenticated?"pointer":"auto"}}
+                        className={classnames("col-md-3 text-break align-middle",{"bg-light":this.state.nameHover&&this.props.auth.isAuthenticated})}
+                        onClick={() => this.toProfileClick(user_id)}
+                        onMouseEnter={() => this.setState({nameHover:true})}
+                        onMouseLeave={() => this.setState({nameHover:false})}
+                    >
                         <h1>{nickname}</h1>
                     </div>
                     <div className="col-md-3 text-break align-middle">
@@ -105,6 +121,7 @@ class Thread extends Component<Props,State> {
 }
 
 const mapStateToProps = (state:any)=>({
+    auth:state.auth,
     thread: state.thread,
     comments: state.comments
 });

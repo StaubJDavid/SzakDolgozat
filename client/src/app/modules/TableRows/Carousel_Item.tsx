@@ -4,6 +4,7 @@ import Cover from '../Cover';
 import {Link} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import {withRouter} from 'react-router-dom';
+import classnames from 'classnames';
 
 type Props = {
   history:any,
@@ -16,9 +17,20 @@ type Props = {
   desc_length:number
 }
 
-type State = {}
+type State = {
+  itemHover:boolean
+}
 
 class CarouselItem extends Component<Props,State> {
+  constructor(props:any){
+    super(props);
+
+    this.state = {
+      itemHover:false
+    }
+    this.onCarouselItemClick = this.onCarouselItemClick.bind(this);
+  }
+
   onCarouselItemClick(id:any){
     console.log(id);
     this.props.history.push(`/manga/${id}`, { manga_id: id});
@@ -37,12 +49,18 @@ class CarouselItem extends Component<Props,State> {
     }
     //console.log(this.props);
     return (  
-        <div onClick={() => this.onCarouselItemClick(id)} className="container align-items-stretch">
+        <div
+          style={{cursor:"pointer"}}
+          className={classnames("container align-items-stretch",{"bg-light":this.state.itemHover})}
+          onClick={() => this.onCarouselItemClick(id)}
+          onMouseEnter={() => this.setState({itemHover:true})}
+          onMouseLeave={() => this.setState({itemHover:false})}
+        >
           <div className="row align-items-center">
             <div className="col-md-12">
               <div className="row align-items-center">
-                <div style={{height:"285px"}} className="col-md-6">
-                  <Cover height={100} width={100} manga_id={id} relationships={relationships} />
+                <div style={{height:"285px"}} className="col-md-6 text-center">
+                  <Cover height={100} width={100} manga_id={id} relationships={relationships} conform={false}/>
                 </div>
                 <div className="col-md-6">
                   <div className="row">

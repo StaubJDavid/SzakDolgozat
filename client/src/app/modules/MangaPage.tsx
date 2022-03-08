@@ -59,7 +59,7 @@ class MangaPage extends Component<Props,State> {
                   <div className="card card-body bg-info text-white mb-3">
                     <div className="row">
                       <div className="col-4 col-md-3 m-auto">
-                        <Cover width={100} height={100} manga_id={data.id} relationships={data.relationships} />
+                        <Cover width={100} height={100} manga_id={data.id} relationships={data.relationships} conform={true}/>
                       </div>
                     </div>
                     <div className="text-center">

@@ -11,7 +11,7 @@ const FourColumnGridRow: FC<Props> = ({chapters,index}) => {
   let cols = [];
 
   for (var i = index; i < index+4; i++) {
-    cols.push(<div className="col-md-3 border border-dark align-middle p-1"><Chapter key={"mfm"+chapters[i].id} chapter={chapters[i]} /></div>);
+    cols.push(<div className="col-md-3 border border-dark text-center p-1 "><Chapter key={"mfm"+chapters[i].id} chapter={chapters[i]} /></div>);
   }
 
   return (
@@ -22,3 +22,4 @@ const FourColumnGridRow: FC<Props> = ({chapters,index}) => {
 }
 
 export default FourColumnGridRow;
+

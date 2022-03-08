@@ -5,6 +5,8 @@ import SearchResult from '../../modules/TableRows/SearchResult';
 import CarouselItem from '../../modules/TableRows/Carousel_Item';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import classnames from 'classnames';
+
 const responsive = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
@@ -42,6 +44,8 @@ type Props = {
 //Seasonal: Fall 2022
 const Seasonals: FC<Props> = ({seasonals,history}) => {
     const [index, setIndex] = useState(0);
+    const [leftHover, setLeftHover] = useState(false);
+    const [rightHover, setRightHover] = useState(false);
 
     function onArrowClick(direction:any){
         if(direction === 1 && index === (seasonals.length-1)){
@@ -90,8 +94,22 @@ const Seasonals: FC<Props> = ({seasonals,history}) => {
 
         return (
             <>
-            <div className={"d-flex justify-content-center"}>
-            <i onClick={() => onArrowClick(-1)} className="bi bi-arrow-left"></i><h1 className={"text-center"}>{carouselname[index]}</h1><i onClick={() => onArrowClick(1)} className="bi bi-arrow-right"></i>
+            <div className="bg-info rounded mb-2 d-flex justify-content-center align-items-center">
+                <i
+                    style={{cursor:"pointer"}}
+                    onClick={() => onArrowClick(-1)}
+                    onMouseEnter={() => setLeftHover(true)}
+                    onMouseLeave={() => setLeftHover(false)}
+                    className={classnames("bi fa-xl",{"bi-arrow-left-circle":!leftHover, "bi-arrow-left-circle-fill":leftHover})}
+                ></i>
+                <h1 className={"text-center mx-2"}>{carouselname[index]}</h1>
+                <i
+                    style={{cursor:"pointer"}}
+                    onClick={() => onArrowClick(1)}
+                    onMouseEnter={() => setRightHover(true)}
+                    onMouseLeave={() => setRightHover(false)}
+                    className={classnames("bi fa-xl",{"bi-arrow-right-circle":!rightHover, "bi-arrow-right-circle-fill":rightHover})}
+                ></i>
             </div>
             {carousels[index]}
             </>

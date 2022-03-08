@@ -4,6 +4,7 @@ import {addListEntry} from '../../actions/profileActions';
 import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SearchBar from '../../common/SearchBar';
+import ListEntryRow from './ListEntryRow';
 
 type Props = {
     auth:any,
@@ -57,16 +58,7 @@ class ListEntries extends Component<Props,State> {
                     <ul className="list-group list-group-flush">
                         {manga_search_results?manga_search_results.map((element:any, i:number) => {
                             return  <li key={element.id} className="list-group-item">
-                                        {element.attributes.title.en}
-                                        <i  onClick={this.onAddListEntry}
-                                            data-id={element.id}
-                                            data-name={element.attributes.title.en}
-                                            className="bi bi-plus"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target={`#collapseAddEntry${this.props.list_id}`}
-                                            aria-expanded="false"
-                                            aria-controls={`collapseAddEntry${this.props.list_id}`}
-                                        />
+                                        <ListEntryRow element={element}  list_id={this.props.list_id}/>
                                     </li>
                         }):<></>}
                     </ul>

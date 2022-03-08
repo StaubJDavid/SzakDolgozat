@@ -32,6 +32,7 @@ const CreateThread: FC<Props> = () => {
                     onChange={(e:any) => setTitle(e.target.value)}  
                     placeholder="Thread Title"
                 />
+                <div className='mb-2'></div>
                 <TextArea
                     name="text" 
                     maxlength={255}
@@ -42,7 +43,7 @@ const CreateThread: FC<Props> = () => {
                     disabled={false}
                 />
                 <button onClick={(e:any) => dispatch(createThread(title,text,history))}
-                        className="btn btn-primary"
+                        className="btn btn-primary mt-4"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseCreateThread"

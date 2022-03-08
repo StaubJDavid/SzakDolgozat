@@ -18,7 +18,7 @@ const LatestChapters: FC<Props> = ({chapters}) => {
     if(chapters.length===0){
         return (
             <div>
-                <h1 className={"text-center"}>Latest Updates</h1>
+                <h1 className={"bg-info rounded mb-2 pb-1 text-center"}>Latest Updates</h1>
             </div>
         )
     }else{
@@ -30,7 +30,7 @@ const LatestChapters: FC<Props> = ({chapters}) => {
 
         return (
             <>
-            <h1 className={"text-center"}>Latest Updates</h1>
+            <h1 className={"bg-info rounded mb-2 pb-1 text-center"}>Latest Updates</h1>
             <div className="container-fluid">
               {html}                  
             </div>

@@ -52,15 +52,6 @@ const App: React.FC<State> = ({basename}) =>  {
   return (
     <Provider store={store}>
       <Router basename={basename}>
-        {/* <Navbar bg="light" expand="lg" expanded={false}>
-            <Navbar.Brand href="#home">Project Reader</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="navbar-collapse">
-              <Nav className="me-auto">
-                <Nav.Link href="/">Home</Nav.Link>
-              </Nav>
-            </Navbar.Collapse>
-        </Navbar> */}
         <Navbar />
         {/*<Routes />*/}
         <Route path='/' exact component={withRouter(Landing)} />
@@ -68,13 +59,19 @@ const App: React.FC<State> = ({basename}) =>  {
           <Route path='/search' exact component={Search} />
           <Route path='/manga/:id' exact component={withRouter(MangaPage)} />
           <Route path='/manga/read/:chapterid' exact component={MangaReadPage} />
+
+          {/*Delete*/}
           <Route path='/test' exact component={ParentTest} /> 
+
           <Route path='/register' exact component={Register} /> 
           <Route path='/login' exact component={Login} />
           <Route path='/profile/:id' exact component={withRouter(Profile)} />
           <Route path='/threads' exact component={Threads} />
           <Route path='/thread/:thread_id' exact component={Thread} />
+
+          {/*Delete*/}
           <Route path='/stest' exact component={Test} />
+
           <Route path='/god/:creator_id' exact component={Creator} />
           <Route path='/scangroup/:scangroup_id' exact component={ScanGroup} />
         </div>

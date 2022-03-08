@@ -7,6 +7,8 @@ import getDescription from '../helpers/getDescription';
 import getTitle from '../helpers/getTitle';
 import Cover from '../modules/Cover';
 import ReactMarkdown from 'react-markdown';
+import CreatorManga from './CreatorManga';
+import capitalizeFirstLetter from '../helpers/capitalizeFirstLetter';
 
 type Props = {
     location:any,
@@ -64,13 +66,14 @@ class Creator extends Component<Props,State> {
 
             creatorContent = (
                 <>
-                {this.props.creator.creator.attributes.name}
+                <h2>{this.props.creator.creator.attributes.name}</h2>
+                {this.props.creator.creator.attributes.biography?<p className="lead"><ReactMarkdown children={getDescription(this.props.creator.creator.attributes.biography)} /></p>:<></>}
                 {Object.keys(attributes).map((keyName, i) => { 
                     //let cl = list_data[keyName];
                     //console.log(String(keyName), attributes[keyName]);
                     if(!keyCheck.includes(String(keyName)) && attributes[keyName] != null){
                         //console.log("xd");
-                        return <div key={String(keyName)}><a href={attributes[keyName]}>{attributes[keyName]}</a></div>
+                        return <div key={String(keyName)}>{capitalizeFirstLetter(String(keyName))}: <a href={attributes[keyName]}>{attributes[keyName]}</a></div>
                     }else{
                         return <></>
                     }
@@ -78,14 +81,10 @@ class Creator extends Component<Props,State> {
                 {relationships.map((r:any) => { 
                     //let cl = list_data[keyName];
                     //console.log(String(keyName), attributes[keyName]);
-                    if(r.type === "manga"){
+                    if(r.type === "manga" && r.attributes){
                         //console.log("xd");
                         return (
-                            <div>
-                                <Cover height={50} width={50} manga_id={r.id} relationships={[]} />
-                                <Link to={'/manga/'+ r.id}><h1 className="display-4 text-center">{getTitle(r.attributes.title)}</h1></Link>
-                                <p className="lead"><ReactMarkdown children={getDescription(r.attributes.description)} /></p>
-                            </div>
+                            <CreatorManga relationship={r}/>
                         )
                     }else{
                         return <></>
@@ -108,3 +107,9 @@ const mapStateToProps = (state:any)=>({
 });
 
 export default connect(mapStateToProps,{getCreator})(Creator);
+
+/*<div>
+    <Cover height={25} width={25} manga_id={r.id} relationships={[]} conform={true}/>
+    <Link to={'/manga/'+ r.id}><h1 className="display-4 text-center">{getTitle(r.attributes.title)}</h1></Link>
+    <p className="lead"><ReactMarkdown children={getDescription(r.attributes.description)} /></p>
+</div> */

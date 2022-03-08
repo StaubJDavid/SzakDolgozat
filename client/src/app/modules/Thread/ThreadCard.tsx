@@ -1,76 +1,79 @@
-import React, { Component} from 'react';
-import {Link} from 'react-router-dom';
+import React, {FC,useState} from 'react';
+import {Link, useHistory} from 'react-router-dom';
 import {connect} from 'react-redux';
 import LikeButtons from '../../common/LikeButtons';
 import timeFormat from '../../helpers/timeFormat';
+import classnames from 'classnames';
 
 type Props = {
-    thread:any
+    thread:any,
+    auth:any
 }
 
-type State = {
 
-}
+const ThreadCard: FC<Props> = ({thread,auth}) => {
+    const history = useHistory();
+    const [titleHover,setTitleHover] = useState(false);
+    const [nameHover,setNameHover] = useState(false);
 
-class ThreadCard extends Component<Props,State> {
-    constructor(props:any){
-        super(props);
-
-        this.state = {
-
+    function toProfileClick(id:any){
+        if(auth.isAuthenticated){
+            history.push('/profile/'+ id,{})
         }
-        
     }
 
-
-    render() {
-        const {nickname,thread_id,title,created,views,likes,dislikes,like, text} = this.props.thread;
-        return (
-        <>
-            <hr/>
-            <div className="container-fluid">
-                <div className="row justify-content-end">
-                    <div className="col-md-2 text-break align-middle">
-                        <h2>{nickname}</h2>
-                    </div>
-                    <div className="col-md-4 text-break align-middle">
-                        <Link to={{
-                            pathname: `/thread/${thread_id}`,
-                            state: {
-                                thread: this.props.thread
-                            }
-                        }}><p>{title}</p></Link>
-                    </div>
-                    <div className="col-md-6">
-                        {timeFormat(created)}
-                    </div>
+    const {nickname,thread_id,title,created,views,likes,dislikes,like, text, user_id} = thread;
+    return (
+    <>
+        <hr/>
+        <div className="container-fluid">
+            <div className="row justify-content-end mb-2">
+                <div
+                    style={{cursor:auth.isAuthenticated?"pointer":"auto"}}
+                    onClick={() => toProfileClick(user_id)}
+                    className={classnames("col-md-2 text-break align-middle",{"bg-light":nameHover&&auth.isAuthenticated})}
+                    onMouseEnter={() => setNameHover(true)}
+                    onMouseLeave={() => setNameHover(false)}
+                >
+                    <h2>{nickname}</h2>
                 </div>
-                <div className="row">
-                    <div className="col-md-2">
-                        <div className="row">
-                            <div className="col-md-12">
-                                Views: {views}
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <LikeButtons target_id={thread_id} like={like} likes={likes} dislikes={dislikes} parent={""} type={"THREADS"} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-10 text-break border border-dark rounded">
-                        <textarea className="form-control form-control-lg" placeholder="">{text}</textarea>
-                    </div>
+                <div 
+                    style={{cursor:"pointer"}}
+                    onClick={() => history.push(`/thread/${thread_id}`,{thread: thread})}
+                    className={classnames("col-md-4 text-break align-middle",{"bg-light":titleHover})}
+                    onMouseEnter={() => setTitleHover(true)}
+                    onMouseLeave={() => setTitleHover(false)}
+                ><p>{title}</p>
+                </div>
+                <div className="col-md-6">
+                    {timeFormat(created)}
                 </div>
             </div>
-            <hr/>
-        </>
-        )
-    }
+            <div className="row">
+                <div className="col-md-2">
+                    <div className="row">
+                        <div className="col-md-12">
+                            Views: {views}
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <LikeButtons target_id={thread_id} like={like} likes={likes} dislikes={dislikes} parent={""} type={"THREADS"} />
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-10 text-break rounded">
+                    <textarea className="form-control form-control-lg" placeholder="">{text}</textarea>
+                </div>
+            </div>
+        </div>
+        <hr/>
+    </>
+    )
 }
 
 const mapStateToProps = (state:any)=>({
-
+    auth:state.auth
 });
 
 export default connect(mapStateToProps,{})(ThreadCard);

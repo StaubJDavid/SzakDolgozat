@@ -7,6 +7,8 @@ import getDescription from '../helpers/getDescription';
 import getTitle from '../helpers/getTitle';
 import Cover from '../modules/Cover';
 import ReactMarkdown from 'react-markdown';
+import ScanProperty from './ScanProperty';
+import SimpleButton from './SimpleButton';
 
 type Props = {
     location:any,
@@ -24,7 +26,11 @@ class ScanGroup extends Component<Props,State> {
 
         this.state = {
         }
-        
+        this.checkNullEmpty = this.checkNullEmpty.bind(this);
+    }
+
+    checkNullEmpty(x:any){
+        return (x===null || x==="")
     }
 
     componentDidMount() {
@@ -58,27 +64,46 @@ class ScanGroup extends Component<Props,State> {
         let scangroupContent = <></>;
 
         if(!isEmpty(this.props.creator.scan_group)){
-            scangroupContent = <div>WE gucci</div>
+            scangroupContent = <></>
             let {attributes,relationships} = this.props.creator.scan_group;
-            let {name,imageUrl,biography} = attributes;
-            let keyCheck = ["name", "imageUrl", "biography", "createdAt", "updatedAt", "version"];
-
+            
             scangroupContent = (
                 <>
-                {attributes.name}
+                <h1>{attributes.name}</h1>
                 <br />
-                {attributes.website==null?<></>:<a href={attributes.website}>{attributes.website}</a>}
-                {attributes.twitter==null?<></>:<a href={attributes.twitter}>{attributes.twitter}</a>}
-                {attributes.mangaUpdates==null?<></>:<a href={attributes.mangaUpdates}>{attributes.mangaUpdates}</a>}
-                {attributes.ircServer==null?<></>:<p>IRC Server: {attributes.ircServer}</p>}
-                {attributes.ircChannel==null?<></>:<p>IRC Channel:{attributes.ircChannel}</p>}
-                {attributes.discord==null?<></>:<p>Discord: {attributes.discord}</p>}
-                {attributes.contactEmail==null?<></>:<p>Email: {attributes.contactEmail}</p>}
+                <hr />
+                <h4>Where to find</h4>
+                <ScanProperty text={"Twitter"} pushTo={attributes.twitter} />
+                <ScanProperty text={"Website"} pushTo={attributes.website} />
+                <ScanProperty text={"Manga Updates"} pushTo={attributes.mangaUpdates} />
+                {this.checkNullEmpty(attributes.discord)?
+                    <></>:
+                    <SimpleButton
+                        text={"Discord"}
+                        onClick={() => {window.location.replace("https://discord.gg/"+attributes.discord)}}
+                    />
+                }
+                {this.checkNullEmpty(attributes.contactEmail)?<></>:
+                <SimpleButton
+                    text={"Email"}
+                    onClick={() => {window.open(`mailto:${attributes.contactEmail}`)}}
+                />
+                }
+                
+                {this.checkNullEmpty(attributes.ircServer)?<></>:<p>IRC Server: {attributes.ircServer}</p>}
+                {this.checkNullEmpty(attributes.ircChannel)?<></>:<p>IRC Channel:{attributes.ircChannel}</p>}
+                <hr />
+                <h4 className="mt-5">Description</h4>
                 <ReactMarkdown children={attributes.description} />
+                <hr />
+                <h4 className="mt-5">Members</h4>
                 {relationships.map((r:any) => { 
                     return (
-                    <div>
-                        {r.type}: {r.attributes.username} <a href={`https://mangadex.org/user/${r.id}`}>Check out at MangaDex</a>
+                    <div className="mb-2">
+                        <SimpleButton
+                            text={<div>{r.type} {r.attributes.username}</div>}
+                            onClick={() => {window.location.replace(`https://mangadex.org/user/${r.id}`)}}
+                        />
                     </div>
                     )
                 })}
