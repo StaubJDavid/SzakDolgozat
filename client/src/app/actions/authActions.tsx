@@ -2,6 +2,8 @@ import axios from 'axios';
 import {GET_ERRORS, SET_CURRENT_USER, LOGOUT_MIDDLEWARE, SET_USER_MIDDLEWARE} from './types';
 import setAuthToken from '../helpers/setAuthToken';
 import jwt_decode from 'jwt-decode';
+import {connectToServer} from './chatActions';
+import isEmpty from "../helpers/isEmpty";
 
 export const registerUser = (userData:any, history:any) => (dispatch:any) => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, 
@@ -30,6 +32,7 @@ export const loginUser = (userData:any) => (dispatch:any) => {
             setAuthToken(jwt);
             const decoded = jwt_decode(jwt);
             dispatch(setCurrentUser(decoded));
+            //dispatch(connectToServer(decoded));
     }).catch(
         err => dispatch({
             type: GET_ERRORS,
@@ -38,7 +41,8 @@ export const loginUser = (userData:any) => (dispatch:any) => {
     );
 };
 
-export const setCurrentUser = (decoded:any) => {
+export const setCurrentUser = (decoded:any) => (dispatch:any) => {
+    //if(!isEmpty(decoded)) dispatch(connectToServer(decoded));
     return {
         type: SET_CURRENT_USER,
         payload: decoded

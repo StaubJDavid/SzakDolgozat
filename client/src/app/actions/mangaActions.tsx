@@ -46,10 +46,11 @@ export const getManga = (manga_id:string) => (dispatch:any) => {
             })
         }
     ).catch(
-        err => dispatch({
+        err => /*dispatch({
             type: GET_ERRORS,
             payload: err.response.data
-        })
+        })*/
+        console.log(err.response)
     );
 }
 

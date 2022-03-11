@@ -8,6 +8,7 @@ import threadReducer from './threadReducer';
 import commentReducer from './commentReducer';
 import mainPageReducer from './mainPageReducer';
 import creatorReducer from './creatorReducer';
+import chatReducer from './chatReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
     thread: threadReducer,
     comments: commentReducer,
     mainPage: mainPageReducer,
-    creator: creatorReducer
+    creator: creatorReducer,
+    chat: chatReducer
 });

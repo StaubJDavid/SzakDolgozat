@@ -26,11 +26,13 @@ const SubscribeToManga: FC<Props> = ({manga_id,translatedLanguage,subscribeToMan
     }
 
     useEffect(() => {
+        if(subscribed_mangas !== null)
         setMangas(subscribed_mangas.filter((sm:any) => sm.manga_id === manga_id));
         //console.log(mangas);
     },[])
 
     useEffect(() => {
+        if(subscribed_mangas !== null)
         setMangas(subscribed_mangas.filter((sm:any) => sm.manga_id === manga_id));
         //console.log(mangas);
     },[subscribed_mangas])

@@ -1,3 +1,4 @@
+import React, {useRef} from 'react'
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter as Router, Route, withRouter} from 'react-router-dom';
@@ -29,6 +30,8 @@ import { clearProfile } from './actions/profileActions';
 import Creator from './common/Creator';
 import ScanGroup from './common/ScanGroup';
 
+import {io} from 'socket.io-client';
+
 import Test from './modules/Test';
 
 type State = {
@@ -46,6 +49,8 @@ if(localStorage.JWT){
     store.dispatch(clearProfile());
     window.location.href = '/';
   }
+  /*const socket:any = {};
+  socket.current = io("http://localhost:3001");*/
 }
 
 const App: React.FC<State> = ({basename}) =>  {

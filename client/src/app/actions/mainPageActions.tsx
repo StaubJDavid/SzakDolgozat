@@ -119,10 +119,10 @@ export const getSeasonals = () => (dispatch:any) => {
                 type:SEASONAL_COUNT,
                 payload: res.data.data.length
             });
-            console.log(res.data.data);
+            //console.log(res.data.data);
             for(let i = 0; i< res.data.data.length;i++){
                 
-                console.log(i," List element - ", res.data.data[i].id);
+                //console.log(i," List element - ", res.data.data[i].id);
                 let req = "";
                 /*res.data.data[i].relationships.map((c:any) => (
                     req += "&ids[]="+c.relationships.find((o:any) => o.type === "manga").id

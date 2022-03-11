@@ -3,6 +3,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const db = require('./src/database/db');
 const { v4: uuidv4, validate: uuidValidate } = require('uuid');
+const { Server } = require("socket.io");
+const http = require("http");
 
 require('dotenv').config();
 
@@ -62,6 +64,38 @@ app.get('/db', (req,res) => {
     });
 });
 
-app.listen(process.env.PORT, () => {
+const server = http.createServer(app);
+
+server.listen(process.env.PORT, () => {
     console.log(`Listening to ${process.env.PORT}`);
 });
+
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3011",
+        credentials:true
+    }
+});
+
+global.onlineUsers = new Map();
+
+io.on("connection",(socket)=> {
+    global.chatSocket = socket;
+
+    socket.on("add-user", (userId) => {
+        
+        console.log("addUser Id: ", userId);
+        console.log("AddUser Socket: ", socket.id);
+        onlineUsers.set(userId, socket.id);
+        console.log(onlineUsers);
+    });
+
+    socket.on("send-msg", (data)=>{
+        console.log("Send msg data: ", data);
+        const sendUserSocket = onlineUsers.get(data.reciever);
+        if(sendUserSocket){
+            console.log("send user socket: ", sendUserSocket);
+            socket.to(sendUserSocket).emit("msg-recieve",data.message);
+        }
+    })
+})
