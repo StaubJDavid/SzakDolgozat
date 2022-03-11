@@ -30,7 +30,7 @@ export const getMostFollowed = () => (dispatch:any) => {
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response.data
         })
     );
 }
@@ -88,14 +88,14 @@ export const getLatestUpload = () => (dispatch:any) => {
             ).catch(
                 err2 => dispatch({
                     type: GET_ERRORS,
-                    payload: null
+                    payload: err2.response.data
                 })
             );
         }
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response.data
         })
     );
 }
@@ -155,7 +155,7 @@ export const getSeasonals = () => (dispatch:any) => {
                 ).catch(
                     err2 => dispatch({
                         type: GET_ERRORS,
-                        payload: null
+                        payload: err2.response.data
                     })
                 );
             }
@@ -164,7 +164,7 @@ export const getSeasonals = () => (dispatch:any) => {
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response.data
         })
     );
 }

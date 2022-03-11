@@ -41,7 +41,7 @@ class ListEntries extends Component<Props,State> {
     render() {
         const {owned} = this.props.profile.profile;
 
-        console.log(this.props.list);
+        //console.log(this.props.list);
 
         let content = <></>
         if(this.props.list.data.length === 0){

@@ -11,6 +11,7 @@ import {GET_PROFILE,
         DEL_LIST_ENTRY,
         CLEAR_MANGA,
         CLEAR_LIST,
+        GET_SUBSCRIBED_MANGAS,
 
         CLEAR_PROFILE_MIDDLEWARE
 } from './types';
@@ -224,6 +225,72 @@ export const clearError = () => {
     return {
         type: CLEAR_ERRORS
     }
+}
+
+export const getSubscribedMangas = () => (dispatch:any) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/manga/updates`)
+    .then(
+        res => {
+            if(res.data.length === 0){
+                dispatch({
+                    type: GET_SUBSCRIBED_MANGAS,
+                    payload: null
+                });
+            }else{
+                dispatch({
+                    type: GET_SUBSCRIBED_MANGAS,
+                    payload: res.data
+                });
+            }
+        }
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
+}
+
+export const subscribeToManga = (manga_id:string,translated_language:string) => (dispatch:any) => {
+    axios.post(`${process.env.REACT_APP_API_URL}/api/manga/updates`,{manga_id: manga_id, translated_language:translated_language})
+    .then(
+        res => {
+            if(res.data.success){
+                dispatch(getSubscribedMangas());
+            }else{
+                dispatch({
+                    type: GET_ERRORS,
+                    payload: res.data.reason
+                })
+            }
+        }
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
+}
+
+export const unsubscribeFromManga = (imt_id:number) => (dispatch:any) => {
+    axios.delete(`${process.env.REACT_APP_API_URL}/api/manga/updates`,{data:{imt_id: imt_id}})
+    .then(
+        res => {
+            if(res.data.success){
+                dispatch(getSubscribedMangas());
+            }else{
+                dispatch({
+                    type: GET_ERRORS,
+                    payload: res.data.reason
+                })
+            }
+        }
+    ).catch(
+        err => dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+        })
+    );
 }
 
 //MIDDLEWARE

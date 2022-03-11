@@ -43,7 +43,7 @@ class ListEntries extends Component<Props,State> {
     render() {
         const {owned} = this.props.profile.profile;
         let manga_search_results = this.props.manga.manga_search.data;
-        console.log(this.props.list_id);
+        //console.log(this.props.list_id);
 
         return (
             <>

@@ -95,6 +95,24 @@ CREATE TABLE IF NOT EXISTS `friend_requests` (
     FOREIGN KEY (reciever_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS `intrigued_manga_translations` (
+    `imt_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `manga_id` VARCHAR(255),
+    `chapter_id` VARCHAR(255),
+    `manga_name` VARCHAR(255),
+    `translated_language` VARCHAR(8),
+    `chapter` FLOAT,
+    `followers` INT
+);
+
+CREATE TABLE IF NOT EXISTS `imt_subscribers` (
+    `imts_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `imt_id` INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (imt_id) REFERENCES intrigued_manga_translations(imt_id)
+);
+
 
 //Inserts
 //USER
@@ -145,3 +163,180 @@ INSERT INTO `friend_requests`(`sender_id`, `reciever_id`, `message`, `timestamp`
 
 //Likes
 INSERT INTO `likes`(`user_id`, `target_id`, `like`) VALUES (1,"1",1),(1,"2",1),(1,"5",1),(2,"1",1),(2,"2",1),(2,"5",1)
+
+DELIMITER //
+
+CREATE PROCEDURE simpleproc (IN in_cId INT, IN in_state INT)
+BEGIN
+	DECLARE clikes INT;
+	START TRANSACTION;
+	SELECT likes INTO clikes FROM `comments` WHERE comment_id=in_cId;
+	UPDATE `comments` SET likes=(clikes+1) WHERE comment_id=in_cId;
+	COMMIT;
+END;
+//
+
+DELIMITER ;
+
+1 = increase like
+2 = decrease like
+3 = increase dislike
+4 = decrease dislike
+
+--COMMENT MANAGER
+DELIMITER //
+
+CREATE PROCEDURE sp_manage_likes (IN in_cId INT, IN in_state VARCHAR(11), OUT Q_STATUS INT)
+BEGIN
+	DECLARE clikes INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SHOW ERRORS;
+        SET Q_STATUS= 0;
+        ROLLBACK;
+    END;
+
+    SET Q_STATUS = 3;
+    
+    CASE in_state
+    	WHEN 'INC_LIKE' THEN
+        	START TRANSACTION;
+            SELECT likes INTO clikes FROM `comments` WHERE comment_id=in_cId;
+            UPDATE `comments` SET likes=(clikes+1) WHERE comment_id=in_cId;
+            SET Q_STATUS = 1;
+            COMMIT;
+    	WHEN 'DEC_LIKE' THEN
+        	START TRANSACTION;
+            SELECT likes INTO clikes FROM `comments` WHERE comment_id=in_cId;
+            IF clikes = 0 THEN
+            	SET Q_STATUS = 2;
+            ELSE
+                UPDATE `comments` SET likes=(clikes-1) WHERE comment_id=in_cId;
+                SET Q_STATUS = 1;
+            END IF;
+            COMMIT;
+    	WHEN 'INC_DISLIKE' THEN
+        	START TRANSACTION;
+            SELECT dislikes INTO clikes FROM `comments` WHERE comment_id=in_cId;
+            UPDATE `comments` SET dislikes=(clikes+1) WHERE comment_id=in_cId;
+            SET Q_STATUS = 1;
+            COMMIT;
+    	WHEN 'DEC_DISLIKE' THEN
+        	START TRANSACTION;
+            SELECT dislikes INTO clikes FROM `comments` WHERE comment_id=in_cId;
+            IF clikes = 0 THEN
+            	SET Q_STATUS = 2;
+            ELSE
+            	UPDATE `comments` SET dislikes=(clikes-1) WHERE comment_id=in_cId;
+            	SET Q_STATUS = 1;
+            END IF;
+            COMMIT;
+	END CASE;
+    
+END;
+//
+
+DELIMITER ;
+
+-- THREAD LIKE MANAGER
+
+DELIMITER //
+
+CREATE PROCEDURE sp_manage_likes_thread (IN in_tId VARCHAR(255), IN in_state VARCHAR(11), OUT Q_STATUS INT)
+BEGIN
+	DECLARE tlikes INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SHOW ERRORS;
+        SET Q_STATUS= 0;
+        ROLLBACK;
+    END;
+
+    SET Q_STATUS = 3;
+    
+    CASE in_state
+    	WHEN 'INC_LIKE' THEN
+        	START TRANSACTION;
+            SELECT likes INTO tlikes FROM `threads` WHERE thread_id=in_tId;
+            UPDATE `threads` SET likes=(tlikes+1) WHERE thread_id=in_tId;
+            SET Q_STATUS = 1;
+            COMMIT;
+    	WHEN 'DEC_LIKE' THEN
+        	START TRANSACTION;
+            SELECT likes INTO tlikes FROM `threads` WHERE thread_id=in_tId;
+            IF tlikes = 0 THEN
+            	SET Q_STATUS = 2;
+            ELSE
+                UPDATE `threads` SET likes=(tlikes-1) WHERE thread_id=in_tId;
+                SET Q_STATUS = 1;
+            END IF;
+            COMMIT;
+    	WHEN 'INC_DISLIKE' THEN
+        	START TRANSACTION;
+            SELECT dislikes INTO tlikes FROM `threads` WHERE thread_id=in_tId;
+            UPDATE `threads` SET dislikes=(tlikes+1) WHERE thread_id=in_tId;
+            SET Q_STATUS = 1;
+            COMMIT;
+    	WHEN 'DEC_DISLIKE' THEN
+        	START TRANSACTION;
+            SELECT dislikes INTO tlikes FROM `threads` WHERE thread_id=in_tId;
+            IF tlikes = 0 THEN
+            	SET Q_STATUS = 2;
+            ELSE
+            	UPDATE `threads` SET dislikes=(tlikes-1) WHERE thread_id=in_tId;
+            	SET Q_STATUS = 1;
+            END IF;
+            COMMIT;
+	END CASE;
+    
+END;
+//
+
+DELIMITER ;
+
+//Manage manga subscribers
+
+DELIMITER //
+
+CREATE PROCEDURE sp_manage_manga_subscribers (IN in_imt_id INT, IN in_state VARCHAR(3), OUT Q_STATUS INT)
+BEGIN
+	DECLARE temp_followers INT;
+    DECLARE temp_followers_count INT;
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SHOW ERRORS;
+        SET Q_STATUS= 0;
+        ROLLBACK;
+    END;
+
+    SET Q_STATUS = 3;
+    SELECT followers INTO temp_followers_count FROM `intrigued_manga_translations` WHERE imt_id = in_imt_id ;
+    CASE in_state
+    	WHEN 'INC' THEN
+        	START TRANSACTION;
+            UPDATE `intrigued_manga_translations` SET followers = (temp_followers_count + 1) WHERE imt_id = in_imt_id ;
+            SET Q_STATUS = 1;
+            COMMIT;
+    	WHEN 'DEC' THEN
+        	START TRANSACTION;
+            UPDATE `intrigued_manga_translations` SET followers = (temp_followers_count - 1) WHERE imt_id = in_imt_id ;
+            SELECT followers INTO temp_followers FROM `intrigued_manga_translations` WHERE imt_id = in_imt_id ;
+            IF temp_followers = 0 THEN
+            	DELETE FROM `intrigued_manga_translations` WHERE imt_id = in_imt_id ;
+            	SET Q_STATUS = 2;
+            ELSE
+                SET Q_STATUS = 1;
+            END IF;
+            COMMIT;
+	END CASE;
+    
+END;
+//
+
+DELIMITER ;
+
+query_str = "CALL sp_whatever(?,?,?,@output); select @output";
+ con.query(query_str, [param1, param2, param3], function(err,rows){
+     if(err) throw err;
+     console.log(rows);
+ });

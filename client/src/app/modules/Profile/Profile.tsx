@@ -15,6 +15,7 @@ import FriendRequests from './FriendRequests';
 import SendFriendRequest from './SendFriendRequest';
 import timeFormat from '../../helpers/timeFormat';
 import TextLinkDelete from '../../common/TextLinkDelete';
+import SubscribedMangas from './SubscribedMangas';
 
 type Props = {
     auth:any,
@@ -332,6 +333,14 @@ class Profile extends Component<Props,State> {
                                 <div className="col-md-12 text-center">
                                     <div className="container">
                                         {this.state.own?<FriendRequests history={this.props.history} />:<></>}
+                                    </div>
+                                </div>
+                            </div>:<></>}
+
+                            {this.state.own?<div className="row border rounded mb-4 p-4 bg-light">
+                                <div className="col-md-12 text-center">
+                                    <div className="container">
+                                        <SubscribedMangas />
                                     </div>
                                 </div>
                             </div>:<></>}

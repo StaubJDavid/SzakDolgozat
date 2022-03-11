@@ -19,6 +19,9 @@ export const CREATE_LIST = 'CREATE_LIST';
 export const GET_LISTS = 'GET_LISTS';
 export const ADD_LIST_ENTRY = 'ADD_LIST_ENTRY';
 export const DEL_LIST_ENTRY = 'DEL_LIST_ENTRY';
+export const GET_SUBSCRIBED_MANGAS = 'GET_SUBSCRIBED_MANGAS';
+/*export const DEL_LIST_ENTRY = 'DEL_LIST_ENTRY';
+export const DEL_LIST_ENTRY = 'DEL_LIST_ENTRY';*/
 
 //ADD
 export const CLEAR_MANGA = 'CLEAR_MANGA';

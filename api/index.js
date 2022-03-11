@@ -17,6 +17,7 @@ var listsRouter = require('./src/routes/lists');
 var threadsRouter = require('./src/routes/threads');
 var userRouter = require('./src/routes/user');
 var votesRouter = require('./src/routes/votes');
+var mangaUpdatesRouter = require('./src/routes/mangaUpdates');
 
 app.use('/api/auth', cors(), authRouter);// localhost:3001/api/auth
 app.use('/api/comments', cors(), commentsRouter);// localhost:3001/api/comments
@@ -24,6 +25,7 @@ app.use('/api/lists', cors(), listsRouter);// localhost:3001/api/lists
 app.use('/api/threads', cors(), threadsRouter);// localhost:3001/api/threads
 app.use('/api/user', cors(), userRouter);// localhost:3001/api/user
 app.use('/api/votes', cors(), votesRouter);// localhost:3001/api/votes
+app.use('/api/manga', cors(), mangaUpdatesRouter);// localhost:3001/api/manga
 
 
 app.get('/', (req, res) => {

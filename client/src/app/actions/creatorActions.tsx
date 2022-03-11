@@ -26,7 +26,7 @@ export const getCreator = (creator_id:string) => (dispatch:any) => {
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response.data
         })
     );
 }
@@ -51,7 +51,7 @@ export const getScangroup = (group_id:string) => (dispatch:any) => {
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response.data
         })
     );
 }

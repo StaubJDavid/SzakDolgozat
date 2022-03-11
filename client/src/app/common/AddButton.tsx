@@ -5,26 +5,26 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import ISO6391 from 'iso-639-1';
 
 type Props = {
-    text:any,
+    icon:any,
     onClick:any
 }
 
 //ISO6391.getName(ch.attributes.translatedLanguage)
 
-const SimpleButton: FC<Props> = ({text,onClick}) => {
+const RemoveButton: FC<Props> = ({icon,onClick}) => {
     const [linkHover, setLinkHover] = useState(false);
 
     return(
     <div
         style={{cursor:"pointer"}}
-        className={classnames('d-flex text-break',{"bg-danger":linkHover})}
-        onClick={() => onClick()} 
+        className={classnames({"text-success":linkHover})}
         onMouseEnter={() => setLinkHover(true)}
         onMouseLeave={() => setLinkHover(false)}
+        onClick={() => onClick()}
     >
-        {text}
+        <i className={icon} />
     </div>
     )
 }
 
-export default SimpleButton;
+export default RemoveButton;

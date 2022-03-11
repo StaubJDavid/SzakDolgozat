@@ -9,13 +9,15 @@ import {GET_PROFILE,
         ADD_LIST_ENTRY,
         DEL_LIST_ENTRY,
         CLEAR_LIST,
-        CLEAR_PROFILE_MIDDLEWARE
+        CLEAR_PROFILE_MIDDLEWARE,
+        GET_SUBSCRIBED_MANGAS
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
 const initialState = {
     profile: null,
     lists:null,
+    subscribed:null,
     loading: false
 }
 
@@ -50,6 +52,10 @@ export default function(state = initialState, action:any){
                 disliked_manga: action.payload.disliked_manga
             }
         };*/
+        case GET_SUBSCRIBED_MANGAS: return {
+            ...state,
+            subscribed: action.payload
+        };
         case CLEAR_PROFILE: return {
             ...state,
             profile: null

@@ -7,19 +7,24 @@ import CommentInput from '../common/CommentInput';
 import Comments from '../common/Comments';
 import Rating from '../common/Rating';
 import {getManga,clearMangaSearch} from '../actions/mangaActions';
+import {getSubscribedMangas} from '../actions/profileActions';
 import Creator from '../common/Creator';
 import CreatorButton from '../common/CreatorButton';
 import getDescription from '../helpers/getDescription';
 import ReactMarkdown from 'react-markdown';
 import getTitle from '../helpers/getTitle';
 import isEmpty from '../helpers/isEmpty';
+import SubscribeToManga from './SubscribeToManga'
+import authReducer from '../reducers/authReducer';
 
 type Props = {
   manga:any,
+  auth:any,
   location:any,
   history:any,
   getManga:any,
-  clearMangaSearch:any
+  clearMangaSearch:any,
+  getSubscribedMangas:any
 }
 
 type State = {
@@ -38,6 +43,10 @@ class MangaPage extends Component<Props,State> {
         url = url.slice(url.lastIndexOf('/')+1,url.length);
         //console.log("Doing the not link thing: ", url)
         this.props.getManga(url);
+    }
+
+    if(this.props.auth.isAuthenticated){
+      this.props.getSubscribedMangas();
     }
   }
 
@@ -127,7 +136,11 @@ class MangaPage extends Component<Props,State> {
                   </ul>
                 </div>
               </div>
-
+              {this.props.auth.isAuthenticated?<div className='row mt-4 justify-content-center'>
+                <div className='col-12'>
+                  <SubscribeToManga manga_id={data.id} translatedLanguage={data.attributes.availableTranslatedLanguages} />
+                </div>
+              </div>:<></>}
               
             </div>
           </div>
@@ -147,7 +160,8 @@ class MangaPage extends Component<Props,State> {
 }
 
 const mapStateToProps = (state:any)=>({
-  manga: state.manga
+  manga: state.manga,
+  auth: state.auth
 });
 
-export default connect(mapStateToProps,{getManga,clearMangaSearch})(MangaPage);
+export default connect(mapStateToProps,{getManga,clearMangaSearch,getSubscribedMangas})(MangaPage);

@@ -31,7 +31,7 @@ export const searchForManga = (manga:string,offset:number) => (dispatch:any) => 
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response.data
         })
     );
 }
@@ -65,7 +65,7 @@ export const getChapters = (manga_id:string, offset:number) => (dispatch:any) =>
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: null
+            payload: err.response.data
         })
     );
 }
@@ -83,7 +83,7 @@ export const getMangaImages = (chapter_id:string) => (dispatch:any) => {
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: err.response
+            payload: err.response.data
         })
     );
 }
@@ -251,7 +251,7 @@ export const getReadingChapters = (chapter_id:string,manga_id:string) => (dispat
                                     err3 => {
                                         dispatch({
                                             type:GET_ERRORS,
-                                            payload: err3.response
+                                            payload: err3.response.data
                                         })
                                     }
                                 );
@@ -261,7 +261,7 @@ export const getReadingChapters = (chapter_id:string,manga_id:string) => (dispat
                         err2 => {
                             dispatch({
                                 type:GET_ERRORS,
-                                payload: err2.response
+                                payload: err2.response.data
                             })
                         }
                     );
@@ -282,7 +282,7 @@ export const getReadingChapters = (chapter_id:string,manga_id:string) => (dispat
             err => {
                 dispatch({
                     type:GET_ERRORS,
-                    payload: err.response
+                    payload: err.response.data
                 })
             }
         );
