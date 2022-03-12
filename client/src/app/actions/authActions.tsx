@@ -42,11 +42,11 @@ export const loginUser = (userData:any) => (dispatch:any) => {
 };
 
 export const setCurrentUser = (decoded:any) => (dispatch:any) => {
-    //if(!isEmpty(decoded)) dispatch(connectToServer(decoded));
-    return {
+    dispatch(connectToServer(decoded));
+    dispatch({
         type: SET_CURRENT_USER,
         payload: decoded
-    }
+    })
 }
 
 export const logoutUser = () => (dispatch:any) => {

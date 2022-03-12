@@ -29,6 +29,7 @@ import Thread from './modules/Thread/Thread';
 import { clearProfile } from './actions/profileActions';
 import Creator from './common/Creator';
 import ScanGroup from './common/ScanGroup';
+import ChatPage from './modules/ChatPage';
 
 import {io} from 'socket.io-client';
 
@@ -73,6 +74,7 @@ const App: React.FC<State> = ({basename}) =>  {
           <Route path='/profile/:id' exact component={withRouter(Profile)} />
           <Route path='/threads' exact component={Threads} />
           <Route path='/thread/:thread_id' exact component={Thread} />
+          <Route path='/chat' exact component={ChatPage} />
 
           {/*Delete*/}
           <Route path='/stest' exact component={Test} />

@@ -3,14 +3,16 @@ import {
     SET_SOCKET,
     SET_CONNECTED,
     ADD_CONVERSATION,
-    SET_CONVERSATION
+    SET_CONVERSATION,
+    SET_FRIENDLIST
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
 const initialState = {
     socket:{},
     connected:false,
-    ongoingConversations:[]
+    ongoingConversations:[],
+    friendlist:{}
 }
 
 export default function(state = initialState, action:any){
@@ -30,6 +32,10 @@ export default function(state = initialState, action:any){
         case SET_CONVERSATION: return {
             ...state,
             ongoingConversations: action.payload
+        };
+        case SET_FRIENDLIST: return {
+            ...state,
+            friendlist: action.payload
         };
         default: return state;
     }

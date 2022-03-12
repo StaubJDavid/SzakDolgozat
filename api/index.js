@@ -20,6 +20,7 @@ var threadsRouter = require('./src/routes/threads');
 var userRouter = require('./src/routes/user');
 var votesRouter = require('./src/routes/votes');
 var mangaUpdatesRouter = require('./src/routes/mangaUpdates');
+var chatRouter = require('./src/routes/chat');
 
 app.use('/api/auth', cors(), authRouter);// localhost:3001/api/auth
 app.use('/api/comments', cors(), commentsRouter);// localhost:3001/api/comments
@@ -28,6 +29,7 @@ app.use('/api/threads', cors(), threadsRouter);// localhost:3001/api/threads
 app.use('/api/user', cors(), userRouter);// localhost:3001/api/user
 app.use('/api/votes', cors(), votesRouter);// localhost:3001/api/votes
 app.use('/api/manga', cors(), mangaUpdatesRouter);// localhost:3001/api/manga
+app.use('/api/chat', cors(), chatRouter);// localhost:3001/api/chat
 
 
 app.get('/', (req, res) => {
@@ -78,24 +80,38 @@ const io = new Server(server, {
 });
 
 global.onlineUsers = new Map();
+global.lookupTable = new Map();
 
 io.on("connection",(socket)=> {
     global.chatSocket = socket;
 
     socket.on("add-user", (userId) => {
         
-        console.log("addUser Id: ", userId);
-        console.log("AddUser Socket: ", socket.id);
+        // console.log("addUser Id: ", userId);
+        // console.log("AddUser Socket: ", socket.id);
         onlineUsers.set(userId, socket.id);
-        console.log(onlineUsers);
+        lookupTable.set(socket.id, userId);
+        //console.log(onlineUsers);
     });
 
     socket.on("send-msg", (data)=>{
-        console.log("Send msg data: ", data);
+        //console.log("Send msg data: ", data);
         const sendUserSocket = onlineUsers.get(data.reciever);
         if(sendUserSocket){
-            console.log("send user socket: ", sendUserSocket);
-            socket.to(sendUserSocket).emit("msg-recieve",data.message);
+            //console.log("send user socket: ", sendUserSocket);
+            socket.to(sendUserSocket).emit("msg-recieve",data);
         }
+    })
+
+    socket.on("disconnect", (reason)=>{
+        //console.log("DISCONNECTING");
+        //console.log(reason);
+        
+        const key = lookupTable.get(socket.id);
+
+        onlineUsers.delete(key);
+        lookupTable.delete(socket.id);
+
+        socket.disconnect();
     })
 })

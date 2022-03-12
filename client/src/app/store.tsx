@@ -35,17 +35,6 @@ const checkTokenValidityMiddleware = (store:any) => (next:any) => (action:any) =
     return next(action)
 }
 
-const checkChatConnectionMiddleware = (store:any) => (next:any) => (action:any) => {
-    
-    if(!(action.type === SET_SOCKET) && !(action.type === SET_CONNECTED)){
-        if(store.getState().auth.isAuthenticated && !store.getState().chat.connected){           
-            store.dispatch(connectToServer(store.getState().auth.user));
-        }
-    }
-
-    return next(action)
-}
-
 const middleware = [thunk,checkTokenValidityMiddleware];
 
 const store = createStore(

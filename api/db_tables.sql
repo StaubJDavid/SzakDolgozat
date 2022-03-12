@@ -113,6 +113,16 @@ CREATE TABLE IF NOT EXISTS `imt_subscribers` (
     FOREIGN KEY (imt_id) REFERENCES intrigued_manga_translations(imt_id)
 );
 
+CREATE TABLE IF NOT EXISTS `messages` (
+    `message_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `sender_id` INT NOT NULL,
+    `reciever_id` INT NOT NULL,
+    `message` VARCHAR(255) NOT NULL,
+    `timestamp` DATETIME,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id),
+    FOREIGN KEY (reciever_id) REFERENCES users(user_id)
+);
+
 
 //Inserts
 //USER
