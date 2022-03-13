@@ -8,6 +8,7 @@ import ISO6391 from 'iso-639-1';
 import AddButton from '../common/AddButton';
 import Friendlist from './Chat/Friendlist';
 import ChatContainer from './Chat/ChatContainer';
+import isEmpty from '../helpers/isEmpty';
 
 type Props = {
 };
@@ -23,7 +24,7 @@ const ChatPage: FC<Props> = () => {
         <>
         <div>ChatPage</div>
         <div><Friendlist changeChat={handleChatChange}/></div>
-        <div><ChatContainer currentChat={currentChat}/></div>
+        <div>{isEmpty(currentChat)?<></>:<ChatContainer currentChat={currentChat}/>}</div>
         </>
     )
 };

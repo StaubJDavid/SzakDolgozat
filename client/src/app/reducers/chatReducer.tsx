@@ -4,15 +4,28 @@ import {
     SET_CONNECTED,
     ADD_CONVERSATION,
     SET_CONVERSATION,
-    SET_FRIENDLIST
+    SET_FRIENDLIST,
+
+    SET_TEST,
+    ADD_NEW_CONVERSATION,
+    ADD_MESSAGE_TO_CONVERSATION
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
-const initialState = {
+interface ChatState {
+    socket:any,
+    connected:any,
+    ongoingConversations:any,
+    friendlist:any,
+    loadedConversations:any,
+  }
+
+const initialState:ChatState = {
     socket:{},
     connected:false,
     ongoingConversations:[],
-    friendlist:{}
+    friendlist:{},
+    loadedConversations:{},
 }
 
 export default function(state = initialState, action:any){
@@ -36,6 +49,28 @@ export default function(state = initialState, action:any){
         case SET_FRIENDLIST: return {
             ...state,
             friendlist: action.payload
+        };
+
+        case SET_TEST: return {
+            ...state,
+            testlist: action.payload
+        };
+        case ADD_NEW_CONVERSATION: return {
+            ...state,
+            loadedConversations:{
+                ...state.loadedConversations,
+                [action.id]: action.payload
+            }
+        };
+        case ADD_MESSAGE_TO_CONVERSATION: return {
+            ...state,
+            loadedConversations:{
+                ...state.loadedConversations,
+                [action.id]: {
+                    ...state.loadedConversations[action.id],
+                    messages:[action.payload, ...state.loadedConversations[action.id].messages]
+                }
+            }
         };
         default: return state;
     }

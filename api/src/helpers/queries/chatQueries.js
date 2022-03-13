@@ -21,6 +21,10 @@ class chatClass {
             'SELECT * FROM `messages` WHERE ( sender_id = ? AND reciever_id = ? ) OR ( sender_id = ? AND reciever_id = ? ) ORDER BY timestamp DESC'    
         ;
 
+        this.sql_message =
+            'SELECT * FROM `messages` WHERE message_id = ?'    
+        ;
+
     };
 
     /*async getMangaLatestChapterInLanguage(manga_id,translatedL) {
@@ -94,6 +98,23 @@ class chatClass {
         let error = new Error('Send message');
         return new Promise((resolve,reject) => {
             db.query(this.sql_allMessages, [user_id, friend_id, friend_id, user_id], (err, results) => {
+                if(err){
+                    console.log(err);
+                    error.query = "sql_allMessages query error";
+                    error.log = err;
+        
+                    reject(error);
+                }else{
+                    resolve({success: true, data:results})
+                }
+            });
+        })  
+    };
+
+    async getMessage(message_id){
+        let error = new Error('Send message');
+        return new Promise((resolve,reject) => {
+            db.query(this.sql_message, [message_id], (err, results) => {
                 if(err){
                     console.log(err);
                     error.query = "sql_allMessages query error";

@@ -120,6 +120,9 @@ router.post('/send', verify, async (req, res) => {
     const user_id = req.jwt.id
     const {reciever_id, message} = req.body;
 
+    /*console.log(user_id);
+    console.log(req.body);*/
+
     try {
         const friends = await checkIfFriends(user_id, reciever_id);
 
@@ -128,7 +131,9 @@ router.post('/send', verify, async (req, res) => {
 
             const insertResult = await cc.sendMessage(user_id, reciever_id, message, timestamp);
             
-            res.json(insertResult);
+            const selectInsertResult = await cc.getMessage(insertResult.data.insertId);
+            
+            res.json(selectInsertResult);
 
         }else if(friends === 0){
             res.status(400).json({success:false, reason: "Not friends"});

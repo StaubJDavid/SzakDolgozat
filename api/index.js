@@ -96,7 +96,8 @@ io.on("connection",(socket)=> {
 
     socket.on("send-msg", (data)=>{
         //console.log("Send msg data: ", data);
-        const sendUserSocket = onlineUsers.get(data.reciever);
+        //console.log(data);
+        const sendUserSocket = onlineUsers.get(data.reciever_id);
         if(sendUserSocket){
             //console.log("send user socket: ", sendUserSocket);
             socket.to(sendUserSocket).emit("msg-recieve",data);
