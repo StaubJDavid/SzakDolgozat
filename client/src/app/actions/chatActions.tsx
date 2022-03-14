@@ -41,9 +41,9 @@ export const connectToServer = (userData:any) => (dispatch:any) => {
 
         socket.current.on("msg-recieve",(msg:any) => {
             //console.log("RECIEVED MESSAGE: ", msg);
-            
+            console.log("recieved in chat action");
             dispatch(addMessageToConversation(msg.sender_id,msg.reciever_id,msg));
-        })
+        });
 
     }else{
         //console.log("LOGOUT DISCONNECT");
@@ -67,16 +67,20 @@ export const getFriendList = () => (dispatch:any) => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/chat/friendlist`
     ).then(
         res => {
+            //console.log(res);
             dispatch({
                 type: SET_FRIENDLIST,
                 payload: res.data
             })
         }
     ).catch(
-        err => dispatch({
-            type: GET_ERRORS,
-            payload: err.response.data
-        })
+        err =>{
+            //console.log(err);
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.data
+            })
+        }
     );
 };
 
@@ -92,7 +96,7 @@ export const getMessages = (friend_id:any,user_id:any) => (dispatch:any) => {
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: err.response.data
+            payload: err.data
         })
     );
 };
@@ -134,7 +138,10 @@ export const addNewConversation = (friend_id:any,user_id:any) => (dispatch:any) 
     axios.get(`${process.env.REACT_APP_API_URL}/api/chat/messages/${friend_id}`
     ).then(
         res => {
-            dispatch(updateLastMessage(friend_id, user_id, res.data.data[0]));
+            /*console.log(friend_id);
+            console.log(user_id);
+            console.log(res.data);*/
+            if(res.data.data.length !== 0) dispatch(updateLastMessage(friend_id, user_id, res.data.data[0]));
             dispatch({
                 type: ADD_NEW_CONVERSATION,
                 id:user_id + "_" + friend_id,
@@ -146,10 +153,14 @@ export const addNewConversation = (friend_id:any,user_id:any) => (dispatch:any) 
             })
         }
     ).catch(
-        err => dispatch({
-            type: GET_ERRORS,
-            payload: err.response.data
-        })
+        err => {
+            console.log(err);
+            /*dispatch({
+                type: GET_ERRORS,
+                payload: err.data
+            })*/
+            console.log("Add conv error");
+        }
     );
 };
 
@@ -178,7 +189,7 @@ export const postMessage = (msg:any, reciever_id:any) => (dispatch:any) => {
             dispatch(addMessageToConversation(reciever_id, trueData.data[0].sender_id, trueData.data[0]))
             resolve(trueData.data[0]);
         })
-        .catch( err => reject(err.response.data))
+        .catch( err => reject(err.data))
     })  
 };
 

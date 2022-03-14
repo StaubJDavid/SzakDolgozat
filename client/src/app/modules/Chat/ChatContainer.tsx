@@ -1,9 +1,12 @@
-import {FC,useState, useEffect} from 'react';
+import React, {FC,useState, useEffect, useRef} from 'react';
 import { connect } from 'react-redux';
 import isEmpty from '../../helpers/isEmpty';
 import ChatInput from './ChatInput';
+import OutgoingMessage from './OutgoingMessage';
+import InboundMessage from './InboundMessage';
 import axios from 'axios';
 import {addNewConversation,postMessage,addMessageToConversation} from '../../actions/chatActions';
+import './ChatStyle.css';
 
 type Props = {
     chat:any,
@@ -14,6 +17,8 @@ type Props = {
 };
 
 const ChatContainer: FC<Props> = ({currentChat,chat,addNewConversation,postMessage,addMessageToConversation}) => {    
+    const messageRef = React.useRef<HTMLInputElement>(null);
+
     useEffect(() => {
         //current, reciever
         if(!isEmpty(currentChat)){
@@ -31,28 +36,39 @@ const ChatContainer: FC<Props> = ({currentChat,chat,addNewConversation,postMessa
         }
     }
 
+    useEffect(() => {
+        chat.socket.current.on("msg-recieve",(msg:any) => {
+            //console.log("RECIEVED MESSAGE: ", msg);
+            
+            console.log("recieved in component");
+        });
+    },[])
+
+    useEffect(() => {
+        messageRef?.current?.scrollIntoView();
+    },[chat.loadedConversations[currentChat.user_id+"_"+currentChat.friend_id]])
+
     return (
-        <div>
-            <h1>{currentChat.friend_name}</h1>
-            <div key="messages">
-                {/*<Messages />*/}
-                {chat.loadedConversations.hasOwnProperty(currentChat.user_id+"_"+currentChat.friend_id)?[...chat.loadedConversations[currentChat.user_id+"_"+currentChat.friend_id].messages].reverse().map((msg:any, index:any) => {
-                    //console.log(msg)
-                    let senderName = "";
-                    if(msg.sender_id === currentChat.user_id){
-                        senderName = "You: ";
-                    }else{
-                        senderName = `${currentChat.friend_name}: `
-                    }
-                    return (
-                    <div>{senderName}{msg.message}</div>
-                    );
-                }):<></>}
-            </div>
-            <div key="input">
-                <ChatInput handleSendMsg={handleSendMsg} />
-            </div>
+        <>
+        <div className="msg_history">
+            {chat.loadedConversations.hasOwnProperty(currentChat.user_id+"_"+currentChat.friend_id)?[...chat.loadedConversations[currentChat.user_id+"_"+currentChat.friend_id].messages].reverse().map((msg:any, index:any) => {
+                //console.log(msg)
+                //let senderName = "";
+                if(msg.sender_id === currentChat.user_id){
+                    //senderName = "You: ";
+                    return (<OutgoingMessage message={msg} />)
+                }else{
+                    //senderName = `${currentChat.friend_name}: `
+                    return (<InboundMessage message={msg} />)
+                }
+                /*return (
+                <div>{senderName}{msg.message}</div>
+                );*/
+            }):<></>}
+            <div ref={messageRef} key={"messageScrollRef"} />
         </div>
+        <ChatInput handleSendMsg={handleSendMsg} />
+    </>
     )
 };
 

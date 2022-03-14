@@ -53,7 +53,7 @@ class Navbar extends Component<Props,State> {
         );
 
         return (
-            <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
+            <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-0">
                 <div className="container">
                     <Link className="navbar-brand" to="/">PetyDex</Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobile-nav" aria-expanded="false" aria-controls="mobileNav">

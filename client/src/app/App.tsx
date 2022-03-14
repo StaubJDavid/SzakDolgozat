@@ -61,7 +61,7 @@ const App: React.FC<State> = ({basename}) =>  {
         <Navbar />
         {/*<Routes />*/}
         <Route path='/' exact component={withRouter(Landing)} />
-        <div className="container-fluid">
+        <div className="container p-0">{/*container-fluid p-0 */}
           <Route path='/search' exact component={Search} />
           <Route path='/manga/:id' exact component={withRouter(MangaPage)} />
           <Route path='/manga/read/:chapterid' exact component={MangaReadPage} />
