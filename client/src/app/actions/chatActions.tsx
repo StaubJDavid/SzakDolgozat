@@ -10,7 +10,8 @@ import {
     SET_TEST,
     ADD_TEST,
     ADD_NEW_CONVERSATION,
-    ADD_MESSAGE_TO_CONVERSATION
+    ADD_MESSAGE_TO_CONVERSATION,
+    UPDATE_LAST_MESSAGE
 } from './types';
 import setAuthToken from '../helpers/setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -23,6 +24,8 @@ export const connectToServer = (userData:any) => (dispatch:any) => {
     //console.log(userData);
     if(!isEmpty(userData)){
         const socket:any = {};
+        //"http://localhost:3001"
+        //"http://80.98.214.13:3001"
         socket.current = io("http://localhost:3001");
         socket.current.emit("add-user",userData.id);
         //console.log(socket.current);
@@ -35,6 +38,13 @@ export const connectToServer = (userData:any) => (dispatch:any) => {
             type: SET_CONNECTED,
             payload: true
         });
+
+        socket.current.on("msg-recieve",(msg:any) => {
+            //console.log("RECIEVED MESSAGE: ", msg);
+            
+            dispatch(addMessageToConversation(msg.sender_id,msg.reciever_id,msg));
+        })
+
     }else{
         //console.log("LOGOUT DISCONNECT");
         if(store.getState().chat.connected){
@@ -53,6 +63,7 @@ export const connectToServer = (userData:any) => (dispatch:any) => {
 };
 
 export const getFriendList = () => (dispatch:any) => {
+    console.log("GET FRIENDLIST");
     axios.get(`${process.env.REACT_APP_API_URL}/api/chat/friendlist`
     ).then(
         res => {
@@ -86,7 +97,7 @@ export const getMessages = (friend_id:any,user_id:any) => (dispatch:any) => {
     );
 };
 
-export const getFriendlistTest = () => (dispatch:any) => {
+/*export const getFriendlistTest = () => (dispatch:any) => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/chat/friendlist`
     ).then(
         res => {
@@ -117,12 +128,13 @@ export const getFriendlistTest = () => (dispatch:any) => {
             });
         }
     );
-};
+};*/
 
 export const addNewConversation = (friend_id:any,user_id:any) => (dispatch:any) => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/chat/messages/${friend_id}`
     ).then(
         res => {
+            dispatch(updateLastMessage(friend_id, user_id, res.data.data[0]));
             dispatch({
                 type: ADD_NEW_CONVERSATION,
                 id:user_id + "_" + friend_id,
@@ -142,19 +154,18 @@ export const addNewConversation = (friend_id:any,user_id:any) => (dispatch:any) 
 };
 
 export const addMessageToConversation = (friend_id:any, user_id:any, message:any) => (dispatch:any) => {
-    /*console.log("Friend:",friend_id);
-    console.log("user_id:",user_id);
-    const sen_id = String(user_id);
-    const rec_id = String(friend_id);*/
-    const key = String(user_id) + "_" + String(friend_id);;
+    const key = String(user_id) + "_" + String(friend_id);
+    //console.log("property: " + key);
     if(store.getState().chat.loadedConversations.hasOwnProperty(key)){
         dispatch({
             type: ADD_MESSAGE_TO_CONVERSATION,
             id: key,
             payload: message
-        })
+        });
+        dispatch(updateLastMessage(friend_id, user_id, message));
     }else{
-        console.log("No property: " + key);
+        //console.log("No property: " + key + " Adding it");
+        dispatch(addNewConversation(friend_id,user_id));
     }
 };
 
@@ -169,4 +180,25 @@ export const postMessage = (msg:any, reciever_id:any) => (dispatch:any) => {
         })
         .catch( err => reject(err.response.data))
     })  
+};
+
+export const updateLastMessage = (friend_id:any, user_id:any, message:any) => (dispatch:any) => {
+    const key = String(user_id) + "_" + String(friend_id);
+    //console.log("property: " + key);
+    let direction = "";
+
+    if(message.sender_id === user_id){
+        direction = "sent";
+    }else{
+        direction = "recieved";
+    }
+    //console.log("UPDATE LAST MESSAGE");
+    dispatch({
+        type: UPDATE_LAST_MESSAGE,
+        id: key,
+        payload: {
+            direction: direction,
+            message: message
+        }
+    })
 };

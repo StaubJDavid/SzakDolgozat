@@ -1,21 +1,19 @@
 import {FC, useEffect} from 'react';
 import { connect } from 'react-redux';
-import {getFriendList,getFriendlistTest} from '../../actions/chatActions';
+import {getFriendList,} from '../../actions/chatActions';
 import isEmpty from '../../helpers/isEmpty';
 import FriendButton from './FriendButton';
 
 type Props = {
     friendlist:any,
     changeChat:any,
-    getFriendList:any,
-    getFriendlistTest:any
+    getFriendList:any
 };
 
-const Friendlist: FC<Props> = ({friendlist,getFriendList,changeChat,getFriendlistTest}) => {
+const Friendlist: FC<Props> = ({friendlist,getFriendList,changeChat}) => {
 
     useEffect(() => {
         getFriendList();
-        getFriendlistTest();
     },[]);
 
 return (
@@ -32,4 +30,4 @@ const mapStateToProps = (state:any)=>({
     friendlist: state.chat.friendlist
 });
 
-export default connect(mapStateToProps, {getFriendList,getFriendlistTest})(Friendlist);
+export default connect(mapStateToProps, {getFriendList})(Friendlist);

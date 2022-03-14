@@ -35,6 +35,7 @@ router.get('/friendlist', verify, async (req, res) => {
 
             const messagesResult = await cc.getOwnMessages(user_id,friendlistRaw.data.length);
             //res.json(messagesResult);
+            //console.log(messagesResult);
 
             const lastMessages = {};
             for(let i = 0; i < messagesResult.datasent.length; i++){

@@ -13,8 +13,8 @@ class chatClass {
         ;
 
         this.sql_ownMessages =
-            'SELECT * FROM `messages` WHERE sender_id = ? ORDER BY reciever_id DESC, timestamp DESC LIMIT ? ; ' + 
-            'SELECT * FROM `messages` WHERE reciever_id = ? ORDER BY sender_id DESC, timestamp DESC LIMIT ? ' 
+            'SELECT * FROM `messages` WHERE `message_id` IN (SELECT max(`message_id`) FROM `messages` WHERE `sender_id` = ? GROUP BY `reciever_id`) ;' +
+            'SELECT * FROM `messages` WHERE `message_id` IN (SELECT max(`message_id`) FROM `messages` WHERE `reciever_id` = ? GROUP BY `sender_id`) '
         ;
 
         this.sql_allMessages =
@@ -80,7 +80,7 @@ class chatClass {
     async getOwnMessages(user_id,length){
         let error = new Error('Send message');
         return new Promise((resolve,reject) => {
-            db.query(this.sql_ownMessages, [user_id, length, user_id, length], (err, results) => {
+            db.query(this.sql_ownMessages, [user_id, user_id], (err, results) => {
                 if(err){
                     console.log(err);
                     error.query = "sql_ownMessages query error";

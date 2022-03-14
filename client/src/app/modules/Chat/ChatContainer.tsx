@@ -31,20 +31,6 @@ const ChatContainer: FC<Props> = ({currentChat,chat,addNewConversation,postMessa
         }
     }
 
-    useEffect(() => {
-        if(chat.socket.current){
-            chat.socket.current.on("msg-recieve",(msg:any) => {
-                console.log("RECIEVED MESSAGE: ", msg);
-                
-                addMessageToConversation(msg.sender_id,msg.reciever_id,msg);
-            })
-        }
-    },[]);
-
-    /*useEffect(()=>{
-        arrivalMessage && setMessages(prev => [...prev, arrivalMessage] as any);
-    },[arrivalMessage])*/
-
     return (
         <div>
             <h1>{currentChat.friend_name}</h1>

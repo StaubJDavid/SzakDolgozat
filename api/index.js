@@ -72,6 +72,8 @@ server.listen(process.env.PORT, () => {
     console.log(`Listening to ${process.env.PORT}`);
 });
 
+//"http://80.98.214.13:3011"
+//"http://localhost:3011"
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:3011",
@@ -91,7 +93,7 @@ io.on("connection",(socket)=> {
         // console.log("AddUser Socket: ", socket.id);
         onlineUsers.set(userId, socket.id);
         lookupTable.set(socket.id, userId);
-        //console.log(onlineUsers);
+        console.log(onlineUsers);
     });
 
     socket.on("send-msg", (data)=>{

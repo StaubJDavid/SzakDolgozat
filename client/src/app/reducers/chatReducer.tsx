@@ -8,7 +8,8 @@ import {
 
     SET_TEST,
     ADD_NEW_CONVERSATION,
-    ADD_MESSAGE_TO_CONVERSATION
+    ADD_MESSAGE_TO_CONVERSATION,
+    UPDATE_LAST_MESSAGE
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
@@ -69,6 +70,17 @@ export default function(state = initialState, action:any){
                 [action.id]: {
                     ...state.loadedConversations[action.id],
                     messages:[action.payload, ...state.loadedConversations[action.id].messages]
+                }
+            }
+        };
+
+        case UPDATE_LAST_MESSAGE: return {
+            ...state,
+            friendlist:{
+                ...state.friendlist,
+                messages: {
+                    ...state.friendlist.messages,
+                    [action.id]: action.payload
                 }
             }
         };
