@@ -19,6 +19,8 @@ const {userGetSelfValidator,
 } = require('../helpers/validations/userValidations');
 const uq = require('../helpers/queries/userQueries');
 const frq = require('../helpers/queries/friendRequestQueries');
+const friendClass = require('../helpers/queries/friendQueries');
+const fq = new friendClass();
 
 require('dotenv').config();
 
@@ -27,7 +29,9 @@ require('dotenv').config();
 // Get the current user based on the authorization header
 // Private
 // -------------------------------
-router.get('/', verify, (req, res) => {
+
+//Friend Query Integration Done
+router.get('/', verify, async (req, res) => {
     const {id} = req.jwt
     const errors = userGetSelfValidator(req.jwt);
     
@@ -61,7 +65,7 @@ router.get('/', verify, (req, res) => {
                     profile.registered = results1[0].registered;
                     profile.last_login = results1[0].last_login;
 
-                    db.query(uq.sql_getUserDetails, [id], (err2, results2) => {
+                    db.query(uq.sql_getUserDetails, [id], async (err2, results2) => {
                         if(err2){
                             console.log(err2);
                             errors.query = "sql_getUserDetails query error";
@@ -74,14 +78,21 @@ router.get('/', verify, (req, res) => {
                                     case 1:profile.bio = results2[i].value;break;
                                     case 2:profile.liked_manga.push(results2[i].value);break;
                                     case 3:profile.disliked_manga.push(results2[i].value);break;
-                                    case 4:profile.friends.push({
+                                    /*case 4:profile.friends.push({
                                         fid:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
                                         fnickname:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                                    });break;
+                                    });break;*/
                                 }
                             }
 
-                            res.json(profile);
+                            try {
+                                const friendList = await fq.getFriends(id);
+                                profile.friends = friendList;
+
+                                res.json(profile);
+                            } catch (error) {
+                                res.status(400).json(error);
+                            }
                         }
                     });
                 }else{
@@ -105,7 +116,9 @@ router.get('/', verify, (req, res) => {
 // Get the specified user based on u_id
 // Private
 // -------------------------------
-router.get('/:u_id', verify, (req, res) => {
+
+//Friend Query Integration Done
+router.get('/:u_id', verify, async (req, res) => {
     const id = req.params.u_id;
     const errors = userGetUserIdValidator(req.jwt,req.params.u_id);
 
@@ -139,7 +152,7 @@ router.get('/:u_id', verify, (req, res) => {
                     profile.registered = results1[0].registered;
                     profile.last_login = results1[0].last_login;
 
-                    db.query(uq.sql_getUserDetails, [id], (err2, results2) => {
+                    db.query(uq.sql_getUserDetails, [id], async (err2, results2) => {
                         if(err2){
                             console.log(err2);
                             errors.query = "sql_getUserDetails query error";
@@ -163,43 +176,36 @@ router.get('/:u_id', verify, (req, res) => {
                                         value:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
                                     });break;
 
-                                    case 4:profile.friends.push({
+                                    /*case 4:profile.friends.push({
                                         ud_id:results2[i].ud_id,
                                         fid:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
                                         fnickname:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                                    });break;
+                                    });break;*/
                                 }
+                            }
+
+                            try {
+                                const friendList = await fq.getFriends(id);
+                                profile.friends = friendList;
+
+                                //res.json(profile);
+                            } catch (error) {
+                                //res.status(400).json(error);
+                                console.log(error);
                             }
 
                             if(req.jwt.id === id){
                                 profile.are_friends = false;
                                 res.json(profile);
                             }else{
-                                db.query(frq.sql_checkIfFriends, [id], (err3, results3) => {
-                                    if(err3){
-                                        console.log(err3);
-                                        errors.query = "sql_checkIfFriends query error";
-                                        errors.log = err3;
-                        
-                                        res.status(400).json(errors);
-                                    }else{                                        
-                                        let friends = 0;
-                                        let fnickname = "";
-    
-                                        for(let i = 0; i < results3.length; i++){
-                                            let fid = results3[i].value.substring(0,results3[i].value.indexOf(' '));
-                                            fnickname = results3[i].value.substring(results3[i].value.indexOf(' ')+1)
-                                            if(parseInt(fid) == parseInt(req.jwt.id)){
-                                                friends = 1;
-                                                break;
-                                            }
-                                        }
-
-                                        friends === 1?profile.are_friends=true:profile.are_friends=false;
-                                        
-                                        res.json(profile);
-                                    }
-                                });
+                                //CHEK IF FRIENDS STUFF
+                                try {
+                                    profile.are_friends = await fq.checkIfFriends(id,req.jwt.id)
+                                            
+                                    res.json(profile);
+                                } catch (error) {
+                                    res.status(400).json("Error");
+                                }
                             }
                         }
                     });
@@ -224,6 +230,8 @@ router.get('/:u_id', verify, (req, res) => {
 // Add details to the database(Bio,liked manga, disliked manga, friends)
 // Private
 // -------------------------------
+
+//Doesnt need friend integration
 router.post('/details', verify, (req, res) => {
     const {dt_id,value} = req.body;
     const user_id = req.jwt.id;
@@ -280,6 +288,8 @@ router.post('/details', verify, (req, res) => {
 // Delete the specified detail from the database(Bio,liked manga, disliked manga, friends)
 // Private
 // -------------------------------
+
+//Doesnt need friend integration
 router.delete('/details/:ud_id', verify, (req, res) => {
     const ud_id = req.params.ud_id;
     const user_id = req.jwt.id;
@@ -321,6 +331,8 @@ router.delete('/details/:ud_id', verify, (req, res) => {
 // Edit the specified detail in the database(Bio,liked manga, disliked manga, friends)
 // Private
 // -------------------------------
+
+//Doesnt need friend integration
 router.put('/details/:ud_id', verify, (req, res) => {
     const ud_id = req.params.ud_id;
     const user_id = req.jwt.id;
@@ -393,7 +405,9 @@ router.put('/details/:ud_id', verify, (req, res) => {
 // Send a friend request(Add it to the database) based on the header, and request body
 // Private
 // -------------------------------
-router.post('/friend-request', verify, (req, res) => {
+
+//Friends integrated
+router.post('/friend-request', verify, async (req, res) => {
     const {reciever_id, message} = req.body;
     const user_id = req.jwt.id;
 
@@ -402,7 +416,7 @@ router.post('/friend-request', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(frq.sql_checkBeforeSendFriendRequest, [user_id,reciever_id,reciever_id], (err1, results1) => {
+        db.query(frq.sql_checkBeforeSendFriendRequest, [user_id,reciever_id,reciever_id], async (err1, results1) => {
             if(err1){
                 console.log(err1);
                 errors.query = "sql_checkBeforeSendFriendRequest query error";
@@ -411,59 +425,45 @@ router.post('/friend-request', verify, (req, res) => {
                 res.status(400).json(errors);
             }else{
                 if(results1[0].length === 0 && results1[1].length === 1){
-                    db.query(frq.sql_checkIfFriends, [user_id], (err2, results2) => {
-                        if(err2){
-                            console.log(err2);
-                            errors.query = "sql_checkIfFriends query error";
-                            errors.log = err2;
-                
-                            res.status(400).json(errors);
-                        }else{
-                            let friends = 0;
-                            let fnickname = "";
 
-                            for(let i = 0; i < results2.length; i++){
-                                let fid = results2[i].value.substring(0,results2[i].value.indexOf(' '));
-                                fnickname = results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                                if(parseInt(fid) == parseInt(reciever_id)){
-                                    friends = 1;
-                                    break;
-                                }
-                            }
-
-                            if(friends == 0){
-                                db.query(frq.sql_sendFriendRequest, [user_id,reciever_id,message], (err3, results3) => {
-                                    if(err3){
-                                        console.log(err3);
-                                        errors.query = "sql_sendFriendRequest query error";
-                                        errors.log = err3;
-                            
-                                        res.status(400).json(errors);
+                    try {
+                        let friends = await fq.checkIfFriends(reciever_id,user_id)
+                                
+                        if(!friends){
+                            db.query(frq.sql_sendFriendRequest, [user_id,reciever_id,message], (err3, results3) => {
+                                if(err3){
+                                    console.log(err3);
+                                    errors.query = "sql_sendFriendRequest query error";
+                                    errors.log = err3;
+                        
+                                    res.status(400).json(errors);
+                                }else{
+                                    if(results3.affectedRows === 1){
+                                        res.json({success: "Sent request to " + reciever_id});
                                     }else{
-                                        if(results3.affectedRows === 1){
-                                            res.json({success: "Sent request to " + reciever_id});
-                                        }else{
-                                            if(results3.affectedRows === 0){
-                                                errors.query = "No such record inserted";
-                                            }
-                            
-                                            if(results3.affectedRows > 1){
-                                                errors.query = "More than 1 record inserted";
-                                            }
-                            
-                                            res.status(400).json(errors);
-                                        }           
-                                    }
-                                });
-                            }else{
-                                if(friends == 1){
-                                    errors.query = "You are already friend with this person: " + fnickname;
+                                        if(results3.affectedRows === 0){
+                                            errors.query = "No such record inserted";
+                                        }
+                        
+                                        if(results3.affectedRows > 1){
+                                            errors.query = "More than 1 record inserted";
+                                        }
+                        
+                                        res.status(400).json(errors);
+                                    }           
                                 }
-            
-                                res.status(400).json(errors);
-                            }                                   
-                        }
-                    });
+                            });
+                        }else{
+                            if(friends){
+                                errors.query = "You are already friend with this person: " + fnickname;
+                            }
+        
+                            res.status(400).json(errors);
+                        }   
+                    } catch (error) {
+                        console.log(error);
+                        res.status(400).json("Is this the error?");
+                    }
                 }else{
                     if(results1[0].length === 1){
                         errors.query = "You already sent a friend request to this person";
@@ -490,6 +490,8 @@ router.post('/friend-request', verify, (req, res) => {
 // Send a friend request(Add it to the database) based on the header, and request body
 // Private
 // -------------------------------
+
+//Friend integration Done
 router.post('/friend-request/accept', verify, (req, res) => {
     const {sender_id} = req.body;
     const user_id = req.jwt.id;
@@ -517,9 +519,8 @@ router.post('/friend-request/accept', verify, (req, res) => {
                             res.status(400).json(errors);
                         }else{
                             if(results1.length === 1){
-                                db.query(frq.sql_acceptFriendRequest, [user_id,sender_id,sender_id,user_id,
-                                                                       user_id,sender_id + ' ' + results1[0].nickname ,
-                                                                       sender_id,user_id + ' ' + req.jwt.nickname
+                                db.query(frq.sql_acceptFriendRequest, [user_id,sender_id, sender_id,user_id,
+                                                                       user_id,sender_id, sender_id,user_id
                                 ], (err2, results2) => {
                                     if(err2){
                                         errors.query = "sql_acceptFriendRequest query error";
@@ -576,6 +577,8 @@ router.post('/friend-request/accept', verify, (req, res) => {
 // Delete/refuse a friend request based on the request body
 // Private
 // -------------------------------
+
+//Friend integration not needed
 router.delete('/friend-request', verify, (req, res) => {
     const {other_id} = req.body;
     const user_id = req.jwt.id;
@@ -616,6 +619,8 @@ router.delete('/friend-request', verify, (req, res) => {
 // Gets every friend request the user has based on the authorization header
 // Private
 // -------------------------------
+
+//Friend integration not needed
 router.get('/get/friend-request', verify, (req, res) => {
     const user_id = req.jwt.id;
     const errors = userGetFriendRequestValidator(req.jwt);
@@ -665,7 +670,9 @@ router.get('/get/friend-request', verify, (req, res) => {
 // Delete friend based on the authorization header and body params
 // Private
 // -------------------------------
-router.delete('/friend', verify, (req, res) => {
+
+//Friend integration Done
+router.delete('/friend', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const {friend_id} = req.body;
     const errors = userDelFriendValidator(req.jwt,req.body);
@@ -673,63 +680,15 @@ router.delete('/friend', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(uq.sql_getFriend, [user_id, friend_id], (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_getFriend query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
-            }else{
-                let ufudid = -1;
-                let ffudid = -1;
-                //let fid = results2[i].value.substring(0,results2[i].value.indexOf(' '));
-                //fnickname = results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                for(let i = 0; i < results1[0].length; i++){
-                    let frId = parseInt(results1[0][i].value.substring(0,results1[0][i].value.indexOf(' ')));
-                    if(results1[0][i].user_id == user_id && frId == friend_id){
-                        ufudid = results1[0][i].ud_id;
-                    }
-                }  
-                
-                for(let i = 0; i < results1[1].length; i++){
-                    let uId = parseInt(results1[1][i].value.substring(0,results1[1][i].value.indexOf(' ')));
-                    if(results1[1][i].user_id == friend_id && uId == user_id){
-                        ffudid = results1[1][i].ud_id;
-                    }
-                } 
-                
-                if(ufudid != -1 && ffudid != -1){
-                    db.query(uq.sql_deleteFriend, [ufudid, ffudid], (err2, results2) => {
-                        if(err2){
-                            console.log(err2);
-                            errors.query = "sql_deleteFriend query error";
-                            errors.log = err2;
-                
-                            res.status(400).json(errors);
-                        }else{
-                            if(results2.affectedRows == 2){
-                                res.json({success: "Successfully deleted friend"});
-                            }else{
-                                if(results2.affectedRows == 0){
-                                    errors.query = "No friend request with: " + friend_id;
-                                }
-                
-                                if(results2.affectedRows == 1 || results2.affectedRows > 2){
-                                    errors.query = "Deleted rows error: " + results2.affectedRows;
-                                }
-            
-                                res.status(400).json(errors);
-                            }
-                        }
-                    });
-                }else{
-                    errors.query = "You are not friends with: " + friend_id;
+        try {
+            const friendsResult = await fq.getFriendlistIds(user_id, friend_id);
 
-                    res.status(400).json(errors);
-                }
-            }
-        });
+            const delFriendResult = await fq.deleteFriends(friendsResult[0].fr_id, friendsResult[1].fr_id);
+
+            res.json({success: "Successfully deleted friend"});
+        } catch (error) {
+            res.status(400).json(error);
+        }
     }
 });
 

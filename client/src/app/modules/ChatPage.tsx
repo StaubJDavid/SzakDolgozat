@@ -2,7 +2,7 @@ import {FC, useEffect, useState} from 'react';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {subscribeToManga} from '../actions/profileActions'
-import {getFriendList} from '../actions/chatActions';
+import {getFriendList, setCurrentChat} from '../actions/chatActions';
 import classnames from 'classnames';
 import ISO6391 from 'iso-639-1';
 import AddButton from '../common/AddButton';
@@ -14,10 +14,12 @@ import isEmpty from '../helpers/isEmpty';
 import './Chat/ChatStyle.css';
 
 type Props = {
+    currentChat:any,
+    setCurrentChat:any
 };
 
-const ChatPage: FC<Props> = () => {
-    const [currentChat, setCurrentChat] = useState({});
+const ChatPage: FC<Props> = ({currentChat,setCurrentChat}) => {
+    //const [currentChat, setCurrentChat] = useState({});
 
     const handleChatChange = (friend:any) => {
         setCurrentChat(friend);
@@ -30,7 +32,7 @@ const ChatPage: FC<Props> = () => {
                 <div className="messaging">
                     <div className="inbox_msg">
                         {/*Friendlist */}
-                        <Friendlist currentChat={currentChat} changeChat={handleChatChange}/>
+                        <Friendlist changeChat={handleChatChange}/>
                         {/*Messages */}
                         <div className="mesgs">
                             {isEmpty(currentChat)?<></>:<ChatContainer currentChat={currentChat}/>}
@@ -43,9 +45,10 @@ const ChatPage: FC<Props> = () => {
 };
 
 const mapStateToProps = (state:any)=>({
+    currentChat: state.chat.currentChat
 });
 
-export default connect(mapStateToProps, {})(ChatPage);
+export default connect(mapStateToProps, {setCurrentChat})(ChatPage);
 
 /*return (
     <div className='container p-0 m-0'>

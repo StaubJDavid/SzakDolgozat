@@ -9,24 +9,27 @@ import {
     SET_TEST,
     ADD_NEW_CONVERSATION,
     ADD_MESSAGE_TO_CONVERSATION,
-    UPDATE_LAST_MESSAGE
+    UPDATE_LAST_MESSAGE,
+    SET_CURRENT_CHAT
 } from "../actions/types";
 import isEmpty from "../helpers/isEmpty";
  
 interface ChatState {
     socket:any,
     connected:any,
-    ongoingConversations:any,
+    newMessages:any,
     friendlist:any,
     loadedConversations:any,
+    currentChat:any,
   }
 
 const initialState:ChatState = {
     socket:{},
     connected:false,
-    ongoingConversations:[],
+    newMessages:[],
     friendlist:{},
     loadedConversations:{},
+    currentChat:{},
 }
 
 export default function(state = initialState, action:any){
@@ -41,15 +44,15 @@ export default function(state = initialState, action:any){
         };
         case ADD_CONVERSATION: return {
             ...state,
-            ongoingConversations: [...state.ongoingConversations, ...action.payload]
+            newMessages: [...state.newMessages, action.payload]
         };
         case SET_CONVERSATION: return {
             ...state,
-            ongoingConversations: action.payload
+            newMessages: action.payload
         };
         case SET_FRIENDLIST: return {
             ...state,
-            friendlist: action.payload
+            friendlist: action.payload.friendlist
         };
 
         case SET_TEST: return {
@@ -78,11 +81,13 @@ export default function(state = initialState, action:any){
             ...state,
             friendlist:{
                 ...state.friendlist,
-                messages: {
-                    ...state.friendlist.messages,
-                    [action.id]: action.payload
-                }
+                data: action.payload
             }
+        };
+
+        case SET_CURRENT_CHAT: return {
+            ...state,
+            currentChat: action.payload
         };
         default: return state;
     }

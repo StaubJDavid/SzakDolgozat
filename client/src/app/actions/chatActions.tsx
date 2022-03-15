@@ -11,7 +11,8 @@ import {
     ADD_TEST,
     ADD_NEW_CONVERSATION,
     ADD_MESSAGE_TO_CONVERSATION,
-    UPDATE_LAST_MESSAGE
+    UPDATE_LAST_MESSAGE,
+    SET_CURRENT_CHAT
 } from './types';
 import setAuthToken from '../helpers/setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -101,47 +102,15 @@ export const getMessages = (friend_id:any,user_id:any) => (dispatch:any) => {
     );
 };
 
-/*export const getFriendlistTest = () => (dispatch:any) => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api/chat/friendlist`
-    ).then(
-        res => {
-            //console.log(res.data);
-            for(let i = 0; i < res.data.friendlist.data.length; i++){
-                dispatch({
-                    type: ADD_TEST,
-                    id: res.data.friendlist.data[i].user_id+"_"+ res.data.friendlist.data[i].friend_id,
-                    payload:  res.data.friendlist.data[i]
-                })
-            }
-
-            for(let i = 0; i < res.data.friendlist.data.length; i++){
-                dispatch({
-                    type: ADD_TEST,
-                    id: res.data.friendlist.data[i].user_id+"_"+ res.data.friendlist.data[i].friend_id,
-                    payload:  {...res.data.friendlist.data[i], update:true}
-                })
-            }
-            
-        }
-    ).catch(
-        err => {
-            console.log(err);
-            dispatch({
-                type: GET_ERRORS,
-                payload: null
-            });
-        }
-    );
-};*/
-
 export const addNewConversation = (friend_id:any,user_id:any) => (dispatch:any) => {
+    console.log("AddNewConversation");
     axios.get(`${process.env.REACT_APP_API_URL}/api/chat/messages/${friend_id}`
     ).then(
         res => {
             /*console.log(friend_id);
             console.log(user_id);
             console.log(res.data);*/
-            if(res.data.data.length !== 0) dispatch(updateLastMessage(friend_id, user_id, res.data.data[0]));
+            //if(res.data.data.length !== 0) dispatch(updateLastMessage(friend_id, user_id, res.data.data[0]));
             dispatch({
                 type: ADD_NEW_CONVERSATION,
                 id:user_id + "_" + friend_id,
@@ -167,6 +136,7 @@ export const addNewConversation = (friend_id:any,user_id:any) => (dispatch:any) 
 export const addMessageToConversation = (friend_id:any, user_id:any, message:any) => (dispatch:any) => {
     const key = String(user_id) + "_" + String(friend_id);
     //console.log("property: " + key);
+    dispatch(addUnreadMessage(message));
     if(store.getState().chat.loadedConversations.hasOwnProperty(key)){
         dispatch({
             type: ADD_MESSAGE_TO_CONVERSATION,
@@ -177,6 +147,7 @@ export const addMessageToConversation = (friend_id:any, user_id:any, message:any
     }else{
         //console.log("No property: " + key + " Adding it");
         dispatch(addNewConversation(friend_id,user_id));
+        dispatch(updateLastMessage(friend_id, user_id, message));
     }
 };
 
@@ -194,22 +165,57 @@ export const postMessage = (msg:any, reciever_id:any) => (dispatch:any) => {
 };
 
 export const updateLastMessage = (friend_id:any, user_id:any, message:any) => (dispatch:any) => {
-    const key = String(user_id) + "_" + String(friend_id);
-    //console.log("property: " + key);
-    let direction = "";
+    let index = store.getState().chat.friendlist.data.findIndex((fr:any) => 
+        fr.user_id === user_id && fr.friend_id === friend_id
+    )
 
-    if(message.sender_id === user_id){
-        direction = "sent";
-    }else{
-        direction = "recieved";
+    if(index !== -1){
+        let lastMessage = store.getState().chat.friendlist.data[index];
+
+        lastMessage.message_id = message.message_id;
+        lastMessage.message = message.message;
+        lastMessage.timestamp = message.timestamp;
+        lastMessage.sender_id = message.sender_id
+
+        let dataArray = store.getState().chat.friendlist.data.filter((item:any, aindex:number) => aindex !== index);
+        console.log(dataArray);
+        console.log(lastMessage);
+        dataArray.unshift(lastMessage);
+        dispatch({
+            type: UPDATE_LAST_MESSAGE,
+            payload: dataArray
+        })
     }
-    //console.log("UPDATE LAST MESSAGE");
+};
+
+export const setCurrentChat = (chat:any) => (dispatch:any) => {
+    let array = store.getState().chat.newMessages.filter((e:any) => 
+    !(chat.user_id === e.sender_id && chat.friend_id === e.reciever_id) && 
+    !(chat.user_id === e.reciever_id && chat.friend_id === e.sender_id)
+    )
+
     dispatch({
-        type: UPDATE_LAST_MESSAGE,
-        id: key,
-        payload: {
-            direction: direction,
-            message: message
-        }
+        type: SET_CONVERSATION,
+        payload: array
     })
+
+    dispatch({
+        type: SET_CURRENT_CHAT,
+        payload: chat
+    })
+};
+
+export const addUnreadMessage = (message:any) => (dispatch:any) => {
+    const currentChat = store.getState().chat.currentChat;
+    if(
+        (currentChat.user_id === message.sender_id && currentChat.friend_id === message.reciever_id) || 
+        (currentChat.user_id === message.reciever_id && currentChat.friend_id === message.sender_id)
+    ){
+
+    }else{
+        dispatch({
+            type: ADD_CONVERSATION,
+            payload: message
+        })
+    }
 };

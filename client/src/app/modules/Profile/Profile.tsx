@@ -366,13 +366,13 @@ class Profile extends Component<Props,State> {
                                     <div className="card">
                                         {friends.map((element:any, i:number) => {
                                             return (
-                                                    <TextLinkDelete key={element.fid}
-                                                        url={'/profile/'+ element.fid}  
+                                                    <TextLinkDelete key={element.friend_id}
+                                                        url={'/profile/'+ element.friend_id}  
                                                         state_object={{}}
                                                         owned={this.state.own}
-                                                        text={element.fnickname}
+                                                        text={element.nickname}
                                                         onClick={this.onDeleteFriendClick}
-                                                        onClickData={element.fid}
+                                                        onClickData={element.friend_id}
                                                     />
                                             )
                                             })}

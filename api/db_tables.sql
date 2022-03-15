@@ -123,6 +123,16 @@ CREATE TABLE IF NOT EXISTS `messages` (
     FOREIGN KEY (reciever_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS `friend_list` (
+    `fr_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `friend_id` INT NOT NULL,
+    `message_id` INT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (friend_id) REFERENCES users(user_id),
+    FOREIGN KEY (message_id) REFERENCES messages(message_id)
+);
+
 
 //Inserts
 //USER

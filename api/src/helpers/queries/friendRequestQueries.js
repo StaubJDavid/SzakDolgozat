@@ -24,7 +24,7 @@ const friendRequestQueries = {
 
     sql_acceptFriendRequest: 
         "DELETE FROM `friend_requests` WHERE (sender_id = ? AND reciever_id = ?) OR (sender_id = ? AND reciever_id = ?);"+
-        "INSERT INTO user_details (`user_id`,`dt_id`,`value`) VALUES (?,4,?), (?,4,?)"
+        "INSERT INTO `friend_list` (`user_id`,`friend_id`) VALUES (?,?), (?,?)"
     ,
 
     //Delete

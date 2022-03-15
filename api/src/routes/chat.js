@@ -7,11 +7,16 @@ const saltRounds = 10;
 const verify = require('../helpers/verify');
 const isEmpty = require('../helpers/isEmpty');
 
-const chatClass = require('../helpers/queries/chatQueries');
+
 const checkIfFriends = require('../helpers/checkIfFriends');
 const checkIfHasMessageProperty = require('../helpers/checkIfHasMessageProperty');
 const getMessageKey = require('../helpers/getMessageKey');
+
+const chatClass = require('../helpers/queries/chatQueries');
 const cc = new chatClass();
+
+const friendClass = require('../helpers/queries/friendQueries');
+const fq = new friendClass();
 
 require('dotenv').config();
 
@@ -24,18 +29,19 @@ router.get('/friendlist', verify, async (req, res) => {
     const user_id = req.jwt.id
 
     try {
-        const friendlistRaw = await cc.getFriendlist(user_id);
+        //Integrate friend queries correctly
+        let friendlistRaw = {};
+        friendlistRaw.success = true;
+        friendlistRaw.data = await fq.getFriendsWithMessage(user_id);
         if(friendlistRaw.success){
             
-            for(let i = 0; i<friendlistRaw.data.length ; i++){
+            /*for(let i = 0; i<friendlistRaw.data.length ; i++){
                 friendlistRaw.data[i].friend_id = parseInt(friendlistRaw.data[i].value.substring(0,friendlistRaw.data[i].value.indexOf(' ')));
                 friendlistRaw.data[i].friend_name = friendlistRaw.data[i].value.substring(friendlistRaw.data[i].value.indexOf(' ')+1);
-            }
+            }*/
             //res.json(friendlistRaw);
 
             const messagesResult = await cc.getOwnMessages(user_id,friendlistRaw.data.length);
-            //res.json(messagesResult);
-            //console.log(messagesResult);
 
             const lastMessages = {};
             for(let i = 0; i < messagesResult.datasent.length; i++){
@@ -76,6 +82,13 @@ router.get('/friendlist', verify, async (req, res) => {
                 }
             }
 
+            /*for(let i = 0; i < friendlistRaw.data.length; i++){
+                const messageKey = getMessageKey(lastMessages,friendlistRaw.data[i].friend_id,friendlistRaw.data[i].user_id);
+                if(lastMessages.hasOwnProperty(messageKey)){
+
+                }
+            }*/
+
             const data = {
                 friendlist: friendlistRaw,
                 messages: lastMessages
@@ -98,14 +111,14 @@ router.get('/messages/:friend_id', verify, async (req, res) => {
     const friend_id = req.params.friend_id;
 
     try {
-        const friends = await checkIfFriends(user_id, friend_id);
-        if(friends === 1){
+        const friends = await fq.checkIfFriends(user_id, friend_id);
+        if(friends){
             
             const messagesResult = await cc.getAllMessages(user_id, friend_id);
             
             res.json(messagesResult);
 
-        }else if(friends === 0){
+        }else if(!friends){
             res.status(400).json({success:false, reason: "Not friends"});
         }else{
             res.status(400).json({success:false, reason: "SQL error"});
@@ -125,18 +138,21 @@ router.post('/send', verify, async (req, res) => {
     console.log(req.body);*/
 
     try {
-        const friends = await checkIfFriends(user_id, reciever_id);
+        //const friends = await checkIfFriends(user_id, reciever_id);
+        const friends = await fq.checkIfFriends(user_id, reciever_id);
 
-        if(friends === 1){
+        if(friends){
             const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
             const insertResult = await cc.sendMessage(user_id, reciever_id, message, timestamp);
             
+            const updateResult = await cc.updateLastMessage(insertResult.data.insertId, user_id, reciever_id);
+            console.log(updateResult);
             const selectInsertResult = await cc.getMessage(insertResult.data.insertId);
             
             res.json(selectInsertResult);
 
-        }else if(friends === 0){
+        }else if(!friends){
             res.status(400).json({success:false, reason: "Not friends"});
         }else{
             res.status(400).json({success:false, reason: "SQL error"});

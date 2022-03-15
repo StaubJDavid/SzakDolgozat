@@ -25,6 +25,10 @@ class chatClass {
             'SELECT * FROM `messages` WHERE message_id = ?'    
         ;
 
+        this.sql_updateLastMessage =
+            'UPDATE `friend_list` SET `message_id` = ? WHERE ( `user_id` = ? AND `friend_id` = ? ) OR ( `user_id` = ? AND `friend_id` = ? ) ;'    
+        ;
+
     };
 
     /*async getMangaLatestChapterInLanguage(manga_id,translatedL) {
@@ -127,6 +131,29 @@ class chatClass {
             });
         })  
     };
+
+
+    async updateLastMessage(message_id,user_id, reciever_id){
+        let error = new Error('Send message');
+        return new Promise((resolve,reject) => {
+            db.query(this.sql_updateLastMessage, [message_id, user_id, reciever_id, reciever_id, user_id], (err, results) => {
+                if(err){
+                    console.log(err);
+                    error.query = "sql_updateLastMessage query error";
+                    error.log = err;
+        
+                    reject(error);
+                }else{
+                    if(results.affectedRows === 2){
+                        resolve(true);
+                    }else{
+                        resolve(false);
+                    }
+                }
+            });
+        })  
+    };
+
 }
 
 module.exports = chatClass;
