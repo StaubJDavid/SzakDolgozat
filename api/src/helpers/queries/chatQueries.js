@@ -1,6 +1,5 @@
 const axios = require('axios');
 const db = require('../../database/db');
-const getMangaTitle = require('../getMangaTitle');
 
 class chatClass {
     constructor(){
@@ -30,18 +29,6 @@ class chatClass {
         ;
 
     };
-
-    /*async getMangaLatestChapterInLanguage(manga_id,translatedL) {
-        return await axios.get(`https://api.mangadex.org/chapter?manga=${manga_id}&translatedLanguage[]=${translatedL}&order[volume]=desc&order[chapter]=desc&limit=1&includes[]=manga`)
-        .then(
-            res => {
-                if(res.data.total === 0) return {result: "Language", chapter: -1.0};
-                if(res.data.data[0].attributes.title === "Oneshot") return {result: "Oneshot", chapter: -1.0};
-                return {result: "Success", chapter: parseFloat(res.data.data[0].attributes.chapter), manga_name:getMangaTitle(res.data.data[0].relationships,translatedL), chapterId:res.data.data[0].id};
-                
-            }
-        )
-    };*/
 
     async getFriendlist(id){
         let error = new Error('Get friendlist');

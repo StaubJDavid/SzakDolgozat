@@ -1,6 +1,4 @@
-const axios = require('axios');
 const db = require('../../database/db');
-const getMangaTitle = require('../getMangaTitle');
 
 class friendClass {
     constructor(){

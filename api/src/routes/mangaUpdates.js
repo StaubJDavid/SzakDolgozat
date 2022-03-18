@@ -12,8 +12,6 @@ const checkIfFriends = require('../helpers/checkIfFriends');
 const voteValidations = require('../helpers/validations/voteValidations');
 const mangaUpdatesValidations = require('../helpers/validations/mangaUpdatesValidations');
 const muv = new mangaUpdatesValidations();
-const vq = require('../helpers/queries/voteQueries');
-const cq = require('../helpers/queries/commentQueries');
 const verify_check = require('../helpers/verify_check');
 const mangaUpdatesClass = require('../helpers/queries/mangaUpdatesQueries');
 const muq = new mangaUpdatesClass();
@@ -117,56 +115,6 @@ router.delete('/updates', verify, async (req, res) => {
         res.status(400).json(error);
     }
 });
-
-//TODO do the function that checks for every subscribed manga's latest chapter
-//Update the db based on the results
-//Notify subscribed users through email
-//Make it self repeating hourly
-
-//Unsubscribe from manga
-/*router.get('/recurring', async (req, res) => {
-    const errors = muv.mockValidator();
-
-    try {
-        const mangaResults = await muq.getAllMangaTranslate();
-        
-        getAllMangaTranslate(mangaResults)
-        .then( async results => {
-            const newChapterMangas = results.filter((r) => r.newChapter)
-            //res.json(newChapterMangas);
-            if(newChapterMangas.length > 0){
-                const updateResult = await muq.updateMangaTranslate(newChapterMangas);
-
-                let chapterIdLookupTable = {};
-                for(let i = 0; i< newChapterMangas.length; i++){
-                    chapterIdLookupTable[newChapterMangas[i].manga.imt_id] = newChapterMangas[i].chapterId;
-                }
-
-                console.log(chapterIdLookupTable);
-                
-                if(updateResult.success){
-                    const subscribedUsers = await muq.getEverySubscribedUser(newChapterMangas);
-                    sendMailToSubscribers(subscribedUsers, chapterIdLookupTable)
-                    .then( response => res.json(response))
-                    .catch( error => res.json(error))
-                    //res.json(thing);
-                }else{
-                    res.json({success:"ERROR", reason:updateResult.reason})
-                }
-            }else{
-                res.json("nothing to update")
-            }
-        })
-        .catch( err => {
-            res.json(err);
-        })
-        //res.json(mangaResults);
-    } catch (error) {
-        //Literally catch every error I raise, or something else does
-        console.log(error);
-        res.json(error);
-    }
-});*/
 
 const sendMailToSubscribers = (subscribedResults, lookupTable) => {
     console.log("In Send the mail to subscribers");

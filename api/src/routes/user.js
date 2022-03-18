@@ -17,10 +17,17 @@ const {userGetSelfValidator,
     userGetFriendRequestValidator,
     userDelFriendValidator
 } = require('../helpers/validations/userValidations');
-const uq = require('../helpers/queries/userQueries');
-const frq = require('../helpers/queries/friendRequestQueries');
+/*const uq = require('../helpers/queries/userQueries');
+const frq = require('../helpers/queries/friendRequestQueries');*/
+
 const friendClass = require('../helpers/queries/friendQueries');
-const fq = new friendClass();
+const fc = new friendClass();
+
+const userClass = require('../helpers/queries/userQueries');
+const uc = new userClass();
+
+const friendRequestClass = require('../helpers/queries/friendRequestQueries');
+const frc = new friendRequestClass();
 
 require('dotenv').config();
 
@@ -50,64 +57,44 @@ router.get('/', verify, async (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(uq.sql_getUser, [id], (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_getUser query error";
-                errors.log = err1;
+        try {
+            const getUserResult = await uc.getUser(id);
+
+            if(getUserResult.length === 1){
+                profile.id = getUserResult[0].user_id;
+                profile.nickname = getUserResult[0].nickname;
+                profile.email = getUserResult[0].email;
+                profile.registered = getUserResult[0].registered;
+                profile.last_login = getUserResult[0].last_login;
+
+                const getUserDetailsResult = await uc.getUserDetails(id);
+
+                for(let i = 0; i < getUserDetailsResult.length; i++){
+                    switch(getUserDetailsResult[i].dt_id){
+                        case 1:profile.bio = getUserDetailsResult[i].value;break;
+                        case 2:profile.liked_manga.push(getUserDetailsResult[i].value);break;
+                        case 3:profile.disliked_manga.push(getUserDetailsResult[i].value);break;
+                    }
+                }
+
+                const friendList = await fc.getFriends(id);
+                profile.friends = friendList;
+
+                res.json(profile);
+            }else{
+                if(getUserResult.length === 0){
+                    errors.query = "No such user found";
+                }
+
+                if(getUserResult.length > 1){
+                    errors.query = "More than 1 user found";
+                }
 
                 res.status(400).json(errors);
-            }else{
-                if(results1.length === 1){
-                    profile.id = results1[0].user_id;
-                    profile.nickname = results1[0].nickname;
-                    profile.email = results1[0].email;
-                    profile.registered = results1[0].registered;
-                    profile.last_login = results1[0].last_login;
-
-                    db.query(uq.sql_getUserDetails, [id], async (err2, results2) => {
-                        if(err2){
-                            console.log(err2);
-                            errors.query = "sql_getUserDetails query error";
-                            errors.log = err2;
-            
-                            res.status(400).json(errors);
-                        }else{
-                            for(let i = 0; i < results2.length; i++){
-                                switch(results2[i].dt_id){
-                                    case 1:profile.bio = results2[i].value;break;
-                                    case 2:profile.liked_manga.push(results2[i].value);break;
-                                    case 3:profile.disliked_manga.push(results2[i].value);break;
-                                    /*case 4:profile.friends.push({
-                                        fid:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
-                                        fnickname:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                                    });break;*/
-                                }
-                            }
-
-                            try {
-                                const friendList = await fq.getFriends(id);
-                                profile.friends = friendList;
-
-                                res.json(profile);
-                            } catch (error) {
-                                res.status(400).json(error);
-                            }
-                        }
-                    });
-                }else{
-                    if(results1.length === 0){
-                        errors.query = "No such user found";
-                    }
-
-                    if(results1.length > 1){
-                        errors.query = "More than 1 user found";
-                    }
-
-                    res.status(400).json(errors);
-                }
             }
-        });
+        } catch (error) {
+            res.status(400).json(error);
+        }
     }
 });
 
@@ -138,90 +125,60 @@ router.get('/:u_id', verify, async (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(uq.sql_getUser, [id], (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_getUser query error";
-                errors.log = err1;
+        try {
+            const getUserResult = await uc.getUser(id);
+
+            if(getUserResult.length === 1){
+                profile.id = getUserResult[0].user_id;
+                profile.nickname = getUserResult[0].nickname;
+                profile.registered = getUserResult[0].registered;
+                profile.last_login = getUserResult[0].last_login;
+
+                const getUserDetailsResult = await uc.getUserDetails(id);
+                for(let i = 0; i < getUserDetailsResult.length; i++){
+                    switch(getUserDetailsResult[i].dt_id){
+                        case 1:profile.bio = {ud_id:getUserDetailsResult[i].ud_id,value:getUserDetailsResult[i].value};break;
+                        
+                        case 2:profile.liked_manga.push({
+                            ud_id:getUserDetailsResult[i].ud_id,
+                            manga_id:getUserDetailsResult[i].value.substring(0,getUserDetailsResult[i].value.indexOf(' ')),
+                            value:getUserDetailsResult[i].value.substring(getUserDetailsResult[i].value.indexOf(' ')+1)
+                        });break;
+
+                        case 3:profile.disliked_manga.push({
+                            ud_id:getUserDetailsResult[i].ud_id,
+                            manga_id:getUserDetailsResult[i].value.substring(0,getUserDetailsResult[i].value.indexOf(' ')),
+                            value:getUserDetailsResult[i].value.substring(getUserDetailsResult[i].value.indexOf(' ')+1)
+                        });break;
+                    }
+                }
+                
+                const friendList = await fc.getFriends(id);
+                profile.friends = friendList;
+
+                if(req.jwt.id === id){
+                    profile.are_friends = false;
+                    res.json(profile);
+                }else{
+                    //CHEK IF FRIENDS STUFF
+                    profile.are_friends = await fc.checkIfFriends(id,req.jwt.id)
+                                
+                    res.json(profile);
+                }
+            }else{
+                if(getUserResult.length === 0){
+                    errors.no_user = "No such user found";
+                }
+
+                if(getUserResult.length > 1){
+                    errors.query = "More than 1 user found";
+                }
 
                 res.status(400).json(errors);
-            }else{
-                if(results1.length === 1){
-                    profile.id = results1[0].user_id;
-                    profile.nickname = results1[0].nickname;
-                    profile.registered = results1[0].registered;
-                    profile.last_login = results1[0].last_login;
-
-                    db.query(uq.sql_getUserDetails, [id], async (err2, results2) => {
-                        if(err2){
-                            console.log(err2);
-                            errors.query = "sql_getUserDetails query error";
-                            errors.log = err2;
-            
-                            res.status(400).json(errors);
-                        }else{
-                            for(let i = 0; i < results2.length; i++){
-                                switch(results2[i].dt_id){
-                                    case 1:profile.bio = {ud_id:results2[i].ud_id,value:results2[i].value};break;
-                                    
-                                    case 2:profile.liked_manga.push({
-                                        ud_id:results2[i].ud_id,
-                                        manga_id:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
-                                        value:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                                    });break;
-
-                                    case 3:profile.disliked_manga.push({
-                                        ud_id:results2[i].ud_id,
-                                        manga_id:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
-                                        value:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                                    });break;
-
-                                    /*case 4:profile.friends.push({
-                                        ud_id:results2[i].ud_id,
-                                        fid:results2[i].value.substring(0,results2[i].value.indexOf(' ')),
-                                        fnickname:results2[i].value.substring(results2[i].value.indexOf(' ')+1)
-                                    });break;*/
-                                }
-                            }
-
-                            try {
-                                const friendList = await fq.getFriends(id);
-                                profile.friends = friendList;
-
-                                //res.json(profile);
-                            } catch (error) {
-                                //res.status(400).json(error);
-                                console.log(error);
-                            }
-
-                            if(req.jwt.id === id){
-                                profile.are_friends = false;
-                                res.json(profile);
-                            }else{
-                                //CHEK IF FRIENDS STUFF
-                                try {
-                                    profile.are_friends = await fq.checkIfFriends(id,req.jwt.id)
-                                            
-                                    res.json(profile);
-                                } catch (error) {
-                                    res.status(400).json("Error");
-                                }
-                            }
-                        }
-                    });
-                }else{
-                    if(results1.length === 0){
-                        errors.no_user = "No such user found";
-                    }
-
-                    if(results1.length > 1){
-                        errors.query = "More than 1 user found";
-                    }
-
-                    res.status(400).json(errors);
-                }
             }
-        });
+        } catch (error) {
+            res.status(400).json(error);
+        }
     }
 });
 
@@ -232,7 +189,7 @@ router.get('/:u_id', verify, async (req, res) => {
 // -------------------------------
 
 //Doesnt need friend integration
-router.post('/details', verify, (req, res) => {
+router.post('/details', verify, async (req, res) => {
     const {dt_id,value} = req.body;
     const user_id = req.jwt.id;
 
@@ -241,45 +198,31 @@ router.post('/details', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(uq.sql_checkBeforeAddDetails, [user_id,dt_id,value], (err1, results1) => {
-        if(err1){
-            console.log(err1);
-            errors.query = "sql_addDetails query error";
-            errors.log = err1;
+        try {
+            const addDetailsCheckResult = await uc.checkBeforeAddDetails(user_id,dt_id,value);
+            if(addDetailsCheckResult.length === 0){
 
-            res.status(400).json(errors);
-        }else{
-            if(results1.length === 0){
-                db.query(uq.sql_addDetails, [user_id,dt_id,value], (err2, results2) => {
-                    if(err2){
-                        console.log(err2);
-                        errors.query = "sql_addDetails query error";
-                        errors.log = err2;
-        
-                        res.status(400).json(errors);
-                    }else{
-                        if(results2.affectedRows === 1){
-                            res.json({success: true});
-                        }else{
-                            errors.query = "Detail insert failed"
-                            res.status(400).json(errors);
-                        }
-                    }
-                });
+                const addDetailsResult = await uc.addDetails(user_id,dt_id,value);
+                if(addDetailsResult.affectedRows === 1){
+                    res.json({success: true});
+                }else{
+                    errors.query = "Detail insert failed"
+                    res.status(400).json(errors);
+                }
             }else{
-                if(results1.length === 1){
+                if(addDetailsCheckResult.length === 1){
                     errors.query = "Already in the database";
                 }
 
-                if(results1.length > 1){
+                if(addDetailsCheckResult.length > 1){
                     errors.query = "More than 1 record found";
                 }
 
                 res.status(400).json(errors);
-            }           
-        }
-    });
-        
+            }
+        } catch (error) {
+            res.status(400).json(error);
+        }        
     }
 });
 
@@ -290,7 +233,7 @@ router.post('/details', verify, (req, res) => {
 // -------------------------------
 
 //Doesnt need friend integration
-router.delete('/details/:ud_id', verify, (req, res) => {
+router.delete('/details/:ud_id', verify, async (req, res) => {
     const ud_id = req.params.ud_id;
     const user_id = req.jwt.id;
 
@@ -299,30 +242,24 @@ router.delete('/details/:ud_id', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(uq.sql_deleteDetail, [user_id,ud_id], (err1, results1) => {
-        if(err1){
-            console.log(err1);
-            errors.query = "sql_deleteDetail query error";
-            errors.log = err1;
-
-            res.status(400).json(errors);
-        }else{
-            if(results1.affectedRows === 1){
+        try {
+            const detailDeleteResult = await uc.deleteDetail(user_id,ud_id);
+            if(detailDeleteResult.affectedRows === 1){
                 res.json({success: true});
             }else{
-                if(results1.affectedRows === 0){
+                if(detailDeleteResult.affectedRows === 0){
                     errors.query = "No such record to be deleted";
                 }
 
-                if(results1.affectedRows > 1){
+                if(detailDeleteResult.affectedRows > 1){
                     errors.query = "More than 1 record deleted";
                 }
 
                 res.status(400).json(errors);
-            }           
+            }    
+        } catch (error) {
+            res.status(400).json(error);
         }
-    });
-        
     }
 });
 
@@ -333,7 +270,7 @@ router.delete('/details/:ud_id', verify, (req, res) => {
 // -------------------------------
 
 //Doesnt need friend integration
-router.put('/details/:ud_id', verify, (req, res) => {
+router.put('/details/:ud_id', verify, async (req, res) => {
     const ud_id = req.params.ud_id;
     const user_id = req.jwt.id;
     const value = req.body.value;
@@ -344,59 +281,45 @@ router.put('/details/:ud_id', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(uq.sql_checkBeforeEditDetail, [user_id,ud_id,user_id,value], (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_checkBeforeEditDetail query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
-            }else{
-                if(results1.length === 1 && results1[0].user_id == user_id && results1[0].ud_id == ud_id){
-                    db.query(uq.sql_editDetail, [value,user_id,ud_id], (err2, results2) => {
-                        if(err2){
-                            console.log(err2);
-                            errors.query = "sql_editDetail query error";
-                            errors.log = err2;
-                
-                            res.status(400).json(errors);
-                        }else{
-                            if(results2.affectedRows === 1){
-                                res.json({success: true});
-                            }else{
-                                if(results2.affectedRows === 0){
-                                    errors.query = "No such record updated";
-                                }
-                
-                                if(results2.affectedRows > 1){
-                                    errors.query = "More than 1 record updated";
-                                }
-                
-                                res.status(400).json(errors);
-                            }           
-                        }
-                    });
+        try {
+            const beforeEditCheckResult = await uc.checkBeforeEditDetail(user_id,ud_id,value);
+        
+            if(beforeEditCheckResult.length === 1 && beforeEditCheckResult[0].user_id == user_id && beforeEditCheckResult[0].ud_id == ud_id){
+                const editDetailResult = await uc.editDetail(value,user_id,ud_id);
+                if(editDetailResult.affectedRows === 1){
+                    res.json({success: true});
                 }else{
-                    if(results1.length === 1 && results1[0].user_id == user_id && results1[0].ud_id == ud_id && results1[0].value == value){
-                        errors.query = "You can't change your current detail to the same";
-                    }else if(results1.length === 1 && results1[0].user_id == user_id && results1[0].value == value && results1[0].ud_id != ud_id){
-                        errors.query = "Correct ud_id not found but the detail is already in the database";
+                    if(editDetailResult.affectedRows === 0){
+                        errors.query = "No such record updated";
                     }
     
-                    if(results1.length > 2){
-                        errors.query = "More than 2 record selected, potential error";
+                    if(editDetailResult.affectedRows > 1){
+                        errors.query = "More than 1 record updated";
                     }
-
-                    if(results1.length === 2){
-                        errors.query = "You already have a detail like this";
-                    }
-
+    
                     res.status(400).json(errors);
-                }           
+                }
+            }else{
+                if(beforeEditCheckResult.length === 1 && beforeEditCheckResult[0].user_id == user_id && beforeEditCheckResult[0].ud_id == ud_id && beforeEditCheckResult[0].value == value){
+                    errors.query = "You can't change your current detail to the same";
+                }else if(beforeEditCheckResult.length === 1 && beforeEditCheckResult[0].user_id == user_id && beforeEditCheckResult[0].value == value && beforeEditCheckResult[0].ud_id != ud_id){
+                    errors.query = "Correct ud_id not found but the detail is already in the database";
+                }
+
+                if(beforeEditCheckResult.length > 2){
+                    errors.query = "More than 2 record selected, potential error";
+                }
+
+                if(beforeEditCheckResult.length === 2){
+                    errors.query = "You already have a detail like this";
+                }
+
+                res.status(400).json(errors);
             }
-        });
-        
-        
+        } catch (error) {
+            //console.log(error);
+            res.status(400).json(error);
+        }
     }
 });
 
@@ -416,72 +339,60 @@ router.post('/friend-request', verify, async (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(frq.sql_checkBeforeSendFriendRequest, [user_id,reciever_id,reciever_id], async (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_checkBeforeSendFriendRequest query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
-            }else{
-                if(results1[0].length === 0 && results1[1].length === 1){
-
-                    try {
-                        let friends = await fq.checkIfFriends(reciever_id,user_id)
-                                
-                        if(!friends){
-                            db.query(frq.sql_sendFriendRequest, [user_id,reciever_id,message], (err3, results3) => {
-                                if(err3){
-                                    console.log(err3);
-                                    errors.query = "sql_sendFriendRequest query error";
-                                    errors.log = err3;
-                        
-                                    res.status(400).json(errors);
-                                }else{
-                                    if(results3.affectedRows === 1){
-                                        res.json({success: "Sent request to " + reciever_id});
-                                    }else{
-                                        if(results3.affectedRows === 0){
-                                            errors.query = "No such record inserted";
-                                        }
-                        
-                                        if(results3.affectedRows > 1){
-                                            errors.query = "More than 1 record inserted";
-                                        }
-                        
-                                        res.status(400).json(errors);
-                                    }           
-                                }
-                            });
-                        }else{
-                            if(friends){
-                                errors.query = "You are already friend with this person: " + fnickname;
-                            }
+        try {
+            const sendFRCheckResult = await frc.checkBeforeSendFriendRequest(user_id,reciever_id);
         
+            if(sendFRCheckResult[0].length === 0 && sendFRCheckResult[1].length === 1){
+
+                try {
+                    let friends = await fc.checkIfFriends(reciever_id,user_id)
+                            
+                    if(!friends){
+                        const sendFRResults = await frc.sendFriendRequest(user_id,reciever_id,message);
+
+                        if(sendFRResults.affectedRows === 1){
+                            res.json({success: "Sent request to " + reciever_id});
+                        }else{
+                            if(sendFRResults.affectedRows === 0){
+                                errors.query = "No such record inserted";
+                            }
+            
+                            if(sendFRResults.affectedRows > 1){
+                                errors.query = "More than 1 record inserted";
+                            }
+            
                             res.status(400).json(errors);
-                        }   
-                    } catch (error) {
-                        console.log(error);
-                        res.status(400).json("Is this the error?");
-                    }
-                }else{
-                    if(results1[0].length === 1){
-                        errors.query = "You already sent a friend request to this person";
-                    }
+                        } 
+                    }else{
+                        if(friends){
+                            errors.query = "You are already friend with this person: " + fnickname;
+                        }
     
-                    if(results1[0].length > 1){
-                        errors.query = "There's more friend request sent to this person??";
-                    }
+                        res.status(400).json(errors);
+                    }   
+                } catch (error) {
+                    console.log(error);
+                    res.status(400).json("Is this the error?");
+                }
+            }else{
+                if(sendFRCheckResult[0].length === 1){
+                    errors.query = "You already sent a friend request to this person";
+                }
 
-                    if(results1[1].length === 0){
-                        errors.user = "No such user exists";
-                    }
+                if(sendFRCheckResult[0].length > 1){
+                    errors.query = "There's more friend request sent to this person??";
+                }
 
-                    res.status(400).json(errors);
-                }           
+                if(sendFRCheckResult[1].length === 0){
+                    errors.user = "No such user exists";
+                }
+
+                res.status(400).json(errors);
             }
-        });
-
+        } catch (error) {
+            res.status(400).json(error);
+        }
+        
     }
 });
 
@@ -492,7 +403,7 @@ router.post('/friend-request', verify, async (req, res) => {
 // -------------------------------
 
 //Friend integration Done
-router.post('/friend-request/accept', verify, (req, res) => {
+router.post('/friend-request/accept', verify, async (req, res) => {
     const {sender_id} = req.body;
     const user_id = req.jwt.id;
 
@@ -501,74 +412,54 @@ router.post('/friend-request/accept', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(frq.sql_checkBeforeAcceptFriendRequest, [sender_id,user_id], (errc, resultsc) => {
-            if(errc){
-                console.log(errc);
-                errors.query = "sql_checkBeforeAcceptFriendRequest query error";
-                errors.log = errc;
-    
-                res.status(400).json(errors);
-            }else{
-                if(resultsc.length === 1){
-                    db.query(frq.sql_getUserNickname, [sender_id], (err1, results1) => {
-                        if(err1){
-                            console.log(err1);
-                            errors.query = "sql_getUserNickname query error";
-                            errors.log = err1;
+        try {
+            const acceptFRCheckResult = await frc.checkBeforeAcceptFriendRequest(sender_id,user_id);
+
+            if(acceptFRCheckResult.length === 1){
+                const getUserNicknameResult = await frc.getUserNickname(sender_id);
+
+                if(getUserNicknameResult.length === 1){
+                    const acceptFRResult = await frc.acceptFriendRequest(user_id,sender_id);
                 
-                            res.status(400).json(errors);
-                        }else{
-                            if(results1.length === 1){
-                                db.query(frq.sql_acceptFriendRequest, [user_id,sender_id, sender_id,user_id,
-                                                                       user_id,sender_id, sender_id,user_id
-                                ], (err2, results2) => {
-                                    if(err2){
-                                        errors.query = "sql_acceptFriendRequest query error";
-                                        errors.log = err2;
-                            
-                                        res.status(400).json(errors);
-                                    }else{
-                                        if((results2[0].affectedRows === 2 || results2[0].affectedRows === 1) && results2[1].affectedRows === 2){
-                                            res.json({success: "Accepted friend request?"});
-                                        }else{
-                                            if(results2[0].affectedRows > 2 || results2[0].affectedRows < 1){
-                                                errors.query = "Deleted rows error: " + results2[0].affectedRows;
-                                            }
-                            
-                                            if(results2[1].affectedRows !== 2){
-                                                errors.query = "Inserted rows error: " + results2[1].affectedRows;
-                                            }
-                            
-                                            res.status(400).json(errors);
-                                        }           
-                                    }
-                                });
-                            }else{
-                                if(results1.length === 0){
-                                    errors.query = "No such user: " + sender_id;
-                                }
-                
-                                if(results1.length > 1){
-                                    errors.query = "More than 1 person with the id: " + sender_id;
-                                }
-            
-                                res.status(400).json(errors);
-                            }           
+                    if((acceptFRResult[0].affectedRows === 2 || acceptFRResult[0].affectedRows === 1) && acceptFRResult[1].affectedRows === 2){
+                        res.json({success: "Accepted friend request?"});
+                    }else{
+                        if(acceptFRResult[0].affectedRows > 2 || acceptFRResult[0].affectedRows < 1){
+                            errors.query = "Deleted rows error: " + acceptFRResult[0].affectedRows;
                         }
-                    });
+        
+                        if(acceptFRResult[1].affectedRows !== 2){
+                            errors.query = "Inserted rows error: " + acceptFRResult[1].affectedRows;
+                        }
+        
+                        res.status(400).json(errors);
+                    }
+                
                 }else{
-                    if(resultsc.length === 0){
-                        errors.query = "You don't have a request from: " + sender_id;
+                    if(getUserNicknameResult.length === 0){
+                        errors.query = "No such user: " + sender_id;
                     }
     
-                    if(resultsc.length > 1){
-                        errors.query = "More than 1 friend request with: " + sender_id;
+                    if(getUserNicknameResult.length > 1){
+                        errors.query = "More than 1 person with the id: " + sender_id;
                     }
 
                     res.status(400).json(errors);
-                }                     
+                }
+            }else{
+                if(acceptFRCheckResult.length === 0){
+                    errors.query = "You don't have a request from: " + sender_id;
+                }
+
+                if(acceptFRCheckResult.length > 1){
+                    errors.query = "More than 1 friend request with: " + sender_id;
+                }
+
+                res.status(400).json(errors);
             }
-        });
+        } catch (error) {
+            res.status(400).json(error);
+        }
     }
 });
 
@@ -579,7 +470,7 @@ router.post('/friend-request/accept', verify, (req, res) => {
 // -------------------------------
 
 //Friend integration not needed
-router.delete('/friend-request', verify, (req, res) => {
+router.delete('/friend-request', verify, async (req, res) => {
     const {other_id} = req.body;
     const user_id = req.jwt.id;
 
@@ -588,29 +479,26 @@ router.delete('/friend-request', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(frq.sql_deleteFriendRequest, [user_id, other_id, other_id, user_id], (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_deleteFriendRequest query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
+        try {
+            const deleteFRResult = await frc.deleteFriendRequest(user_id, other_id);
+        
+            if(deleteFRResult.affectedRows === 1 || deleteFRResult.affectedRows === 2){
+                res.json({success: "Successfully deleted friend request"});
             }else{
-                if(results1.affectedRows === 1 || results1.affectedRows === 2){
-                    res.json({success: "Successfully deleted friend request"});
-                }else{
-                    if(results1.affectedRows === 0){
-                        errors.query = "No friend request with: " + other_id;
-                    }
-    
-                    if(results1.affectedRows > 2){
-                        errors.query = "More than 2 requests with: " + other_id;
-                    }
+                if(deleteFRResult.affectedRows === 0){
+                    errors.query = "No friend request with: " + other_id;
+                }
 
-                    res.status(400).json(errors);
-                }           
-            }
-        });
+                if(deleteFRResult.affectedRows > 2){
+                    errors.query = "More than 2 requests with: " + other_id;
+                }
+
+                res.status(400).json(errors);
+            } 
+
+        } catch (error) {
+            res.status(400).json(error);
+        }
     }
 });
 
@@ -621,7 +509,7 @@ router.delete('/friend-request', verify, (req, res) => {
 // -------------------------------
 
 //Friend integration not needed
-router.get('/get/friend-request', verify, (req, res) => {
+router.get('/get/friend-request', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const errors = userGetFriendRequestValidator(req.jwt);
 
@@ -633,35 +521,31 @@ router.get('/get/friend-request', verify, (req, res) => {
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
-        db.query(frq.sql_getFriendRequests, [user_id, user_id], (err1, results1) => {
-            if(err1){
-                console.log(err1);
-                errors.query = "sql_getFriendRequests query error";
-                errors.log = err1;
-    
-                res.status(400).json(errors);
-            }else{
-                for(let i = 0; i < results1[0].length; i++){
-                    friend_requests.sent.push({
-                        reciever_id: results1[0][i].reciever_id,
-                        nickname: results1[0][i].nickname,
-                        sent: results1[0][i].timestamp,
-                        message: results1[0][i].message
-                    })
-                }  
-                
-                for(let i = 0; i < results1[1].length; i++){
-                    friend_requests.recieved.push({
-                        sender_id: results1[1][i].sender_id,
-                        nickname: results1[1][i].nickname,
-                        sent: results1[1][i].timestamp,
-                        message: results1[1][i].message
-                    })
-                } 
-                
-                res.json(friend_requests);
-            }
-        });
+        try {
+            const getFRResults = await frc.getFriendRequests(user_id);
+
+            for(let i = 0; i < getFRResults[0].length; i++){
+                friend_requests.sent.push({
+                    reciever_id: getFRResults[0][i].reciever_id,
+                    nickname: getFRResults[0][i].nickname,
+                    sent: getFRResults[0][i].timestamp,
+                    message: getFRResults[0][i].message
+                })
+            }  
+            
+            for(let i = 0; i < getFRResults[1].length; i++){
+                friend_requests.recieved.push({
+                    sender_id: getFRResults[1][i].sender_id,
+                    nickname: getFRResults[1][i].nickname,
+                    sent: getFRResults[1][i].timestamp,
+                    message: getFRResults[1][i].message
+                })
+            } 
+            
+            res.json(friend_requests);
+        } catch (error) {
+            res.status(400).json(error);
+        }
     }
 });
 
@@ -681,9 +565,9 @@ router.delete('/friend', verify, async (req, res) => {
         res.status(400).json(errors);
     }else{
         try {
-            const friendsResult = await fq.getFriendlistIds(user_id, friend_id);
+            const friendsResult = await fc.getFriendlistIds(user_id, friend_id);
 
-            const delFriendResult = await fq.deleteFriends(friendsResult[0].fr_id, friendsResult[1].fr_id);
+            const delFriendResult = await fc.deleteFriends(friendsResult[0].fr_id, friendsResult[1].fr_id);
 
             res.json({success: "Successfully deleted friend"});
         } catch (error) {
