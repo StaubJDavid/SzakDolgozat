@@ -18,14 +18,14 @@ const CreatorManga: FC<Props> = ({relationship}) => {
 
 
     return(
-        <div className='text-center mb-5'>
-        <div >
+        <div className='mb-5 bg-orange p-2 rounded'>
+        <div className='text-center'>
             <Cover height={25} width={25} manga_id={relationship.id} relationships={[]} conform={true}/>
         </div>
-        <h3 style={{cursor:"pointer"}} data-bs-toggle="collapse" data-bs-target={`#collapseDescription${relationship.id}`} aria-controls={`collapseDescription${relationship.id}`}>{getTitle(relationship.attributes.title)}</h3>
-        <button onClick={() => {history.push('/manga/'+ relationship.id,{})}} className="btn btn-dark">Go To Manga Page</button>
+        <h3 className='fw-bold own-font my-2 text-center' style={{cursor:"pointer"}} data-bs-toggle="collapse" data-bs-target={`#collapseDescription${relationship.id}`} aria-controls={`collapseDescription${relationship.id}`}>{getTitle(relationship.attributes.title)}</h3>
+        <div className='text-center'><button onClick={() => {history.push('/manga/'+ relationship.id,{})}} className="btn-black">Go To Manga Page</button></div>
         <div className="collapse" id={`collapseDescription${relationship.id}`}>
-            <p className="lead"><ReactMarkdown children={getDescription(relationship.attributes.description)} /></p>
+            <p className="lead bg-black rounded p-4 text-white fw-bold mt-2 text-left"><ReactMarkdown className={"reactMarkDownBlack text-left"} children={getDescription(relationship.attributes.description)} /></p>
         </div>
         </div>
         

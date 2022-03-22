@@ -49,8 +49,8 @@ class NextPrevChapter extends Component<Props,State> {
             chapterNavContent = (
             <>
             <div>
-                <button value={1} disabled={chapter.array_id===max} onClick={this.onChangeChapter}>Previous</button>
-                <button value={-1} disabled={chapter.array_id===0} onClick={this.onChangeChapter}>Next</button>
+                <button className={classnames("btn-yellow",{"disabled none-cursor-style":chapter.array_id===max})} value={1} disabled={chapter.array_id===max} onClick={this.onChangeChapter}>Previous</button>
+                <button className={classnames("btn-yellow",{"disabled none-cursor-style":chapter.array_id===0})} value={-1} disabled={chapter.array_id===0} onClick={this.onChangeChapter}>Next</button>
             </div>
             </>
             )

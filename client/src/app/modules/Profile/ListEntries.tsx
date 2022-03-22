@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {delListEntry, addListEntry} from '../../actions/profileActions';
 import TextLinkDelete from '../../common/TextLinkDelete';
+import TextLinkDeleteTwo from '../../common/TextLinkDeleteTwo';
 
 type Props = {
     auth:any,
@@ -50,17 +51,17 @@ class ListEntries extends Component<Props,State> {
             )
         }else{
             content = (
-                <div className="container">
+                <div className="container bg-black rounded mt-2 px-3 py-3">
                     {this.props.list.data.map((element:any, i:number) => {
-                                return  <TextLinkDelete key={element.ld_id}
-                                            url={'/manga/'+ element.manga_id}  
-                                            state_object={{}}
-                                            owned={owned}
-                                            text={element.manga_name}
-                                            onClick={this.onDeleteEntry}
-                                            onClickData={element.ld_id}
-                                        />
-                                })}
+                        return  <TextLinkDeleteTwo key={element.ld_id}
+                                    url={'/manga/'+ element.manga_id}  
+                                    state_object={{}}
+                                    owned={owned}
+                                    text={element.manga_name}
+                                    onClick={this.onDeleteEntry}
+                                    onClickData={element.ld_id}
+                                />
+                        })}
                 </div>
             )
         }

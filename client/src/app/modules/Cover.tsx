@@ -21,6 +21,10 @@ function getCover(manga_id:string) {
   return axios.get<{data:any, result: any}>(`${process.env.REACT_APP_PROXY_URL}/manga/${manga_id}?includes[]=cover_art`)
 }
 
+function getProxyCover(manga_id:string,filename:string) {
+  return axios.get(`http://80.98.214.13:3000/img/${manga_id}/${filename}`)
+}
+
 function changeRes(url:string,res:string){
   switch(res){
     case "512": url = url + ".512.jpg"; break;
@@ -46,20 +50,26 @@ class Cover extends Component<Props,State> {
     try {
       let cover = this.props.relationships.find((o:any) => o.type === "cover_art")
       if(cover){
-        this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${cover.attributes.fileName}`});
+        const ownResponse = await getProxyCover(this.props.manga_id,cover.attributes.fileName);
+        this.setState({data:ownResponse.data.url});
+        //this.setState({data:`${process.env.REACT_APP_PROXY_IMAGE_URL}/${this.props.manga_id}/${cover.attributes.fileName}`});
         this.setState({isLoading:false});
       }else{
         if(this.props.relationships.length !== 0){
-          this.setState({data:`https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg`});
+          this.setState({data:`http://80.98.214.13:3000/error.jpg`});
           this.setState({isLoading:false});
         }else{
           const response = await getCover(this.props.manga_id);
           let rcover = response.data.data.relationships.find((o:any) => o.type === "cover_art");
           if(rcover){
-            this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${rcover.attributes.fileName}`});
+            //this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${rcover.attributes.fileName}`});
+            //${process.env.REACT_APP_PROXY_URL}
+            const ownResponse = await getProxyCover(this.props.manga_id,rcover.attributes.fileName);
+            this.setState({data:ownResponse.data.url});
+            //this.setState({data:`${process.env.REACT_APP_PROXY_IMAGE_URL}/${this.props.manga_id}/${rcover.attributes.fileName}`});
             this.setState({isLoading:false});
           }else{
-            this.setState({data:`https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg`});
+            this.setState({data:`http://80.98.214.13:3000/error.jpg`});
             this.setState({isLoading:false});
           }
         }
@@ -78,20 +88,26 @@ class Cover extends Component<Props,State> {
       try {
         let cover = this.props.relationships.find((o:any) => o.type === "cover_art")
         if(cover){
-          this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${cover.attributes.fileName}`});
+          //this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${cover.attributes.fileName}`});
+          //this.setState({data:`${process.env.REACT_APP_PROXY_IMAGE_URL}/${this.props.manga_id}/${cover.attributes.fileName}`});
+          const ownResponse = await getProxyCover(this.props.manga_id,cover.attributes.fileName);
+          this.setState({data:ownResponse.data.url});
           this.setState({isLoading:false});
         }else{
           if(this.props.relationships.length !== 0){
-            this.setState({data:`https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg`});
+            this.setState({data:`http://80.98.214.13:3000/error.jpg`});
             this.setState({isLoading:false});
           }else{
             const response = await getCover(this.props.manga_id);
             let rcover = response.data.data.relationships.find((o:any) => o.type === "cover_art");
             if(rcover){
-              this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${rcover.attributes.fileName}`});
+              //this.setState({data:`https://uploads.mangadex.org/covers/${this.props.manga_id}/${rcover.attributes.fileName}`});
+              //this.setState({data:`${process.env.REACT_APP_PROXY_IMAGE_URL}/${this.props.manga_id}/${rcover.attributes.fileName}`});
+              const ownResponse = await getProxyCover(this.props.manga_id,rcover.attributes.fileName);
+              this.setState({data:ownResponse.data.url});
               this.setState({isLoading:false});
             }else{
-              this.setState({data:`https://mangadex.org/_nuxt/img/cover-placeholder.d12c3c5.jpg`});
+              this.setState({data:`http://80.98.214.13:3000/error.jpg`});
               this.setState({isLoading:false});
             }
           }

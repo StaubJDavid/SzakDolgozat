@@ -73,7 +73,7 @@ class Login extends Component<Props,State> {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-8 m-auto">
-                            <h1 className="display-4 text-center">Login</h1>
+                            <h1 className="display-4 text-center text-orange own-font">Login</h1>
                             <form onSubmit={this.onSubmit}>
                                 <TextInput
                                     name="email" 
@@ -82,6 +82,7 @@ class Login extends Component<Props,State> {
                                     type="email"
                                     onChange={this.onChange}  
                                     placeholder="Email Address"
+                                    label={"E-mail"}
                                 />
                                 <br />
                                 <TextInput 
@@ -91,10 +92,11 @@ class Login extends Component<Props,State> {
                                     onChange={this.onChange}
                                     error={errors.password}
                                     placeholder="Password"
+                                    label={"Password"}
                                 />
                                 
                                 <div className="d-flex justify-content-center">
-                                    <input value="Login" type="submit" className="btn btn-info btn-block mt-4" />
+                                    <input value="Login" type="submit" className="btn-yellow mt-4" />
                                 </div>
                             </form>
                         </div>

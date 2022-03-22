@@ -17,6 +17,8 @@ import isEmpty from '../helpers/isEmpty';
 import SubscribeToManga from './SubscribeToManga'
 import authReducer from '../reducers/authReducer';
 
+const styles = require('./markdown-styles.modules.css');
+
 type Props = {
   manga:any,
   auth:any,
@@ -65,7 +67,7 @@ class MangaPage extends Component<Props,State> {
 
               <div className="row">
                 <div className="col-md-12">
-                  <div className="card card-body bg-info text-white mb-3">
+                  <div className="p-2 rounded mt-3 bg-orange text-black own-font mb-3">
                     <div className="row">
                       <div className="col-4 col-md-3 m-auto">
                         <Cover width={100} height={100} manga_id={data.id} relationships={data.relationships} conform={true}/>
@@ -80,33 +82,34 @@ class MangaPage extends Component<Props,State> {
 
               <div className="row">
                 <div className="col-md-12">
-                  <div className="card card-body bg-light mb-3">
-                    <h3 className="text-center text-info">Description</h3>
-                    <p className="lead"><ReactMarkdown children={getDescription(data.attributes.description)} /></p>
+                  <div className="p-2 rounded mt-3 bg-orange text-black own-font mb-3">
+                    <h3 className="text-center fw-bold">Description</h3>
+                    <hr />
+                    <p className="lead"><ReactMarkdown className={"reactMarkDown"} children={getDescription(data.attributes.description)} /></p>
                     <Rating manga_id={data.id} manga_name={getTitle(data.attributes.title)}/>
                     <hr />
                     <div className="row">
                       <div className="d-flex flex-wrap justify-content-center align-items-center">
-                        <div className="p-3">Target demographic: {data.attributes.publicationDemographic}</div>
-                        <div className="p-3">Status: {data.attributes.status}</div>
+                        <div className="p-3 text-center"><div className={"fw-bold own-font"}>Target demographic</div><div className={"fw-bold fst-italic"}>{data.attributes.publicationDemographic}</div></div>
+                        <div className="p-3 text-center"><div className={"fw-bold own-font"}>Status</div><div className={"fw-bold fst-italic"}>{data.attributes.status}</div></div>
                       </div>
                     </div>
                     <hr />
-                    <h3 className="text-center text-info">Genre</h3>
+                    <h3 className="text-center text-black fw-bold">Genre</h3>
                     <div className="row">
                       <div className="d-flex flex-wrap justify-content-center align-items-center">
                       {data.attributes.tags.map((t:any) => (t.attributes.group ==="genre"?(<>
-                          <div className="p-3">{t.attributes.name.en}</div>
+                          <div className="p-3 fw-bold fst-italic">{t.attributes.name.en}</div>
                         </>):(<></>)                        
                         ))}
                       </div>
                     </div>
                     <hr />
-                    <h3 className="text-center text-info">Theme</h3>
+                    <h3 className="text-center text-black fw-bold">Theme</h3>
                     <div className="row">
                       <div className="d-flex flex-wrap justify-content-center align-items-center">
                       {data.attributes.tags.map((t:any) => (t.attributes.group ==="theme"?(<>
-                          <div className="p-3">{t.attributes.name.en}</div>
+                          <div className="p-3 fw-bold fst-italic">{t.attributes.name.en}</div>
                         </>):(<></>)                        
                         ))}
                       </div>
@@ -117,26 +120,26 @@ class MangaPage extends Component<Props,State> {
 
               <div className="row">
                 <div className="col-md-6">
-                  <h3 className="text-center text-info">Alternative titles</h3>
+                  <h3 className="text-center text-orange fw-bold">Alternative titles</h3>
                   <ul className="list-group">
                     {data.attributes.altTitles.map((at:any,i:number) => (
-                      <li key={`titles${i}`} className="list-group-item">                    
-                        <p>{at[Object.getOwnPropertyNames(at)[0]]}</p>
+                      <li key={`titles${i}`} className="olist-group-item fw-bold">                    
+                        {at[Object.getOwnPropertyNames(at)[0]]}
                       </li>
                       ))}
                   </ul>
                 </div>
                 <div className="col-md-6">
-                  <h3 className="text-center text-info">Extra details</h3>
+                  <h3 className="text-center text-orange fw-bold">Extra details</h3>
                   <ul className="list-group">
-                    <li key={"Author_List"} className="list-group-item">
-                      <p>Author: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'author')} /></p>
-                      <p>Artis: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'artist')} /></p>
+                    <li key={"Author_List"} className="olist-group-item">
+                      <p className="fw-bold">Author: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'author')} /></p>
+                      <p className="fw-bold">Artis: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'artist')} /></p>
                     </li>
                   </ul>
                 </div>
               </div>
-              {this.props.auth.isAuthenticated?<div className='row mt-4 justify-content-center'>
+              {this.props.auth.isAuthenticated?<div className='row mt-4 p-2 justify-content-center rounded'>
                 <div className='col-12'>
                   <SubscribeToManga manga_id={data.id} translatedLanguage={data.attributes.availableTranslatedLanguages} />
                 </div>

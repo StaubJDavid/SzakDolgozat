@@ -9,7 +9,7 @@ type Props = {
 const CreatorButton: FC<Props> = ({creator}) => {
     if(!isEmpty(creator)){
         return (
-            <Link className="text-center"
+            <Link className="text-center reactLink"
                 to={{
                     pathname: `/god/${creator.id}`,
                     state: {

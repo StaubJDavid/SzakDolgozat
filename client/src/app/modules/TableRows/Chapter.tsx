@@ -16,17 +16,17 @@ const Chapter: FC<Props> = ({chapter}) => {
   //let cover_art = chapter.relationships.find((o:any) => o.type === "cover_art");
 
   return (
-      <div className="container">
+      <div className="container bg-orange-dark">
         <div className="row align-items-center">
           <div className="col-md-12 ">
-            <div className="row align-items-center">
+            <div className="row align-items-center text-black">
               <div style={{height:"200px"}} className="col-md-6">
               <Cover height={100} width={100} manga_id={manga.id} relationships={chapter.relationships} conform={true}/>
               </div>
               <div className="col-md-6">
                 <div className="row">
                   <div className="col-md-12">
-                  <Link className="text-center"
+                  <Link className="text-center text-black fw-bold"
                     to={{
                       pathname: `/manga/${manga.id}`,
                       state: {
@@ -35,7 +35,7 @@ const Chapter: FC<Props> = ({chapter}) => {
                     }}>{getTitle(manga.attributes.title)}</Link>
                     <br />
                     <hr />
-                      {scanlation_group?(<Link className="text-center"
+                      {scanlation_group?(<Link className="text-center text-black fw-bold"
                       to={{
                         pathname: `/scangroup/${scanlation_group.id}`,
                         state: {

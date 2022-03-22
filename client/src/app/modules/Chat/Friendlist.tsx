@@ -19,9 +19,9 @@ const Friendlist: FC<Props> = ({friendlist,getFriendList,changeChat}) => {
 
 return (
     <div className="inbox_people">
-        <div className="headind_srch">
+        <div className="headind_srch bg-orange">
             <div className="recent_heading mt-2">
-                <h4>Friendlist</h4>
+                <h4 className='own-font fw-bold text-black'>Friendlist</h4>
             </div>
             {/*<div className="srch_bar">
                 <div className="stylish-input-group">
@@ -32,7 +32,7 @@ return (
                 </div>
             </div>*/}
         </div>
-        <div className="inbox_chat">
+        <div className="inbox_chat bg-orange">
         {!isEmpty(friendlist)?friendlist.data.map((f:any,index:number) => {
                 return (<FriendButton index={index} friend={f} changeChat={changeChat}/>)
             }):<></>}

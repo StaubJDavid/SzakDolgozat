@@ -15,7 +15,7 @@ type Props = {
 const PageNavBar: FC<Props> = ({passedFc, currentPage, total, limit, maxPage}) => {
 
   function renderNavbar(){
-    let navPageBar: any = <ul className="pagination justify-content-center"><li className="page-item"><a className="page-link">Error</a></li></ul>;
+    let navPageBar: any = <ul className="pagination justify-content-center"><li className="opage-item"><a className="opage-link">Error</a></li></ul>;
 
     if(maxPage <= 5){
       navPageBar = <FivePage passedFc={passedFc} currentPage={currentPage} maxPage={maxPage} />;

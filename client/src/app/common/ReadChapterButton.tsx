@@ -10,7 +10,7 @@ const ReadChapterButton: FC<Props> = ({chapter}) => {
     if(chapter.attributes.externalUrl === null){
         return (
             <div className="h-100 w-100">
-            <Link className="text-center"
+            <Link className="text-center text-black fw-bold"
                 to={{
                     pathname: `/manga/read/${chapter.id}`,
                     state: {
@@ -20,7 +20,7 @@ const ReadChapterButton: FC<Props> = ({chapter}) => {
             </div>
         )
     }else{
-        return (<div className="h-100 w-100"><a className="text-center" href={chapter.attributes.externalUrl}>{getChapterTitle(chapter.attributes)}</a></div>)
+        return (<div className="h-100 w-100"><a className="text-center text-black fw-bold" href={chapter.attributes.externalUrl}>{getChapterTitle(chapter.attributes)}</a></div>)
     } 
 }
 

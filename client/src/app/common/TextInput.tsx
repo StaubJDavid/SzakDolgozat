@@ -25,6 +25,7 @@ const TextInput: FC<Props> = ({
         info
     }) => (
         <div className="form-group">
+            {label ?(<><label className='text-orange own-font fs-4'>{label}</label><br /></>):<></>}
             <input 
             type={type} 
             className={classnames("form-control form-control-lg",{"is-invalid":error})} 

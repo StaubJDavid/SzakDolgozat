@@ -29,12 +29,12 @@ const Comment: FC<Props> = ({errors,auth,data}) => {
         commentContent = (
         <>
         <div className="container-fluid">
-            <div className="row border border-dark rounded py-1">
+            <div className="row border border-dark rounded py-1 bg-orange">
                 <div className="col-md-2">
                     <div className="row">
                         <div
                             style={{cursor:auth.isAuthenticated?"pointer":"auto"}}
-                            className={classnames("col-md-12 text-center text-break",{"bg-light":nameHover&&auth.isAuthenticated})}
+                            className={classnames("col-md-12 text-center text-break fw-bold own-font rounded",{"bg-yellow":nameHover&&auth.isAuthenticated})}
                             onClick={() => toProfileClick(user_id)}
                             onMouseEnter={() => setNameHover(true)}
                             onMouseLeave={() => setNameHover(false)}
@@ -44,7 +44,7 @@ const Comment: FC<Props> = ({errors,auth,data}) => {
                     </div>
                     <hr className='my-1'/>
                     <div className="row">
-                        <div className="col-md-12 text-center">
+                        <div className="col-md-12 text-center fw-bold fst-italic">
                             {timeFormat(timestamp)}
                         </div>
                     </div>
@@ -55,7 +55,7 @@ const Comment: FC<Props> = ({errors,auth,data}) => {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-10 text-break p-2">
+                <div className="col-md-10 text-break p-2 fw-bold">
                     {comment}
                 </div>
             </div>

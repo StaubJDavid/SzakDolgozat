@@ -51,7 +51,7 @@ class CarouselItem extends Component<Props,State> {
     return (  
         <div
           style={{cursor:"pointer"}}
-          className={classnames("container align-items-stretch",{"bg-light":this.state.itemHover})}
+          className={classnames("text-white container align-items-stretch",{"bg-dark":this.state.itemHover, "bg-black":!this.state.itemHover})}
           onClick={() => this.onCarouselItemClick(id)}
           onMouseEnter={() => this.setState({itemHover:true})}
           onMouseLeave={() => this.setState({itemHover:false})}
@@ -65,7 +65,7 @@ class CarouselItem extends Component<Props,State> {
                 <div className="col-md-6">
                   <div className="row">
                     <div className="col-md-12">
-                      <p>{title}</p>
+                      <p className='own-font fw-bold'>{title}</p>
                     </div>
                   </div>
                   <div className="row">

@@ -15,6 +15,7 @@ import FriendRequests from './FriendRequests';
 import SendFriendRequest from './SendFriendRequest';
 import timeFormat from '../../helpers/timeFormat';
 import TextLinkDelete from '../../common/TextLinkDelete';
+import TextLinkDeleteTwo from '../../common/TextLinkDeleteTwo';
 import SubscribedMangas from './SubscribedMangas';
 
 type Props = {
@@ -164,17 +165,17 @@ class Profile extends Component<Props,State> {
                     <div className="col-md-8">
                         <div className="row">
                             <div className="col-md-6">
-                                <h4 className='text-center'>Liked Manga</h4>
+                                <h4 className='text-center own-font fw-bold'>Liked Manga</h4>
                             </div>
                             <div className="col-md-6">
-                                <h4 className='text-center'>Disiked Manga</h4>
+                                <h4 className='text-center own-font fw-bold'>Disliked Manga</h4>
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-6 d-flex align-items-stretch">
-                                <div className="card">
+                            <div className="col-md-6 d-flex align-items-stretch bg-black rounded">
+                                <div className="card bg-black text-white">
                                     {this.props.profile.profile.liked_manga.map((element:any, i:number) => {
-                                        return  <TextLinkDelete key={element.ud_id}
+                                        return  <TextLinkDeleteTwo key={element.ud_id}
                                                     url={'/manga/'+ element.manga_id}  
                                                     state_object={{}}
                                                     owned={this.state.own}
@@ -185,10 +186,10 @@ class Profile extends Component<Props,State> {
                                         })}
                                 </div>
                             </div>
-                            <div className="col-md-6 d-flex align-items-stretch">
-                                <div className="card">
+                            <div className="col-md-6 d-flex align-items-stretch bg-black rounded">
+                                <div className="card bg-black text-white">
                                     {this.props.profile.profile.disliked_manga.map((element:any, i:number) => {
-                                        return  <TextLinkDelete key={element.ud_id}
+                                        return  <TextLinkDeleteTwo key={element.ud_id}
                                                     url={'/manga/'+ element.manga_id}  
                                                     state_object={{}}
                                                     owned={this.state.own}
@@ -204,7 +205,7 @@ class Profile extends Component<Props,State> {
                     <div className="col-md-4">
                         {this.state.own?(<div>
                                 <p>
-                                    <button className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLikeManga" aria-expanded="false" aria-controls="collapseLikeManga">
+                                    <button className="btn-black" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLikeManga" aria-expanded="false" aria-controls="collapseLikeManga">
                                         Add Manga to Like/Dislike
                                     </button>
                                 </p>
@@ -222,17 +223,17 @@ class Profile extends Component<Props,State> {
                     <div className="col-md-12">
                         <div className="row">
                             <div className="col-md-6">
-                                <h4 className='text-center'>Liked Manga</h4>
+                                <h4 className='text-center own-font fw-bold'>Liked Manga</h4>
                             </div>
                             <div className="col-md-6">
-                                <h4 className='text-center'>Disiked Manga</h4>
+                                <h4 className='text-center own-font fw-bold'>Disliked Manga</h4>
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-6 d-flex align-items-stretch">
-                                <div className="card">
+                            <div className="col-md-6 d-flex align-items-stretch bg-black rounded">
+                                <div className="card bg-black text-white">
                                     {this.props.profile.profile.liked_manga.map((element:any, i:number) => {
-                                        return  <TextLinkDelete key={element.ud_id}
+                                        return  <TextLinkDeleteTwo key={element.ud_id}
                                                     url={'/manga/'+ element.manga_id}  
                                                     state_object={{}}
                                                     owned={this.state.own}
@@ -243,10 +244,10 @@ class Profile extends Component<Props,State> {
                                         })}
                                 </div>
                             </div>
-                            <div className="col-md-6 d-flex align-items-stretch">
-                                <div className="card">
+                            <div className="col-md-6 d-flex align-items-stretch bg-black rounded">
+                                <div className="card bg-black text-white">
                                     {this.props.profile.profile.disliked_manga.map((element:any, i:number) => {
-                                        return  <TextLinkDelete key={element.ud_id}
+                                        return  <TextLinkDeleteTwo key={element.ud_id}
                                                     url={'/manga/'+ element.manga_id}  
                                                     state_object={{}}
                                                     owned={this.state.own}
@@ -266,23 +267,23 @@ class Profile extends Component<Props,State> {
             profileContent = (
                 <>
                 <div className="container-fluid">
-                    <div className="row gx-5">
+                    <div className="row mt-4 gx-5">
                         <div className="col-md-9">
-                            <div className="row border rounded mb-4 p-4 bg-light">
+                            <div className="row border-2 border-orange rounded mb-4 p-4 bg-orange">
                                 <div className="col-md-4">
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <h3>{nickname}</h3>
+                                            <h3 className='fw-bold pb-1 border-bottom border-dark'>{nickname}</h3>
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <p>Registered<br/>{timeFormat(registered)}</p>
+                                            <p className='fw-bold'>Registered<br/>{timeFormat(registered)}</p>
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="col-md-12">
-                                            <p>Last login<br />{timeFormat(last_login)}</p>
+                                            <p className='fw-bold'>Last login<br />{timeFormat(last_login)}</p>
                                         </div>
                                     </div>
                                     <div className="row">
@@ -308,7 +309,7 @@ class Profile extends Component<Props,State> {
                                     </div>
                                     <div className="row">
                                         <div className="col-md-12">
-                                            {this.state.own?(<><i onClick={this.onEditClick} className="bi bi-pencil" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave"/>
+                                            {this.state.own?(<><i onClick={this.onEditClick} className="bi bi-pencil-fill" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave"/>
                                                 <div> 
                                                     <div className="collapse" id="collapseEditSave">
                                                         <TextArea
@@ -320,7 +321,7 @@ class Profile extends Component<Props,State> {
                                                             placeholder="About me"
                                                             disabled={false}
                                                         />
-                                                        <button onClick={this.onSaveClick} className="btn btn-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave">Save about me changes</button>
+                                                        <button onClick={this.onSaveClick} className="btn-black mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEditSave" aria-expanded="false" aria-controls="collapseEditSave">Save about me changes</button>
                                                     </div>
                                                 </div></>):<></>
                                             }
@@ -329,7 +330,7 @@ class Profile extends Component<Props,State> {
                                 </div>
                             </div>
                             
-                            {this.state.own?<div className="row border rounded mb-4 p-4 bg-light">
+                            {this.state.own?<div className="row border-orange border-2 rounded mb-4 p-4 bg-orange">
                                 <div className="col-md-12 text-center">
                                     <div className="container">
                                         {this.state.own?<FriendRequests history={this.props.history} />:<></>}
@@ -337,7 +338,7 @@ class Profile extends Component<Props,State> {
                                 </div>
                             </div>:<></>}
 
-                            {this.state.own?<div className="row border rounded mb-4 p-4 bg-light">
+                            {this.state.own?<div className="row border-orange border-2 rounded mb-4 p-4 bg-orange">
                                 <div className="col-md-12 text-center">
                                     <div className="container">
                                         <SubscribedMangas />
@@ -345,28 +346,28 @@ class Profile extends Component<Props,State> {
                                 </div>
                             </div>:<></>}
                             
-                            <div className="row border rounded mb-4 p-4 bg-light">
+                            <div className="row border-orange border-2 rounded mb-4 p-4 bg-orange">
                                 {ldmangaContent}
                             </div>
 
-                            <div className="row border rounded mb-4 p-4 bg-light">
+                            <div className="row border-orange border-2 rounded mb-4 p-4 bg-orange">
                                 <div className="col-md-12">
                                     <Lists />
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-3 border rounded p-2 bg-light">
+                        <div className="col-md-3 border-orange border-2 rounded mb-4 bg-orange">
                             <div className="row">
                                 <div className="col-md-12">
-                                    <h3 className="text-center">Friendlist</h3>
+                                    <h3 className="text-center own-font fw-bold">Friendlist</h3>
                                 </div>
                             </div>
-                            <div className="row">
+                            <div className="row bg-black rounded px-1 py-3">
                                 <div className="col-md-12">
-                                    <div className="card">
+                                    <div className="card bg-black">
                                         {friends.map((element:any, i:number) => {
                                             return (
-                                                    <TextLinkDelete key={element.friend_id}
+                                                    <TextLinkDeleteTwo key={element.friend_id}
                                                         url={'/profile/'+ element.friend_id}  
                                                         state_object={{}}
                                                         owned={this.state.own}

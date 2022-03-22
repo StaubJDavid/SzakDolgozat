@@ -18,7 +18,7 @@ const ChapterRow: FC<Props> = ({scangroup,ch,onReadChapterClick,onScanGroupClick
   const [scangroupHover,setScangroupHover] = useState(false);
 
   return (
-    <tr key={ch.id}>
+    <tr key={ch.id} className="fw-bold">
       <ChapterTd 
         hover={chapterHover}
         hoverEnabled={true}

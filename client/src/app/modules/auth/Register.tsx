@@ -76,7 +76,7 @@ class Register extends Component<Props,State> {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-8 m-auto">
-                            <h1 className="display-4 text-center">Sign Up</h1>
+                            <h1 className="display-4 text-center text-orange own-font">Sign Up</h1>
                             <form onSubmit={this.onSubmit}>
                                 <TextInput
                                     name="nickname" 
@@ -85,6 +85,7 @@ class Register extends Component<Props,State> {
                                     type="text"
                                     onChange={this.onChange}  
                                     placeholder="Nickname"
+                                    label={"Nickname"}
                                 />
                                 <br />
                                 <TextInput
@@ -94,6 +95,7 @@ class Register extends Component<Props,State> {
                                     type="email"
                                     onChange={this.onChange}  
                                     placeholder="Email Address"
+                                    label={"E-mail"}
                                 />
                                 <br />
                                 <TextInput
@@ -103,6 +105,7 @@ class Register extends Component<Props,State> {
                                     type="password"
                                     onChange={this.onChange}  
                                     placeholder="Password"
+                                    label={"Password"}
                                 />
                                 <br />
                                 <TextInput
@@ -112,10 +115,11 @@ class Register extends Component<Props,State> {
                                     type="password"
                                     onChange={this.onChange}  
                                     placeholder="Repeat password"
+                                    label={"Confirm Password"}
                                 />
                                 
                                 <div className="d-flex justify-content-center">
-                                    <input value="Register" type="submit" className="btn btn-info btn-block m-4" />
+                                    <input value="Register" type="submit" className="btn-yellow mt-4" />
                                 </div>
                             </form>
                         </div>

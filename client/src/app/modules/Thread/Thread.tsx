@@ -63,24 +63,24 @@ class Thread extends Component<Props,State> {
             threadContent = (
             <>
             <hr/>
-            <div className="container-fluid">
+            <div className="container-fluid bg-orange rounded p-3">
                 <div className="row mb-2">
                     <div
                         style={{cursor:this.props.auth.isAuthenticated?"pointer":"auto"}}
-                        className={classnames("col-md-3 text-break align-middle",{"bg-light":this.state.nameHover&&this.props.auth.isAuthenticated})}
+                        className={classnames("col-md-3 text-break align-middle rounded fw-bold own-font",{"bg-yellow":this.state.nameHover&&this.props.auth.isAuthenticated,"bg-orange":!this.state.nameHover || !this.props.auth.isAuthenticated})}
                         onClick={() => this.toProfileClick(user_id)}
                         onMouseEnter={() => this.setState({nameHover:true})}
                         onMouseLeave={() => this.setState({nameHover:false})}
                     >
                         <h1>{nickname}</h1>
                     </div>
-                    <div className="col-md-3 text-break align-middle">
+                    <div className="col-md-3 text-break align-middle fw-bold own-font">
                         <h4>{title}</h4>
                     </div>
-                    <div className="col-md-3 align-middle">
+                    <div className="col-md-3 align-middle fw-bold own-font">
                         Views: {views}
                     </div>
-                    <div className="col-md-3 align-middle text-right">
+                    <div className="col-md-3 align-middle text-right fw-bold own-font">
                         {timeFormat(created)}
                     </div>
                 </div>
@@ -89,7 +89,7 @@ class Thread extends Component<Props,State> {
                         {/*At like button the parent is thread_id */}
                         <LikeButtons target_id={thread_id} like={like} likes={likes} dislikes={dislikes} parent={thread_id} type={"THREAD"} />
                     </div>
-                    <div className="col-md-10 text-break border border-dark rounded">
+                    <div className="col-md-10 text-break border border-dark rounded text-white fw-bold bg-black">
                         {text}
                     </div>
                 </div>

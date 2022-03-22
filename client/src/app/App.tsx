@@ -1,6 +1,7 @@
 import React, {useRef} from 'react'
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import {BrowserRouter as Router, Route, withRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import store from './store';
@@ -56,12 +57,13 @@ if(localStorage.JWT){
 
 const App: React.FC<State> = ({basename}) =>  {
   return (
+    <div className="bg-black">
     <Provider store={store}>
       <Router basename={basename}>
         <Navbar />
         {/*<Routes />*/}
         <Route path='/' exact component={withRouter(Landing)} />
-        <div className="container p-0">{/*container-fluid p-0 */}
+        <div className="container p-0 bg-black">{/*container-fluid p-0 */}
           <Route path='/search' exact component={Search} />
           <Route path='/manga/:id' exact component={withRouter(MangaPage)} />
           <Route path='/manga/read/:chapterid' exact component={MangaReadPage} />
@@ -86,6 +88,7 @@ const App: React.FC<State> = ({basename}) =>  {
         {/*<Footer />*/}
     </Router>
     </Provider>
+    </div>
   );
 }
 

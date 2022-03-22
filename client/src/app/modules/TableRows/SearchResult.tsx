@@ -4,6 +4,7 @@ import Cover from '../Cover';
 import {Link, useHistory} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import classnames from 'classnames';
+import '../../App.css';
 
 type Props = {
   id: string,
@@ -32,7 +33,7 @@ const SearchResult: FC<Props> = ({id,title,status,relationships,demography,descr
   }
   
   return (
-    <div style={{cursor:"pointer"}} className={classnames("card card-body mb-2",{"bg-light":linkHover})}
+    <div className={classnames("p-2 rounded mb-2 text-black fw-bold pointer-style",{"bg-yellow":linkHover,"bg-orange":!linkHover})}
       onClick={() => history.push(`/manga/${id}`,{manga_id: id})}
       onMouseEnter={() => setLinkHover(true)}
       onMouseLeave={() => setLinkHover(false)}

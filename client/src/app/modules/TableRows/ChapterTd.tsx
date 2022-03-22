@@ -1,7 +1,7 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import {FC,useState} from 'react'
 import Chapter from './Chapter';
 import classnames from 'classnames';
+import '../../App.css';
 
 type Props = {
   hover:boolean,
@@ -18,10 +18,10 @@ const ChapterTd: FC<Props> = ({hover,hoverEnabled,pointer,onClick,onClickData,te
   //const [hover,setHover] = useState(false);
 
   return (
-    <td 
-      style={pointer?{cursor:"pointer"}:{}}
+    <td
+      style={{"backgroundColor":hover && hoverEnabled?"#ffee0a":"#ffcc00"}}
       onClick={() => onClick(onClickData)}
-      className={classnames(classname,{"bg-light":hover && hoverEnabled})}
+      className={classnames(classname,{"pointer-style":pointer})}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
     >

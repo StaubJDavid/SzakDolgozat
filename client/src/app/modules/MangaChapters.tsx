@@ -91,9 +91,9 @@ class MangaChapters extends Component<Props,State> {
 
       chaptersContent = (
         <>   
-          <table className="table table-responsive">
+          <table className="table table-responsive rounded mt-4">
               <tbody>
-              <tr>
+              <tr className='bg-orange-dark own-font'>
                 <th className="text-center">Volume</th>
                 <th className="text-center">Chapter</th>
                 <th className="text-left">Chapter Name</th>

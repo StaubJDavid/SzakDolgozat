@@ -44,9 +44,9 @@ class Profile extends Component<Props,State> {
         let manga_search_results = this.props.manga.manga_search.data;
 
         return (
-            <ul className="list-group list-group-flush">
+            <ul className="list-group list-group-flush bg-black rounded">
                 {manga_search_results?manga_search_results.map((element:any, i:number) => {
-                    return  <li key={element.id} className="list-group-item">
+                    return  <li key={element.id} className="list-group-item bg-black">
                                 <LDRow element={element}/>
                             </li>
                 }):<></>}

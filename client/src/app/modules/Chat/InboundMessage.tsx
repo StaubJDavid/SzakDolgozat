@@ -12,7 +12,7 @@ const InboundMessage: FC<Props> = ({message}) => {
         <div className="incoming_msg">
             <div className="received_msg">
                 <div className="received_withd_msg">
-                    <p className='text-break'>{message.message}</p>
+                    <p className='text-break fw-bold'>{message.message}</p>
                     <span className="time_date">{timeFormat(message.timestamp)}</span>
                 </div>
             </div>

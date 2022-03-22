@@ -1,0 +1,12 @@
+.reactMarkDown {
+}
+
+.reactMarkDown a {
+  color: #000000;
+  font-weight: bold;
+}
+
+.reactMarkDown a:hover {
+  color: #555555;
+  font-weight: bold;
+}

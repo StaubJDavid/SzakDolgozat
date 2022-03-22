@@ -54,9 +54,9 @@ return (
         <div className="chat_people">
             
             <div className="chat_ib">
-                <h5>{friend.nickname} <span className="chat_date">{timeFormat(timestamp)}</span></h5>
-                <p className="text-break">{trimString(message,55)}{message.length>55?"...\t":"\t"}{unreadMessages===0?"":<span className="badge rounded-pill bg-danger">{unreadMessages}</span>}</p>
-                <p className="text-break"></p>
+                <h5 className="fw-bold">{friend.nickname} <span className="chat_date fw-bold">{timeFormat(timestamp)}</span></h5>
+                <p className="text-break fw-bold">{trimString(message,55)}{message.length>55?"...\t":"\t"}{unreadMessages===0?"":<span className="badge rounded-pill bg-danger">{unreadMessages}</span>}</p>
+                <p className="text-break fw-bold"></p>
             </div>
         </div>
     </div>

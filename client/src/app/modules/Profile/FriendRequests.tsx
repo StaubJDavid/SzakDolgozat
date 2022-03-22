@@ -6,6 +6,8 @@ import "bootstrap/js/src/collapse.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import classnames from 'classnames';
 import SimpleButton from '../../common/SimpleButton';
+import NameButton from '../../common/NameButton';
+import FriendRequestButton from '../../common/FriendRequestButton';
 
 type Props = {
     auth:any,
@@ -55,13 +57,13 @@ class FriendRequests extends Component<Props,State> {
     onAcceptFRClick(e:any){
         this.props.acceptFriendRequest(
             this.props.profile.profile.id,
-            Number(e.target.getAttribute('data-id'))
+            Number(e)
         );
     }
 
     onDeleteFRClick(e:any){
         //Decline friend request === delete friend request
-        this.props.deleteFriendRequest(Number(e.target.getAttribute('data-id')));
+        this.props.deleteFriendRequest(Number(e));
     }
 
     render() {
@@ -76,7 +78,7 @@ class FriendRequests extends Component<Props,State> {
             (
                 <div>
                     <p>
-                        <button className="btn btn-primary"
+                        <button className="btn-black"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#collapseFriendRequests"
@@ -88,49 +90,28 @@ class FriendRequests extends Component<Props,State> {
                     </p>
                     <div className="collapse" id="collapseFriendRequests">
                         {/*Recieved Friend Requests*/}
-                        <div className="row border rounded mb-4">
-                            <div className='border-bottom rounded mb-2 bg-secondary align-middle' 
+                        <div className="row rounded mb-4">
+                            <div className='rounded mb-2 bg-own-dark align-middle' 
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseRecieved"
                                 aria-expanded="false"
-                                aria-controls="collapseRecieved"><h4 className='text-light text-center m-1'>Recieved friend requests <span className="badge bg-primary">{recieved.length}</span></h4>
+                                aria-controls="collapseRecieved"><h4 className='text-light text-center m-1 pointer-style'>Recieved friend requests <span className="badge bg-primary">{recieved.length}</span></h4>
                             </div>
                             <hr />
                             <div className="collapse" id="collapseRecieved">
                                 {recieved.map((element:any, i:number) => {
-                                    return  (<><div className="row mb-2" key={`recieved${i}`}>
-                                                <div className="col-md-4">
-                                                    <div className="row">
-                                                        <div className="col-md-12 d-flex align-items-center justify-content-center">
-                                                            <h4><SimpleButton text={element.nickname} onClick={() => this.props.history.push('/profile/'+ element.sender_id)} /></h4>
+                                    return  (<><div className="row mb-2 bg-black gx-4 p-2 rounded" key={`recieved${i}`}>
+                                                    <div className="col-md-4 rounded pr-2">
+                                                        <NameButton nickname={element.nickname} onClick={() => this.props.history.push('/profile/'+ element.sender_id)} />
+
+                                                        <div className="row mt-2">
+                                                            <FriendRequestButton onClick={() => this.onAcceptFRClick(element.sender_id)} icon={"fa-2 bi bi-plus"} bgColor={"bg-green"} bgHoverColor={"bg-green-dark"} />
+                                                            <FriendRequestButton onClick={() => this.onDeleteFRClick(element.sender_id)} icon={"fa-2 bi bi-trash-fill"} bgColor={"bg-red"} bgHoverColor={"bg-red-dark"} />
                                                         </div>
                                                     </div>
-                                                    <div className="row align-items-end">
-                                                        <div style={{cursor:"pointer"}}
-                                                            className={classnames("col-md-6 d-flex align-items-center justify-content-center",{"bg-success":this.state.acceptHover})}
-                                                            onClick={this.onAcceptFRClick}
-                                                            data-id={element.sender_id}
-                                                            onMouseEnter={() => this.setState({acceptHover:true})}
-                                                            onMouseLeave={() => this.setState({acceptHover:false})}
-                                                        >
-                                                            <i  
-                                                                className="bi bi-plus"
-                                                            />
-                                                        </div>
-                                                        <div style={{cursor:"pointer"}}
-                                                            data-id={element.sender_id}
-                                                            className={classnames("col-md-6 d-flex align-items-center justify-content-center",{"bg-danger":this.state.refuseHover})}
-                                                            onClick={this.onDeleteFRClick}
-                                                            onMouseEnter={() => this.setState({refuseHover:true})}
-                                                            onMouseLeave={() => this.setState({refuseHover:false})}
-                                                        >
-                                                            <i className="bi bi-trash-fill" />
-                                                        </div>
+                                                    <div className="col-md-8">
+                                                        <textarea rows={4} disabled={true} className="form-control flex-grow-1">{element.message}</textarea>
                                                     </div>
-                                                </div>
-                                                <div className="col-md-8">
-                                                    <textarea rows={4} disabled={true} className="form-control flex-grow-1">{element.message}</textarea>
-                                                </div>
                                             </div>
                                             <hr />
                                             </>
@@ -141,38 +122,28 @@ class FriendRequests extends Component<Props,State> {
                         
                         
                         {/*Sent Friend Requests*/}
-                        <div className="row border rounded">
-                            <div className='border-bottom rounded mb-2 bg-secondary align-middle'
+                        <div className="row rounded">
+                            <div className='rounded mb-2 bg-own-dark align-middle'
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseSent"
                                 aria-expanded="false"
-                                aria-controls="collapseSent"><h4 className='text-light text-center m-1'>Sent friend requests <span className="badge bg-primary">{sent.length}</span></h4>
+                                aria-controls="collapseSent"><h4 className='text-light text-center m-1 pointer-style'>Sent friend requests <span className="badge bg-primary">{sent.length}</span></h4>
                             </div>
                             <div className="collapse" id="collapseSent">
                                 <ul className="list-group list-group-flush">
                                 {sent.map((element:any, i:number) => {
-                                    return  (<><div className="row mb-2" key={`sent${i}`}>
-                                                <div className="col-md-4">
-                                                    <div className="row">
-                                                        <div className="col-md-12 d-flex align-items-center justify-content-center">
-                                                            <h4><SimpleButton text={element.nickname} onClick={() => this.props.history.push('/profile/'+ element.reciever_id)} /></h4>
+                                    return  (<>
+                                            <div className="row mb-2 bg-black gx-4 p-2 rounded" key={`seny${i}`}>
+                                                    <div className="col-md-4 rounded pr-2">
+                                                        <NameButton nickname={element.nickname} onClick={() => this.props.history.push('/profile/'+ element.reciever_id)} />
+
+                                                        <div className="row mt-2">
+                                                            <FriendRequestButton onClick={() => this.onDeleteFRClick(element.reciever_id)} icon={"fa-2 bi bi-trash-fill"} bgColor={"bg-red"} bgHoverColor={"bg-red-dark"} />
                                                         </div>
                                                     </div>
-                                                    <div className="row align-bottom mt-auto mb-0">
-                                                        <div style={{cursor:"pointer"}}
-                                                            data-id={element.reciever_id}
-                                                            className={classnames("col-md-12 d-flex align-items-center justify-content-center",{"bg-danger":this.state.deleteHover})}
-                                                            onClick={this.onDeleteFRClick}
-                                                            onMouseEnter={() => this.setState({deleteHover:true})}
-                                                            onMouseLeave={() => this.setState({deleteHover:false})}
-                                                        >
-                                                            <i className="bi bi-trash-fill" />
-                                                        </div>
+                                                    <div className="col-md-8">
+                                                        <textarea rows={4} disabled={true} className="form-control flex-grow-1">{element.message}</textarea>
                                                     </div>
-                                                </div>
-                                                <div className="col-md-8">
-                                                    <textarea rows={4} disabled={true} className="form-control flex-grow-1">{element.message}</textarea>
-                                                </div>
                                             </div>
                                             <hr />
                                             </>

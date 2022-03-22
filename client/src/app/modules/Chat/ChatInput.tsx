@@ -20,8 +20,8 @@ const ChatInput: FC<Props> = ({handleSendMsg}) => {
             <div className="input_msg_write">
                 {/*<input maxLength={255} onChange={(e) => setMsg(e.target.value)} value={msg} type="text" className="write_msg" placeholder="Type a message" />*/}
                 <TextareaAutosize
-                    minRows={3}
-                    maxRows={3}
+                    minRows={2}
+                    maxRows={2}
                     maxLength={255}
                     onChange={(e) => setMsg(e.target.value)}
                     value={msg}

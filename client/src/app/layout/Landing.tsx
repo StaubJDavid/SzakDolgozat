@@ -28,14 +28,14 @@ class Landing extends Component<Props,State> {
 
     render() {
         return (
-            <>
+            <div className='bg-black'>
             {this.props.errors.statusText === "Not Found"?<div>Chapter not found</div>:<></>}
             {this.props.mainPage.seasonal_sorted === this.props.mainPage.seasonal_count?<Seasonals seasonals={this.props.mainPage.seasonal_list} history={this.props.history}/>:<></>}
             <hr />
             <MostFollowedMangas mangas={this.props.mainPage.most_followed} history={this.props.history}/>
             <hr />
             <LatestChapters chapters={this.props.mainPage.latest_chapters} />          
-            </>
+            </div>
         )
     }
 }

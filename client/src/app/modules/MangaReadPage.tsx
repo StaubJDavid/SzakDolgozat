@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import axios from 'axios'
 import { useLocation } from "react-router-dom";
 import {getMangaImages, clearErrors} from '../actions/mangaActions';
-import {Img} from './Img';
+import {Img} from '../common/Img';
 import CommentInput from '../common/CommentInput';
 import Comments from '../common/Comments';
 import MangaReadingNav from '../common/MangaReadingNav';
@@ -42,6 +42,8 @@ class MangaReadPage extends Component<Props,State>{
 
     this.onKeyPressed = this.onKeyPressed.bind(this);
     this.onChangeChapter = this.onChangeChapter.bind(this);
+    /*this.onGetImgSrc = this.onGetImgSrc.bind(this);
+    this.getProxyChapter = this.getProxyChapter.bind(this);*/
   }
 
     componentDidMount() {
@@ -85,6 +87,17 @@ class MangaReadPage extends Component<Props,State>{
       {chapter_id: this.props.manga.reading_chapters.chapters[currentIndex+Number(e)].id}
       );
     }
+
+    //src={`${baseUrl}/data/${chapter.hash}/${chd}`}
+    /*getProxyChapter(baseurl:string,hash:string,filename:string) {
+      return axios.get(`http://80.98.214.13:3000/chapter/${baseurl}/${hash}/${filename}`)
+    }
+
+    async onGetImgSrc(baseurl:any,hash:any,filename:any){
+      const ownResponse = await this.getProxyChapter(baseurl, hash, filename);
+      //this.setState({data:ownResponse.data.url});
+      return ownResponse.data.url;
+    }*/
 
     onKeyPressed(e:any) {
       //const scrollToRef = (ref:any) => window.scrollTo(0, ref.offsetTop)
@@ -149,32 +162,41 @@ class MangaReadPage extends Component<Props,State>{
 
       imageContent = (
         <>
-            <div className="text-center">
+            <div className="text-center my-2">
               <MangaReadingNav location={this.props.location} history={this.props.history} chapter_id={chapter_id} />   
             </div>
 
-            <div className="text-center">
+            <div className="text-center mb-2">
               <NextPrevChapter history={this.props.history} />
             </div>
 
             <div className="text-center">
               {chapter.data.map((chd:any, i:any) => {
                 return (
-                  <>
+                  /*<>
                   <img 
                     ref={(ref) => {if(ref !== null)this.state.myRef.push(ref)}}
                     className='mb-3'
                     style={{maxWidth:"100%",maxHeight:"100vh",height:"auto"}}
-                    src={`${baseUrl}/data/${chapter.hash}/${chd}`}
+                    src={this.onGetImgSrc(baseUrl,chapter.hash,chd)}
+                    `${baseUrl}/data/${chapter.hash}/${chd}`
                     alt="Waaaa">
                   </img>
                   <br />
-                  </>
+                  </>*/
+                  <Img ref={(ref:any) => {if(ref !== null)this.state.myRef.push(ref)}}
+                    baseUrl={baseUrl}
+                    hash={chapter.hash}
+                    chd={chd}
+                  />
                 )})}
             </div>
 
             <div className="text-center">
               <NextPrevChapter history={this.props.history} />
+            </div>
+            <div className="text-center my-2">
+              <MangaReadingNav location={this.props.location} history={this.props.history} chapter_id={chapter_id} />   
             </div>
 
             <div>

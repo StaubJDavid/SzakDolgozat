@@ -5,6 +5,8 @@ import {addMangaProfile} from '../../actions/profileActions';
 import classnames from 'classnames';
 import SimpleButton from '../../common/SimpleButton';
 import getTitle from '../../helpers/getTitle';
+import TitleButton from '../../common/TitleButton';
+import AddDelMangaTitle from '../../common/AddDelMangaTitle';
 
 type Props = {
     element:any,
@@ -27,10 +29,8 @@ const LDRow: FC<Props> = ({element,auth,addMangaProfile}) => {
     }
 
     return (
-        <div className='d-flex flex-row'>
-            <div className='flex-grow-1 align-middle'>
-                <SimpleButton onClick={() => history.push('/manga/'+element.id)} text={getTitle(element.attributes.title)} />
-            </div>
+        <div className='d-flex flex-row rounded p-2 bg-orange'>
+            <AddDelMangaTitle onClick={() => history.push('/manga/'+element.id)} text={getTitle(element.attributes.title)} bgColor={"bg-orange"} bgHoverColor={"bg-yellow"}/>
             <div
                 className={classnames('text-center px-2 d-flex align-items-center',{"text-success":likeHover})}
                 onMouseEnter={() => setLikeHover(true)}

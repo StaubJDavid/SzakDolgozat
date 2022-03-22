@@ -16,7 +16,7 @@ type Props = {
 const ListEntryRow: FC<Props> = ({element,auth,addListEntry,list_id}) => {
     const history = useHistory();
     const [addHover, setAddHover] = useState(false);
-    const [dislikeHover, setDislikeHover] = useState(false);
+    const [titleHover, setTitleHover] = useState(false);
 
     function onAddListEntry(dataId:any,dataName:any){
         addListEntry(
@@ -28,18 +28,22 @@ const ListEntryRow: FC<Props> = ({element,auth,addListEntry,list_id}) => {
     }
 
     return (
-        <div className='d-flex flex-row'>
-            <div className='flex-grow-1 align-middle'>
-                <SimpleButton onClick={() => history.push('/manga/'+element.id)} text={getTitle(element.attributes.title)} />
+        <div className={classnames('d-flex flex-row rounded p-1',{"bg-orange":!titleHover, "text-black":!titleHover, "text-own-dark":titleHover,"bg-yellow":titleHover})}>
+            <div className={classnames('flex-grow-1 align-middle fw-bold')}
+                onClick={() => history.push('/manga/'+element.id)}
+                onMouseEnter={() => setTitleHover(true)}
+                onMouseLeave={() => setTitleHover(false)}
+            >
+                {getTitle(element.attributes.title)}
             </div>
             <div
-                className={classnames('text-center px-2 d-flex align-items-center',{"text-success":addHover})}
+                className={classnames('text-center px-2 d-flex align-items-center',{"text-success":addHover,"text-black":!addHover})}
                 onMouseEnter={() => setAddHover(true)}
                 onMouseLeave={() => setAddHover(false)}
                 onClick={() => onAddListEntry(element.id,getTitle(element.attributes.title))}
             >
                 <i
-                    className="bi bi-plus-square-fill"
+                    className="bi bi-plus-square-fill fa-lg"
                     data-bs-toggle="collapse"
                     data-bs-target={`#collapseAddEntry${list_id}`}
                     aria-expanded="false"

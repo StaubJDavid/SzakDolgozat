@@ -59,7 +59,7 @@ class MangaReadingNav extends Component<Props,State> {
             let {chapter,chapters} = this.props.manga.reading_chapters;
             chapterNavContent = (
             <>
-            <div>
+            <div className='text-white fw-bold'>
                 Title: {chapter.attributes.title}
                 <br/>
 

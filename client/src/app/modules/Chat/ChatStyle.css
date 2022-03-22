@@ -4,15 +4,15 @@
 }
 
 .inbox_people {
-  background: #f8f8f8 none repeat scroll 0 0;
+  background: #ffcc00 none repeat scroll 0 0;
   float: left;
   overflow: hidden;
   width: 40%;
-  border-right: 1px solid #c4c4c4;
+  border-right: 1px solid #000000;
   height: 100%;
 }
 .inbox_msg {
-  border: 1px solid #c4c4c4;
+  border: 1px solid #000000;
   clear: both;
   overflow: hidden;
   height: 100%;
@@ -33,7 +33,7 @@
 .headind_srch {
   padding: 10px 29px 10px 20px;
   overflow: hidden;
-  border-bottom: 1px solid #c4c4c4;
+  border-bottom: 1px solid #000000;
 }
 
 .recent_heading h4 {
@@ -60,8 +60,8 @@
 }
 
 .chat_ib h5 {
-  font-size: 15px;
-  color: #464646;
+  font-size: 20px;
+  color: #000000;
   margin: 0 0 8px 0;
 }
 .chat_ib h5 span {
@@ -70,7 +70,7 @@
 }
 .chat_ib p {
   font-size: 14px;
-  color: #989898;
+  color: #000000;
   margin: auto;
 }
 .chat_img {
@@ -88,7 +88,7 @@
   clear: both;
 }
 .chat_list {
-  border-bottom: 1px solid #c4c4c4;
+  border-bottom: 1px solid #000000;
   margin: 0;
   padding: 18px 16px 10px;
 }
@@ -98,7 +98,7 @@
 }
 
 .active_chat {
-  background: #ebebeb;
+  background: #ffee0a;
 }
 
 .incoming_msg_img {
@@ -114,14 +114,14 @@
 .received_withd_msg p {
   background: #ebebeb none repeat scroll 0 0;
   border-radius: 3px;
-  color: #646464;
+  color: #000000;
   font-size: 14px;
   margin: 0;
   padding: 5px 10px 5px 12px;
   width: 100%;
 }
 .time_date {
-  color: #747474;
+  color: #ffffff;
   display: block;
   font-size: 12px;
   margin: 8px 0 0;
@@ -134,14 +134,15 @@
   padding: 30px 15px 0 25px;
   width: 60%;
   height: 100%;
+  background-color: #4c4c4c;
 }
 
 .sent_msg p {
-  background: #05728f none repeat scroll 0 0;
+  background: #ffcc00 none repeat scroll 0 0;
   border-radius: 3px;
   font-size: 14px;
   margin: 0;
-  color: #fff;
+  color: #000000;
   padding: 5px 10px 5px 12px;
   width: 100%;
 }
@@ -163,14 +164,13 @@
 }
 
 .type_msg {
-  border-top: 1px solid #c4c4c4;
   position: relative;
 }
 .msg_send_btn {
-  background: #05728f none repeat scroll 0 0;
+  background: #ffcc00 none repeat scroll 0 0;
   border: medium none;
   border-radius: 50%;
-  color: #fff;
+  color: #000000;
   cursor: pointer;
   font-size: 17px;
   height: 33px;
@@ -186,4 +186,6 @@
 .msg_history {
   height: 90%;
   overflow-y: auto;
+  border-bottom: #000000;
+  margin-bottom: 2px;
 }

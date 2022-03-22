@@ -11,7 +11,7 @@ const OutgoingMessage: FC<Props> = ({message}) => {
     return (
     <div className="outgoing_msg">
         <div className="sent_msg">
-            <p className='text-break'>{message.message}</p>
+            <p className='text-break fw-bold'>{message.message}</p>
             <span className="time_date">{timeFormat(message.timestamp)}</span>
         </div>
     </div>

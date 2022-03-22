@@ -19,11 +19,11 @@ const CreateThread: FC<Props> = () => {
     return (
         <> 
             <p>
-                <button className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseCreateThread`} aria-expanded="false" aria-controls={`collapseCreateThread`}>
+                <button className="btn-yellow" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseCreateThread`} aria-expanded="false" aria-controls={`collapseCreateThread`}>
                     Create Thread
                 </button>
             </p>
-            <div className="collapse" id={`collapseCreateThread`}>
+            <div className="collapse bg-orange p-2 rounded" id={`collapseCreateThread`}>
                 <TextInput
                     name="title" 
                     value={title}
@@ -43,7 +43,7 @@ const CreateThread: FC<Props> = () => {
                     disabled={false}
                 />
                 <button onClick={(e:any) => dispatch(createThread(title,text,history))}
-                        className="btn btn-primary mt-4"
+                        className="btn-black mt-4"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseCreateThread"

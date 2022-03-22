@@ -50,7 +50,7 @@ class SendFriendRequest extends Component<Props,State> {
         <>
             <div>
                 <p>
-                    <button className="btn btn-primary"
+                    <button className="btn-black mt-2"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseSendFriendRequest"
@@ -71,7 +71,7 @@ class SendFriendRequest extends Component<Props,State> {
                         disabled={false}
                     />
                     <button onClick={this.onSendFRClick}
-                        className="btn btn-primary"
+                        className="btn-black mt-2"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseSendFriendRequest"

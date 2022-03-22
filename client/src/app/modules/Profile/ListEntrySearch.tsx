@@ -49,15 +49,15 @@ class ListEntries extends Component<Props,State> {
             <>
             {owned?(<>
                 <p>
-                    <button className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseAddEntry${this.props.list_id}`} aria-expanded="false" aria-controls={`collapseAddEntry${this.props.list_id}`}>
+                    <button className="btn-black" type="button" data-bs-toggle="collapse" data-bs-target={`#collapseAddEntry${this.props.list_id}`} aria-expanded="false" aria-controls={`collapseAddEntry${this.props.list_id}`}>
                         Search for manga
                     </button>
                 </p>
                 <div className="collapse" id={`collapseAddEntry${this.props.list_id}`}>
                     <SearchBar />
-                    <ul className="list-group list-group-flush">
+                    <ul className="list-group list-group-flush rounded bg-black py-2">
                         {manga_search_results?manga_search_results.map((element:any, i:number) => {
-                            return  <li key={element.id} className="list-group-item">
+                            return  <li key={element.id} className="list-group-item bg-black">
                                         <ListEntryRow element={element}  list_id={this.props.list_id}/>
                                     </li>
                         }):<></>}

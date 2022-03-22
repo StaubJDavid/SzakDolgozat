@@ -69,10 +69,10 @@ class ScanGroup extends Component<Props,State> {
             
             scangroupContent = (
                 <>
-                <h1>{attributes.name}</h1>
+                <h1 className='fw-bold own-font'>{attributes.name}</h1>
                 <br />
                 <hr />
-                <h4>Where to find</h4>
+                <h4 className='fw-bold own-font'>Where to find</h4>
                 <ScanProperty text={"Twitter"} pushTo={attributes.twitter} />
                 <ScanProperty text={"Website"} pushTo={attributes.website} />
                 <ScanProperty text={"Manga Updates"} pushTo={attributes.mangaUpdates} />
@@ -93,10 +93,10 @@ class ScanGroup extends Component<Props,State> {
                 {this.checkNullEmpty(attributes.ircServer)?<></>:<p>IRC Server: {attributes.ircServer}</p>}
                 {this.checkNullEmpty(attributes.ircChannel)?<></>:<p>IRC Channel:{attributes.ircChannel}</p>}
                 <hr />
-                <h4 className="mt-5">Description</h4>
-                <ReactMarkdown children={attributes.description} />
+                <h4 className="mt-5 fw-bold own-font">Description</h4>
+                <ReactMarkdown className='reactMarkDown' children={attributes.description} />
                 <hr />
-                <h4 className="mt-5">Members</h4>
+                <h4 className="mt-5 fw-bold own-font">Members</h4>
                 {relationships.map((r:any) => { 
                     return (
                     <div className="mb-2">
@@ -112,7 +112,7 @@ class ScanGroup extends Component<Props,State> {
         }
 
         return (
-            <div>
+            <div className='bg-orange rounded my-2 px-2'>
                 {scangroupContent}
             </div>
         )

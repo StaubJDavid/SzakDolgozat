@@ -12,7 +12,7 @@ const FivePage: FC<Props> = ({passedFc, currentPage, maxPage}) => {
   function makeNavList(currentPage:number, maxPage:any){
     let list:any = [];
     for (let i=1; i <= maxPage; i++) {
-      list.push(<li key={i} className={"page-item" + (currentPage === i ? ' disabled' : '')}><button className="page-link" onClick={() => passedFc(i)}>{i}</button></li>);
+      list.push(<li key={i} className={"opage-item" + (currentPage === i ? ' active' : '')}><button className="opage-link" onClick={() => passedFc(i)}>{i}</button></li>);
     }
     
     return list;

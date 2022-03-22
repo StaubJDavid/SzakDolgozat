@@ -5,6 +5,7 @@ import {getSubscribedMangas, unsubscribeFromManga} from '../../actions/profileAc
 import classnames from 'classnames';
 import RemoveButton from '../../common/RemoveButton';
 import SimpleButton from '../../common/SimpleButton';
+import TitleButton from '../../common/TitleButton';
 import ISO6391 from 'iso-639-1';
 
 type Props = {
@@ -30,7 +31,7 @@ const SubscribedMangas: FC<Props> = ({subscribed_mangas,getSubscribedMangas,unsu
         return (
             <>
             <p>
-                <button className="btn btn-primary"
+                <button className="btn-black"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#collapseSubscribedMangas"
@@ -49,7 +50,7 @@ const SubscribedMangas: FC<Props> = ({subscribed_mangas,getSubscribedMangas,unsu
     return (
         <>
         <p>
-            <button className="btn btn-primary"
+            <button className="btn-black"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseSubscribedMangas"
@@ -63,15 +64,15 @@ const SubscribedMangas: FC<Props> = ({subscribed_mangas,getSubscribedMangas,unsu
             <div className="container">
                 {subscribed_mangas.map((manga:any,i:number) => {
                     return (
-                    <div className="row">
-                        <div className="col-8">
-                            <SimpleButton text={manga.manga_name} onClick={() => history.push('/manga/'+manga.manga_id)} />
+                    <div className="row mb-1 bg-black rounded text-white">
+                        <div className="col-8 p-0 rounded">
+                            <TitleButton text={manga.manga_name} onClick={() => history.push('/manga/'+manga.manga_id)} bgColor={"bg-black"} bgHoverColor={"bg-own-dark"} />
                         </div>
                         <div className="col-2">
                             {ISO6391.getName(manga.translated_language)}
                         </div>
                         <div className="col-1 text-center">
-                            <SimpleButton text={manga.chapter} onClick={() => history.push('/manga/read/'+manga.chapter_id)} />
+                            <TitleButton text={manga.chapter} onClick={() => history.push('/manga/read/'+manga.chapter_id)} bgColor={"bg-black"} bgHoverColor={"bg-own-dark"} />
                         </div>
                         <div className="col-1">
                             <RemoveButton icon={'bi bi-trash-fill'} onClick={() => onUnsubscribeClick(manga.imt_id)} />
@@ -90,22 +91,3 @@ const mapStateToProps = (state:any)=>({
 });
 
 export default connect(mapStateToProps, {getSubscribedMangas,unsubscribeFromManga})(SubscribedMangas);
-
-/*
-<div className='d-flex'>
-                        <div className='flex-lg-fill align-middle'>
-                            <SimpleButton text={manga.manga_name} onClick={() => history.push('/manga/'+manga.manga_id)} />
-                        </div>
-                        <div className={'text-center px-2 flex-sm-fill align-items-center'} >
-                            {ISO6391.getName(manga.translated_language)}
-                        </div>
-                        <div className={'text-center px-2 flex-sm-fill align-items-center'} >
-                            <SimpleButton text={manga.chapter} onClick={() => history.push('/manga/read/'+manga.chapter_id)} />
-                        </div>
-                        <div
-                            className={classnames('text-center px-2 flex-sm-fill align-items-center')}
-                        >
-                            <RemoveButton icon={'bi bi-trash-fill'} onClick={() => onUnsubscribeClick(manga.imt_id)} />
-                        </div>
-                    </div>
-*/

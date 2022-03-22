@@ -6,6 +6,8 @@ import CarouselItem from '../../modules/TableRows/Carousel_Item';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import classnames from 'classnames';
+import CustomRightArrow from '../../common/CustomRightArrow';
+import CustomLeftArrow from '../../common/CustomLeftArrow';
 
 const responsive = {
     superLargeDesktop: {
@@ -66,7 +68,7 @@ const Seasonals: FC<Props> = ({seasonals,history}) => {
         let carousels:any = [];
         let carouselname:any = [];
         seasonals.map((s:any) => {
-            carousels.push(<Carousel responsive={responsive} infinite={true} showDots={true}>
+            carousels.push(<Carousel customRightArrow={<CustomRightArrow />} customLeftArrow={<CustomLeftArrow />} responsive={responsive} infinite={true} showDots={true}>
                 {s.data.map((m:any) => (
                     <div>
                         <CarouselItem key={"mfm"+m.id}
@@ -94,7 +96,7 @@ const Seasonals: FC<Props> = ({seasonals,history}) => {
 
         return (
             <>
-            <div className="bg-info rounded mb-2 d-flex justify-content-center align-items-center">
+            <div className="bg-orange border-bottom border-dark border-3 rounded mb-2 d-flex justify-content-center align-items-center">
                 <i
                     style={{cursor:"pointer"}}
                     onClick={() => onArrowClick(-1)}
@@ -102,7 +104,7 @@ const Seasonals: FC<Props> = ({seasonals,history}) => {
                     onMouseLeave={() => setLeftHover(false)}
                     className={classnames("bi fa-xl",{"bi-arrow-left-circle":!leftHover, "bi-arrow-left-circle-fill":leftHover})}
                 ></i>
-                <h1 className={"text-center mx-2"}>{carouselname[index]}</h1>
+                <h1 className={"text-center mx-2 own-font"}>{carouselname[index]}</h1>
                 <i
                     style={{cursor:"pointer"}}
                     onClick={() => onArrowClick(1)}

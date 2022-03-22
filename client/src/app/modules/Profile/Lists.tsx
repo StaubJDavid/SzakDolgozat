@@ -56,7 +56,7 @@ class Lists extends Component<Props,State> {
                 <>
                     {owned?(<div>
                         <p className='text-center'>
-                            <button className="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddList" aria-expanded="false" aria-controls="collapseAddList">
+                            <button className="btn-black" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddList" aria-expanded="false" aria-controls="collapseAddList">
                                 Create new list
                             </button>
                         </p>
@@ -64,34 +64,34 @@ class Lists extends Component<Props,State> {
                                 <InputAddList />
                         </div>
                     </div>):<></>}
-                    <div className="table-responsive">
-                        <table className='table'>
-                            <tr>
-                            <th>List name</th>
-                            <th className="text-center">List visibility</th>
-                            <th className="text-center">List created</th>
-                            {owned?<th className="text-center">Delete List</th>:<></>}
-                            {owned?<th className="text-center">Edit List</th>:<></>}
+                    <div className="table-responsive bg-black p-2">
+                        <table className='table bg-black p-2'>
+                            <tr className='bg-own-dark p-2'>
+                            <th className='fs-5 own-font text-white'>List name</th>
+                            <th className="text-center fs-5 own-font text-white">List visibility</th>
+                            <th className="text-center fs-5 own-font text-white">List created</th>
+                            {owned?<th className="text-center fs-5 own-font text-white">Delete List</th>:<></>}
+                            {owned?<th className="text-center fs-5 own-font text-white">Edit List</th>:<></>}
                             </tr>
                             {Object.keys(list_data).map((keyName, i) => { 
                                 let cl = list_data[keyName]
                                 return (
                                     <>
-                                <tr key={cl.list_id}>
-                                    <td data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
+                                <tr className='bg-black pointer-style p-1' key={cl.list_id}>
+                                    <td className='bg-orange fw-bold' data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
                                         {cl.list_name}
                                     </td>
-                                    <td className="text-center" data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
+                                    <td className="text-center bg-orange fw-bold" data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
                                         {cl.visibility}
                                     </td>
-                                    <td className="text-center" data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
+                                    <td className="text-center bg-orange fw-bold" data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
                                         {timeFormat(cl.created)}
                                     </td>
-                                    {owned?<td className="text-center"><button onClick={this.onDeleteListClick} data-id={cl.list_id} type="button" className="btn-close" aria-label="Close"></button></td>:<></>}
-                                    {owned?<td className="text-center"><InputEditList list_id={cl.list_id} list_name={cl.list_name} list_visibility={cl.visibility}/></td>:<></>}
+                                    {owned?<td className="text-center bg-orange fw-bold"><button onClick={this.onDeleteListClick} data-id={cl.list_id} type="button" className="btn-close" aria-label="Close"></button></td>:<></>}
+                                    {owned?<td className="text-center bg-orange fw-bold"><InputEditList list_id={cl.list_id} list_name={cl.list_name} list_visibility={cl.visibility}/></td>:<></>}
                                     
                                 </tr>
-                                <tr className='border-bottom' key={"c"+cl.list_id}>
+                                <tr className='bg-orange pointer-style mb-2' key={"c"+cl.list_id}>
                                     <td colSpan={owned?5:3}>
                                         <div className="collapse" id={`collapseList${cl.list_id}`}>
                                             <ListEntrySearch list_id={cl.list_id} />

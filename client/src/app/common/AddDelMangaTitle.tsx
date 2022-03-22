@@ -5,20 +5,21 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import ISO6391 from 'iso-639-1';
 
 type Props = {
-    text:any,
-    onClick:any
+    onClick:any,
+    bgColor:any,
+    bgHoverColor:any,
+    text:any
 }
 
 //ISO6391.getName(ch.attributes.translatedLanguage)
 
-const SimpleButton: FC<Props> = ({text,onClick}) => {
+const AddDelMangaTitle: FC<Props> = ({onClick,bgColor,bgHoverColor,text}) => {
     const [linkHover, setLinkHover] = useState(false);
 
     return(
     <div
-        style={{cursor:"pointer"}}
-        className={classnames('text-break',{"bg-yellow":linkHover})}
-        onClick={() => onClick()} 
+        onClick={() => onClick()}
+        className={classnames("flex-grow-1 align-middle rounded pointer-style fw-bold",{[bgColor]:!linkHover,[bgHoverColor]:linkHover})}
         onMouseEnter={() => setLinkHover(true)}
         onMouseLeave={() => setLinkHover(false)}
     >
@@ -27,4 +28,4 @@ const SimpleButton: FC<Props> = ({text,onClick}) => {
     )
 }
 
-export default SimpleButton;
+export default AddDelMangaTitle;

@@ -49,10 +49,10 @@ class LikeButtons extends Component<Props,State> {
         let {like,likes,dislikes} = this.props;
         
         let likeButtons = (<>
-            <button data-val={1} onClick={() => this.onLikeClicked(1)} type="button" className={classnames("btn btn-light mr-1",{"bg-success":like===1})}>
+            <button data-val={1} onClick={() => this.onLikeClicked(1)} type="button" className={classnames("btn mr-1 border-black",{"bg-success":like===1, "bg-black":like==null || like===0})}>
                 <i className={classnames("fas fa-thumbs-up",{"text-success":like==null || like===0, "text-light":like===1})}>  {likes}</i>
             </button>
-            <button data-val={0} onClick={() => this.onLikeClicked(0)} type="button" className={classnames("btn btn-light mr-1",{"bg-danger":like===0})}>
+            <button data-val={0} onClick={() => this.onLikeClicked(0)} type="button" className={classnames("btn mr-1 border-black",{"bg-danger":like===0, "bg-black":like==null || like===1})}>
                 <i className={classnames("fas fa-thumbs-down",{"text-danger":like==null || like===1, "text-light":like===0})}>  {dislikes}</i>
             </button>
         </>);

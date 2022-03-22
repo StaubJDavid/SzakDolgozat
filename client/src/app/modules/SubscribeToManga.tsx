@@ -42,7 +42,7 @@ const SubscribeToManga: FC<Props> = ({manga_id,translatedLanguage,subscribeToMan
     return (
         <>
         <p>
-            <button className="btn btn-primary"
+            <button className="btn-yellow"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseSubscribeToMangas"
@@ -53,15 +53,16 @@ const SubscribeToManga: FC<Props> = ({manga_id,translatedLanguage,subscribeToMan
             </button>
         </p>
         <div className="collapse" id="collapseSubscribeToMangas">
-            <div className="container">
+            <div className="container bg-black p-2 rounded">
                 {translatedLanguage.map((lang:any,i:number) => {
+                    const isSubscribed = findTranslation(lang);
                     return (
-                    <div className={classnames("row",{"bg-info":findTranslation(lang)})} >
-                        <div className="col-8">
+                    <div className={classnames("row rounded mb-3 gx-2 text-black",{"bg-green-dark":isSubscribed,"bg-orange":!isSubscribed})} >
+                        <div className="col-8 fw-bold">
                             {ISO6391.getName(lang)}
                         </div>
                         <div className="col-4">
-                            <AddButton icon={'bi bi-plus-square-fill'} onClick={() => onSubscribeClick(manga_id,lang)} />
+                            <AddButton icon={'bi bi-plus-square-fill fa-lg'} onClick={() => onSubscribeClick(manga_id,lang)} />
                         </div>
                     </div>
                     )

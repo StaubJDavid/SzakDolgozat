@@ -66,14 +66,14 @@ class Creator extends Component<Props,State> {
 
             creatorContent = (
                 <>
-                <h2>{this.props.creator.creator.attributes.name}</h2>
-                {this.props.creator.creator.attributes.biography?<p className="lead"><ReactMarkdown children={getDescription(this.props.creator.creator.attributes.biography)} /></p>:<></>}
+                <h2 className='text-orange own-font fw-bold my-2'>{this.props.creator.creator.attributes.name}</h2>
+                {this.props.creator.creator.attributes.biography?<p className="lead bg-orange rounded p-2 fw-bold"><ReactMarkdown className={"reactMarkDown"} children={getDescription(this.props.creator.creator.attributes.biography)} /></p>:<></>}
                 {Object.keys(attributes).map((keyName, i) => { 
                     //let cl = list_data[keyName];
                     //console.log(String(keyName), attributes[keyName]);
                     if(!keyCheck.includes(String(keyName)) && attributes[keyName] != null){
                         //console.log("xd");
-                        return <div key={String(keyName)}>{capitalizeFirstLetter(String(keyName))}: <a href={attributes[keyName]}>{attributes[keyName]}</a></div>
+                        return <div className='bg-orange rounded fw-bold p-2' key={String(keyName)}>{capitalizeFirstLetter(String(keyName))}: <a className={"reactLink"} href={attributes[keyName]}>{attributes[keyName]}</a></div>
                     }else{
                         return <></>
                     }

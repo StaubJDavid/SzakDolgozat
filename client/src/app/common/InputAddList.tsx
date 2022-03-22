@@ -82,7 +82,7 @@ class InputAddList extends Component<Props,State> {
                             </select>
                         </div>
                         <div className="col-md-2 text-center">
-                            <button onClick={this.onSaveClick} className="btn btn-primary" type="button" >Create</button>
+                            <button onClick={this.onSaveClick} className="btn-black" type="button" >Create</button>
                         </div>
                     </div>
                     </div>
