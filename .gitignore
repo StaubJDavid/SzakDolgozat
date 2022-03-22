@@ -22,3 +22,7 @@ client/yarn-debug.log*
 client/yarn-error.log*
 
 *.JPG
+
+#Proxy Ignore
+proxy/node_modules
+proxy/public
