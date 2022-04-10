@@ -78,10 +78,10 @@ class Search extends Component<Props,State> {
     }
 
     return (
-      <>
+      <div className='mt-2'>
       <SearchBar />
       {mangaSearchContent}
-      </>
+      </div>
     )
   }
 }

@@ -60,25 +60,25 @@ class Lists extends Component<Props,State> {
                                 Create new list
                             </button>
                         </p>
-                        <div className="collapse" id="collapseAddList">
+                        <div className="collapse mb-2" id="collapseAddList">
                                 <InputAddList />
                         </div>
                     </div>):<></>}
                     <div className="table-responsive bg-black p-2">
                         <table className='table bg-black p-2'>
                             <tr className='bg-own-dark p-2'>
-                            <th className='fs-5 own-font text-white'>List name</th>
+                            <th className='fs-5 own-font text-white px-3'>List name</th>
                             <th className="text-center fs-5 own-font text-white">List visibility</th>
                             <th className="text-center fs-5 own-font text-white">List created</th>
                             {owned?<th className="text-center fs-5 own-font text-white">Delete List</th>:<></>}
-                            {owned?<th className="text-center fs-5 own-font text-white">Edit List</th>:<></>}
+                            {owned?<th className="text-center fs-5 own-font text-white pe-2">Edit List</th>:<></>}
                             </tr>
                             {Object.keys(list_data).map((keyName, i) => { 
                                 let cl = list_data[keyName]
                                 return (
                                     <>
-                                <tr className='bg-black pointer-style p-1' key={cl.list_id}>
-                                    <td className='bg-orange fw-bold' data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
+                                <tr className='bg-black pointer-style ps-1' key={cl.list_id}>
+                                    <td className='bg-orange fw-bold ps-2' data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>
                                         {cl.list_name}
                                     </td>
                                     <td className="text-center bg-orange fw-bold" data-bs-toggle="collapse" data-bs-target={`#collapseList${cl.list_id}`} aria-expanded="false" aria-controls={`collapseList${cl.list_id}`}>

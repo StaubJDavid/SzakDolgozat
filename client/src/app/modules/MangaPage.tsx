@@ -74,7 +74,7 @@ class MangaPage extends Component<Props,State> {
                       </div>
                     </div>
                     <div className="text-center">
-                      <h1 className="display-4 text-center">{getTitle(data.attributes.title)}</h1>
+                      <h1 className="display-4 text-center own-font">{getTitle(data.attributes.title)}</h1>
                     </div>
                   </div>
                 </div>
@@ -83,9 +83,9 @@ class MangaPage extends Component<Props,State> {
               <div className="row">
                 <div className="col-md-12">
                   <div className="p-2 rounded mt-3 bg-orange text-black own-font mb-3">
-                    <h3 className="text-center fw-bold">Description</h3>
+                    <h3 className="text-center fw-bold own-font">Description</h3>
                     <hr />
-                    <p className="lead"><ReactMarkdown className={"reactMarkDown"} children={getDescription(data.attributes.description)} /></p>
+                    <p className="lead px-2"><ReactMarkdown className={"reactMarkDown"} children={getDescription(data.attributes.description)} /></p>
                     <Rating manga_id={data.id} manga_name={getTitle(data.attributes.title)}/>
                     <hr />
                     <div className="row">

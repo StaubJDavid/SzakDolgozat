@@ -154,6 +154,7 @@ class MangaReadPage extends Component<Props,State>{
   render(){
 
     let imageContent = <></>;
+    let commentContent = <></>;
 
     if(this.props.errors.statusText === "Not Found"){
       this.props.history.push("/");
@@ -184,7 +185,8 @@ class MangaReadPage extends Component<Props,State>{
                   </img>
                   <br />
                   </>*/
-                  <Img ref={(ref:any) => {if(ref !== null)this.state.myRef.push(ref)}}
+                  /*ref={(ref:any) => {if(ref !== null)this.state.myRef.push(ref)}} */
+                  <Img refState={this.state.myRef}
                     baseUrl={baseUrl}
                     hash={chapter.hash}
                     chd={chd}
@@ -199,22 +201,39 @@ class MangaReadPage extends Component<Props,State>{
               <MangaReadingNav location={this.props.location} history={this.props.history} chapter_id={chapter_id} />   
             </div>
 
-            <div>
+            {/*<div>
               <CommentInput target_id={chapter_id} />
             </div>
           
             <div>
-            <Comments target_id={chapter_id} />
-            </div>
+              <Comments target_id={chapter_id} />
+            </div>*/}
 
+        </>
+      )
+
+      commentContent = (
+        <>
+          <div>
+            <CommentInput target_id={chapter_id} />
+          </div>
+        
+          <div>
+            <Comments target_id={chapter_id} />
+          </div>
         </>
       )
     }
 
     return (
-      <div style={{outline:"none"}} className='container-fluid m-0 p-0 border-0' onKeyDown={this.onKeyPressed} tabIndex={-1}>
-      {imageContent}
+      <>
+      <div style={{outline:"none"}} onKeyDown={this.onKeyPressed} className='container-fluid m-0 p-0 border-0' tabIndex={-1}>
+        {imageContent}
       </div>
+      <div className='container-fluid m-0 p-0 border-0'>
+        {commentContent}
+      </div>
+      </>
     )
   }
 

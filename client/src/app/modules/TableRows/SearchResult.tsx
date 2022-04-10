@@ -5,6 +5,7 @@ import {Link, useHistory} from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import classnames from 'classnames';
 import '../../App.css';
+import isEmpty from '../../helpers/isEmpty';
 
 type Props = {
   id: string,
@@ -25,11 +26,25 @@ const SearchResult: FC<Props> = ({id,title,status,relationships,demography,descr
   let desc = "";
   
   if(description.hasOwnProperty('en')){
-    desc = description.en.slice(0,desc_length) + "...";
+    if(description.en.length < desc_length){
+      desc = description.en;
+    }else{
+      desc = description.en.slice(0,desc_length) + "...";
+    }
+    
   }else{
-    console.log("Has no en: ");
-    console.log(id);
-    desc = description[Object.keys(description)[0]].slice(0,desc_length) + "...";
+    /*console.log("Has no en: ");
+    console.log(id);*/
+    if(isEmpty(description)){
+      desc = "No description found";
+    }else {
+      if(description[Object.keys(description)[0]].length < desc_length){
+        desc = description[Object.keys(description)[0]]
+      }else{
+        desc = description[Object.keys(description)[0]].slice(0,desc_length) + "...";
+      }
+    }
+    
   }
   
   return (

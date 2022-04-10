@@ -232,7 +232,7 @@ router.get('/user/:user_id', verify, async (req, res) => {
                     res.status(400).json("checkIfFriends error");
                 }
             } catch (error) {
-                res.status(400).json("Throw error");
+                res.status(400).json(error);
             } 
         }
     }

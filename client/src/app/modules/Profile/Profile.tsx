@@ -231,7 +231,7 @@ class Profile extends Component<Props,State> {
                         </div>
                         <div className="row">
                             <div className="col-md-6 d-flex align-items-stretch bg-black rounded">
-                                <div className="card bg-black text-white">
+                                <div className="card bg-black text-white w-100">
                                     {this.props.profile.profile.liked_manga.map((element:any, i:number) => {
                                         return  <TextLinkDeleteTwo key={element.ud_id}
                                                     url={'/manga/'+ element.manga_id}  
@@ -245,7 +245,7 @@ class Profile extends Component<Props,State> {
                                 </div>
                             </div>
                             <div className="col-md-6 d-flex align-items-stretch bg-black rounded">
-                                <div className="card bg-black text-white">
+                                <div className="card bg-black text-white w-100">
                                     {this.props.profile.profile.disliked_manga.map((element:any, i:number) => {
                                         return  <TextLinkDeleteTwo key={element.ud_id}
                                                     url={'/manga/'+ element.manga_id}  

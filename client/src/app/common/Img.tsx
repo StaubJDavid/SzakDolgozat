@@ -2,7 +2,7 @@ import {FC, useState, useEffect, Component} from 'react'
 import axios from 'axios'
 
 type Props = {
-  ref: any,
+  refState: any,
   baseUrl:any,
   hash:any,
   chd:any
@@ -19,7 +19,7 @@ function getProxyChapter(hash:string,filename:string) {
 }*/
 //this.onGetImgSrc(baseUrl,chapter.hash,chd)
 
-const Img: FC<Props> = ({ref, baseUrl, hash, chd}) => {
+const Img: FC<Props> = ({refState, baseUrl, hash, chd}) => {
   const [imgSrc, setImgSrc] = useState("");
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const Img: FC<Props> = ({ref, baseUrl, hash, chd}) => {
   return (
     <>
     <img 
-      ref={ref}
+      ref={(ref:any) => {if(ref !== null)refState.push(ref)}}
       className='mb-3'
       style={{maxWidth:"100%",maxHeight:"100vh",height:"auto"}}
       src={imgSrc}

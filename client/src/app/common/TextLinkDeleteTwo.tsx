@@ -40,7 +40,7 @@ const TextLinkDeleteTwo: FC<Props> = ({key,url,state_object,owned,text,onClick,o
     }else{
         content = (
         <>
-            <div className={classnames('col-md-12 text-break text-black fw-bold pointer-style rounded',{"bg-orange":!linkHover,"bg-yellow":linkHover})}
+            <div className={classnames('col-12 text-break text-black fw-bold pointer-style rounded',{"bg-orange":!linkHover,"bg-yellow":linkHover})}
             onClick={() => history.push(url,state_object)} 
             onMouseEnter={() => setLinkHover(true)}
             onMouseLeave={() => setLinkHover(false)}>

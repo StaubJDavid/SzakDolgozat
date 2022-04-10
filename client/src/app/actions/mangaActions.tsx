@@ -31,7 +31,7 @@ export const searchForManga = (manga:string,offset:number) => (dispatch:any) => 
     ).catch(
         err => dispatch({
             type: GET_ERRORS,
-            payload: err.response.data
+            payload: err
         })
     );
 }
