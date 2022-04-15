@@ -23,13 +23,17 @@ app.get('/info', (req, res, next) => {
     res.send('This is a proxy service which proxies to Billing and Account APIs.');
 });
 
-app.use('/xd', createProxyMiddleware({
+app.use('/endpoint', createProxyMiddleware({
     target: API_SERVICE_URL,
     changeOrigin: true,
     pathRewrite: {
-        [`^/xd`]: '',
+        [`^/endpoint`]: '',
     },
 }));
+
+
+//Beérkező URL cím: http://proxy-address:3000/endpoint/manga?title=Manga cím&limit=20&offset=0
+
 
 //REACT_APP_PROXY_IMAGE_URL=http://80.98.214.13:3000/image
 /*app.use('/image', createProxyMiddleware({
