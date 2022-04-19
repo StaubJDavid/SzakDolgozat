@@ -8,8 +8,11 @@ const verify = require('../helpers/verify');
 const isEmpty = require('../helpers/isEmpty');
 const getVisibility = require('../helpers/getVisibility');
 const checkIfFriends = require('../helpers/checkIfFriends');
+
 const voteValidations = require('../helpers/validations/voteValidations');
 const vv = new voteValidations();
+
+
 //const vq = require('../helpers/queries/voteQueries');
 //const cq = require('../helpers/queries/commentQueries');
 const verify_check = require('../helpers/verify_check');
@@ -22,27 +25,31 @@ const vc = new voteClass();
 
 require('dotenv').config();
 
-// -------------------------------
+
 // POST api/votes/like
-// Like or dislike a comment
-// Private
-// -------------------------------
+// Lájkolja, dislikeolja a megadott fúrum threadet vagy kommentet
+
+//Először meghívom a hitelesítés middlewaret
+//ha nem sikeres a hitelesítés akkor hibát ad vissza a kérőnek
+
+//Ha sikeres akkor a middlewareben lévő next() metódussal tovább megyünk a paraméter listában lévő következő metódusra
 router.post('/like', verify, async (req, res) => {
     // INC_LIKE, DEC_LIKE, INC_DISLIKE, DEC_DISLIKE
     // Dislike = 0, Like = 1
     const user_id = req.jwt.id;
     const {target} = req.body;
+
     const errors = {};// = vv.votePostLikeValidator(user_id, req.body);
     //TODO ERROR HANDLING
     const like = parseInt(req.body.like);
     const target_id = req.body.target_id.toString();
 
-    console.log(req.body);
-
     if(!isEmpty(errors)){
         res.status(400).json(errors);
     }else{
         try {
+            
+            //SQL utasítás meghívása
             const getLikeResults = await vc.getLike(user_id,target_id);
 
             if(getLikeResults.length === 0){
@@ -258,11 +265,9 @@ router.post('/like', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
+
 // GET api/votes/like/:target_id
-// Get the likes of a comment
-// Public
-// -------------------------------
+// Kommentnek, fúrumnak a lájkjainak számát visszaadja
 router.get('/like/:target_id', async (req, res) => {
     const target_id = req.params.target_id;
     const errors = vv.voteGetAllLikesValidator(target_id);
@@ -286,11 +291,9 @@ router.get('/like/:target_id', async (req, res) => {
     }
 });
 
-// -------------------------------
+
 // GET api/votes/rate/:m_id
-// Get the ratings of a manga
-// Public
-// -------------------------------
+// Manga értékeléseit adja vissza
 router.get('/rate/:manga_id', verify_check, async (req, res) => {
     const manga_id = req.params.manga_id;
     const errors = vv.voteGetRatingsValidator(manga_id);
@@ -328,11 +331,9 @@ router.get('/rate/:manga_id', verify_check, async (req, res) => {
     }
 });
 
-// -------------------------------
+
 // POST api/votes/rate/:m_id
-// Add a score to a manga based on the m_id, request body, authorization header
-// Private
-// -------------------------------
+// Megadott mangát értékeli
 router.post('/rate/:manga_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const manga_id = req.params.manga_id;
@@ -375,11 +376,9 @@ router.post('/rate/:manga_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
+
 // DELETE api/votes/rate/:m_id
-// Delete your rating of a manga based on the m_id, request body, authorization header
-// Private
-// -------------------------------
+// Megadott mangáról törli a felhasználó értékelését
 router.delete('/rate/:manga_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const manga_id = req.params.manga_id;

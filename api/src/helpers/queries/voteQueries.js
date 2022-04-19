@@ -49,16 +49,20 @@ class voteClass {
     };
 
     getLike(user_id,target_id){
-        let error = new Error('Check if registered for login');
+        //Error definiálása
+        let error = new Error('Get the user\'s like on target');
         return new Promise((resolve,reject) => {
+            //SQL utasítás futtatása
             db.query(this.sql_getLike, [user_id,target_id], (err, results) => {
                 if(err){
+                    //Hiba történt, try catch blokkban elkell kapni ezt a kivételt
                     console.log(err);
                     error.query = "sql_getLike query error";
                     error.log = err;
     
                     reject(error);
                 }else{
+                    //Minden jó, vissza adja az eredményt
                     resolve(results);
                 }
             });

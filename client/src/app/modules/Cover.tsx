@@ -22,7 +22,7 @@ function getCover(manga_id:string) {
 }
 
 function getProxyCover(manga_id:string,filename:string) {
-  return axios.get(`http://80.98.214.13:3000/img/${manga_id}/${filename}`)
+  return axios.get(`${process.env.REACT_APP_PROXY_URL_BASE}/img/${manga_id}/${filename}`)
 }
 
 function changeRes(url:string,res:string){
@@ -56,7 +56,7 @@ class Cover extends Component<Props,State> {
         this.setState({isLoading:false});
       }else{
         if(this.props.relationships.length !== 0){
-          this.setState({data:`http://80.98.214.13:3000/error.jpg`});
+          this.setState({data:`${process.env.REACT_APP_PROXY_URL_BASE}/error.jpg`});
           this.setState({isLoading:false});
         }else{
           const response = await getCover(this.props.manga_id);
@@ -69,7 +69,7 @@ class Cover extends Component<Props,State> {
             //this.setState({data:`${process.env.REACT_APP_PROXY_IMAGE_URL}/${this.props.manga_id}/${rcover.attributes.fileName}`});
             this.setState({isLoading:false});
           }else{
-            this.setState({data:`http://80.98.214.13:3000/error.jpg`});
+            this.setState({data:`${process.env.REACT_APP_PROXY_URL_BASE}/error.jpg`});
             this.setState({isLoading:false});
           }
         }
@@ -95,7 +95,7 @@ class Cover extends Component<Props,State> {
           this.setState({isLoading:false});
         }else{
           if(this.props.relationships.length !== 0){
-            this.setState({data:`http://80.98.214.13:3000/error.jpg`});
+            this.setState({data:`${process.env.REACT_APP_PROXY_URL_BASE}/error.jpg`});
             this.setState({isLoading:false});
           }else{
             const response = await getCover(this.props.manga_id);
@@ -107,7 +107,7 @@ class Cover extends Component<Props,State> {
               this.setState({data:ownResponse.data.url});
               this.setState({isLoading:false});
             }else{
-              this.setState({data:`http://80.98.214.13:3000/error.jpg`});
+              this.setState({data:`${process.env.REACT_APP_PROXY_URL_BASE}/error.jpg`});
               this.setState({isLoading:false});
             }
           }

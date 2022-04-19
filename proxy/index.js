@@ -12,17 +12,21 @@ const app = express();
 app.use('*', cors());
 app.use(express.static('public'));
 
+const PUBLIC_ADDRESS = "80.98.214.13";
 const PORT = 3000;
 const HOST = "0.0.0.0";
+//A kívánt API URL cím törzsének megadása
 const API_SERVICE_URL = "https://api.mangadex.org";
+const PROXY_ADDRESS = `http://${PUBLIC_ADDRESS}:${PORT}`;
 const API_IMAGE_SERVICE_URL = "https://uploads.mangadex.org/covers";
 
 app.use(morgan('dev'));
 
 app.get('/info', (req, res, next) => {
-    res.send('This is a proxy service which proxies to Billing and Account APIs.');
+    res.send('This is a proxy service');
 });
 
+//Hozzáadjuk az express API egyik végpontjához a proxy middlewaret
 app.use('/endpoint', createProxyMiddleware({
     target: API_SERVICE_URL,
     changeOrigin: true,
@@ -31,41 +35,24 @@ app.use('/endpoint', createProxyMiddleware({
     },
 }));
 
-
-//Beérkező URL cím: http://proxy-address:3000/endpoint/manga?title=Manga cím&limit=20&offset=0
-
-
-//REACT_APP_PROXY_IMAGE_URL=http://80.98.214.13:3000/image
-/*app.use('/image', createProxyMiddleware({
-    target: API_IMAGE_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: {
-        [`^/image`]: '',
-    }
-}));*/
-
 const download_image = (url, image_path) =>{
-    //console.log("in download");
+    //Promise létrehozása, hogy használni tudjuk a Javascript await metódusát
     return new Promise((resolve, reject) => {
-        //console.log("in download promise");
+        //Axios segítségével megszerezzük a kép adatait
         axios({
             url,
             responseType: 'stream',
         }).then(
             response =>{
-                //console.log("in download response");
+                //A képet elmentjük a szerveren
                 response.data
                 .pipe(fs.createWriteStream("public/"+image_path))
                 .on('finish', () => resolve("public/"+image_path))
                 .on('error', e => reject(e))
-                /*console.log(response.status);
-                resolve("response");*/
             }
                 
         ).catch(
             error => {
-                //console.log("in download catch");
-                //console.log(error.status);
                 reject("download error");
             }
         );
@@ -74,60 +61,64 @@ const download_image = (url, image_path) =>{
 
 
   app.get('/img/:id/:filename', async (req, res) => {
-    console.log(`Request received: ${req.params.id}/${req.params.filename}`);
     
+    //Megfelelő elérési út létrehozása
     const requestUrl = `https://uploads.mangadex.org/covers/${req.params.id}/${req.params.filename}`
-
-    
+ 
+    //Try catch block a hibák elkapására
     try {
-        //console.log("before exists");
+
+        //Ellenőrizzük hogy létezik-e a kívánt kép a szerveren
         if (fs.existsSync(`public/${req.params.id}(-)${req.params.filename}`)) {
-            console.log("exists");
-            res.json({url:`http://80.98.214.13:3000/${req.params.id}(-)${req.params.filename}`});
+
+            //Létezik a fájl, vissza adjuk az elérési útját
+            res.json({url:`${PROXY_ADDRESS}/${req.params.id}(-)${req.params.filename}`});
             
         }else{
-            //console.log("before download");
+
+            //Nem létezik a fájl, letöltjük a MangaDex szerveréről
             await download_image(requestUrl, `${req.params.id}(-)${req.params.filename}`);
-            //console.log("after download");
-            res.json({url:`http://80.98.214.13:3000/${req.params.id}(-)${req.params.filename}`});
+            
+            //Vissza adjuk a letöltött fájl elérési útját
+            res.json({url:`${PROXY_ADDRESS}/${req.params.id}(-)${req.params.filename}`});
         }
-        //console.log("outside");
         
     } catch (error) {
-        //console.log("in main catch");
-        //console.log(error.status);
-        res.status(400).json({url:`http://80.98.214.13:3000/error.jpg`});
+
+        //ha valami hiba merül fel vissza adunk egy hiba képet
+        res.status(400).json({url:`${PROXY_ADDRESS}/error.jpg`});
     }
-    
 });
 
 app.get('/chapter/:hash/:filename', async (req, res) => {
+
+    //Megfelelő elérési út létrehozása
     const baseUrl = "https://uploads.mangadex.org";
-    //console.log(`Request received: ${baseUrl}/${req.params.id}/${req.params.filename}`);
     const {hash,filename} = req.params;
     const requestUrl = `${baseUrl}/data/${hash}/${filename}`
 
-    
+    //Try catch block a hibák elkapására
     try {
-        //console.log("before exists");
+
+        //Ellenőrizzük hogy létezik-e a kívánt kép a szerveren
         if (fs.existsSync(`public/panel(-)data(-)${hash}(-)${filename}`)) {
-            //console.log("exists");
-            res.json({url:`http://80.98.214.13:3000/panel(-)data(-)${hash}(-)${filename}`});
+
+            //Létezik a fájl, vissza adjuk az elérési útját
+            res.json({url:`${PROXY_ADDRESS}/panel(-)data(-)${hash}(-)${filename}`});
             
         }else{
-            //console.log("before download");
+
+            //Nem létezik a fájl, letöltjük a MangaDex szerveréről
             await download_image(requestUrl, `panel(-)data(-)${hash}(-)${filename}`);
-            //console.log("after download");
-            res.json({url:`http://80.98.214.13:3000/panel(-)data(-)${hash}(-)${filename}`});
+
+            //Vissza adjuk a letöltött fájl elérési útját
+            res.json({url:`${PROXY_ADDRESS}/panel(-)data(-)${hash}(-)${filename}`});
         }
-        //console.log("outside");
-        
     } catch (error) {
-        //console.log("in main catch");
-        //console.log(error.status);
-        res.status(400).json({url:`http://80.98.214.13:3000/error.jpg`});
+
+        //ha valami hiba merül fel vissza adunk egy hiba képet
+        res.status(400).json({url:`${PROXY_ADDRESS}/error.jpg`});
     }
-    
 });
 
 app.listen(PORT, HOST, () => {

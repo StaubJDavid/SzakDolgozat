@@ -22,17 +22,22 @@ export const registerUser = (userData:any, history:any) => (dispatch:any) => {
 };
 
 export const loginUser = (userData:any) => (dispatch:any) => {
+    //Kérés küldése a backendhez
     axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, 
         {email: userData.email,
         password: userData.password}
     ).then(
         res => {
+            //Kapott válaszból kivesszük a JWT-t
             const jwt = res.data.token;
+            //Eltároljuk lokális tárhelyen a tokent
             localStorage.setItem('JWT',jwt);
+            //Axios header beállítása
             setAuthToken(jwt);
+
+            //Storeban a bejelentkezett felhasználó beállítása
             const decoded = jwt_decode(jwt);
             dispatch(setCurrentUser(decoded));
-            //dispatch(connectToServer(decoded));
     }).catch(
         err => dispatch({
             type: GET_ERRORS,

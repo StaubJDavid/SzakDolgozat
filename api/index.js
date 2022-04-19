@@ -1,5 +1,4 @@
-const express = require('express');
-const cors = require('cors');
+
 const jwt = require('jsonwebtoken');
 const db = require('./src/database/db');
 const { v4: uuidv4, validate: uuidValidate } = require('uuid');
@@ -8,11 +7,11 @@ const http = require("http");
 
 require('dotenv').config();
 
-const app = express();
-app.use('*', cors());
-app.use(express.json({ limit: '12MB' }));
+//Modulok importálása
+const express = require('express');
+const cors = require('cors');
 
-
+//Végpont csoportok importálása
 var authRouter = require('./src/routes/auth');
 var commentsRouter = require('./src/routes/comments');
 var listsRouter = require('./src/routes/lists');
@@ -22,99 +21,88 @@ var votesRouter = require('./src/routes/votes');
 var mangaUpdatesRouter = require('./src/routes/mangaUpdates');
 var chatRouter = require('./src/routes/chat');
 
-app.use('/api/auth', cors(), authRouter);// localhost:3001/api/auth
-app.use('/api/comments', cors(), commentsRouter);// localhost:3001/api/comments
-app.use('/api/lists', cors(), listsRouter);// localhost:3001/api/lists
-app.use('/api/threads', cors(), threadsRouter);// localhost:3001/api/threads
-app.use('/api/user', cors(), userRouter);// localhost:3001/api/user
-app.use('/api/votes', cors(), votesRouter);// localhost:3001/api/votes
-app.use('/api/manga', cors(), mangaUpdatesRouter);// localhost:3001/api/manga
-app.use('/api/chat', cors(), chatRouter);// localhost:3001/api/chat
+//Express app létrehozása
+const app = express();
+
+//Cross-Origin Erőforrás Megosztás(Cross-Origin Resource Sharing - Cors) engedélyezése 
+app.use('*', cors());
+
+//Bejövő kéréseket egyből JSON-be illeszti max 12MB méretű lehet a kérés testében lévő adat
+app.use(express.json({ limit: '12MB' }));
+
+//Megadott végpontokhoz hozzárendeljük a megfelelő Routers
+app.use('/api/auth', cors(), authRouter);
+app.use('/api/comments', cors(), commentsRouter);
+app.use('/api/lists', cors(), listsRouter);
+app.use('/api/threads', cors(), threadsRouter);
+app.use('/api/user', cors(), userRouter);
+app.use('/api/votes', cors(), votesRouter);
+app.use('/api/manga', cors(), mangaUpdatesRouter);
+app.use('/api/chat', cors(), chatRouter);
 
 
 app.get('/', (req, res) => {
     res.send('Home');
 });
 
-app.get('/uuid/:manga_id', (req, res) => {
-    res.send(uuidValidate(req.params.manga_id));
-});
-
-app.get('/token', (req, res) => {
-    const accessToken = jwt.sign({ email:"davidkah20@gmail.com", method:"login", role: "user"},
-        process.env.SECRET_KEY,
-        {expiresIn: "89280m"}
-        );
-    
-    res.json({
-        success: true,
-        token: 'Bearer ' + accessToken
-    });
-});
-
-app.get('/db', (req,res) => {
-    //News Services Table
-    sql = 'SELECT * FROM `users`';
-
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log('Something\'s wrong with the News Services table creation: ' + err);
-        } else {
-            console.log(result);
-            res.json(result);
-        }
-    });
-});
-
+//Létrehozunk egy http szervert és a szerver beállításai az általunk létrehozott express app objektum lesz
 const server = http.createServer(app);
 
+//Elkezdünk egy adott porton figyelni a bejövő kérésekre
 server.listen(process.env.PORT, () => {
     console.log(`Listening to ${process.env.PORT}`);
 });
 
-//"http://80.98.214.13:3011"
-//"http://localhost:3011"
+
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3011",
+        origin: process.env.FRONTEND_ADDRESS,
         credentials:true
     }
 });
 
+//Aktív felhaszálokat tárolja
 global.onlineUsers = new Map();
+//Aktív felhasználóknak a felhasználó id jét tárolja
 global.lookupTable = new Map();
 
+//Mikor a kliens csatlakozik ez az esemény lefog futni
 io.on("connection",(socket)=> {
-    global.chatSocket = socket;
+    //global.chatSocket = socket;
 
+    //Kliensről add-user eseményt dolgozza fel
     socket.on("add-user", (userId) => {
-        
-        // console.log("addUser Id: ", userId);
-        // console.log("AddUser Socket: ", socket.id);
+
+        //Hozzá adja az aktív felhasználókhoz a kliens
         onlineUsers.set(userId, socket.id);
+
+        //lookupTable be a kliens kapcsolat id-jéhez hozzárendeli a felhasználó idjét
         lookupTable.set(socket.id, userId);
-        console.log(onlineUsers);
     });
 
+
+    //Kliensről send-msg eseményt dolgozza fel
     socket.on("send-msg", (data)=>{
-        //console.log("Send msg data: ", data);
-        //console.log(data);
+
+        //Ha a megadott kliens bevan jelentkezve, elküldi neki az üzenetet
         const sendUserSocket = onlineUsers.get(data.reciever_id);
         if(sendUserSocket){
-            //console.log("send user socket: ", sendUserSocket);
             socket.to(sendUserSocket).emit("msg-recieve",data);
         }
     })
 
+    //Lekapcsolódás esetén
     socket.on("disconnect", (reason)=>{
-        //console.log("DISCONNECTING");
-        //console.log(reason);
         
+        //Megszerzi a kapcsolatot
         const key = lookupTable.get(socket.id);
 
+        //kitörli az online kliensek közül
         onlineUsers.delete(key);
+        //Kitörli a lookup tableből
         lookupTable.delete(socket.id);
 
+        //megszerzet kapcsolatot felbontja
         socket.disconnect();
     })
 })

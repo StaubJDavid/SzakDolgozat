@@ -19,11 +19,8 @@ const cc = new commentClass();
 
 require('dotenv').config();
 
-// -------------------------------
 // GET api/comments/:target_id
-// Get the comments from the target_id in the database
-// Public
-// -------------------------------
+// Megadott elemhez(fórum, manga, manga fejezet) tartozó kommenteket adja vissza
 router.get('/:target_id', verify_check, async (req, res) => {
     const target_id = req.params.target_id;
     const errors = cv.commentGetCommentsValidator(target_id);
@@ -47,11 +44,8 @@ router.get('/:target_id', verify_check, async (req, res) => {
     }
 });
 
-// -------------------------------
 // POST api/comments/:target_id
-// Post a comment to the specified target_id
-// Private
-// -------------------------------
+// Megadott elemhez ad hozzá egy kommentet
 router.post('/:target_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const target_id = req.params.target_id;
@@ -78,11 +72,8 @@ router.post('/:target_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // DELETE api/comments/:c_id
-// Delete the specified comment based on the c_id
-// Private
-// -------------------------------
+// Megadott kommentet törli ha a kezdeményező a tulaj
 router.delete('/:c_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const c_id = req.params.c_id;

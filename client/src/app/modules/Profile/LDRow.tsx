@@ -51,8 +51,12 @@ const LDRow: FC<Props> = ({element,auth,addMangaProfile}) => {
     )
 }
 
+//Itt adjuk meg hogy a globális store-ból melyik változót/állapotot éri el
 const mapStateToProps = (state:any)=>({
     auth: state.auth
 });
 
+//React redux connect függvényébe megadjuk hogy
+// milyen állapotot akar elérni a komponens és 
+//milyen akciókat akar elvégezni
 export default connect(mapStateToProps,{addMangaProfile})(LDRow);

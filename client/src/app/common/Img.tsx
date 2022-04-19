@@ -9,7 +9,7 @@ type Props = {
 }
 
 function getProxyChapter(hash:string,filename:string) {
-  return axios.get(`http://80.98.214.13:3000/chapter/${hash}/${filename}`)
+  return axios.get(`${process.env.REACT_APP_PROXY_URL_BASE}/chapter/${hash}/${filename}`)
 }
 
 /*async onGetImgSrc(baseurl:any,hash:any,filename:any){

@@ -21,7 +21,8 @@ var cron = require('node-cron');
 
 require('dotenv').config();
 
-//Get all subscribed manga
+// GET api/manga/updates
+// Visszaadja a headerben lévő felhasználó feliratkozásait
 router.get('/updates', verify, async (req, res) => {
     const user_id = req.jwt.id
     const errors = muv.mockValidator();
@@ -36,7 +37,8 @@ router.get('/updates', verify, async (req, res) => {
     }
 });
 
-//Subscribe to manga
+// POST api/manga/updates
+// Feliratkozik egy új manga fordításra
 router.post('/updates', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const {manga_id, translated_language} = req.body;
@@ -89,7 +91,8 @@ router.post('/updates', verify, async (req, res) => {
     }
 });
 
-//Unsubscribe from manga
+// DELETE api/manga/updates
+// Leiratkozik egy manga fordításról
 router.delete('/updates', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const imt_id = req.body.imt_id;
@@ -116,6 +119,7 @@ router.delete('/updates', verify, async (req, res) => {
     }
 });
 
+//Megadott email címekre küld egy emailt
 const sendMailToSubscribers = (subscribedResults, lookupTable) => {
     console.log("In Send the mail to subscribers");
     let promises = [];
@@ -131,6 +135,7 @@ const sendMailToSubscribers = (subscribedResults, lookupTable) => {
     return Promise.all(promises);
 };
 
+//Visszadja az összes Manga fordítást amire új fejezet érkezett
 const getAllMangaTranslate = (mangaResults) => {
     console.log("In the getAllMangaTranslate");
     let promises = [];
@@ -140,6 +145,7 @@ const getAllMangaTranslate = (mangaResults) => {
      return Promise.all(promises);
 };
 
+//Visszaadja a legutolsó fejezetet az adott mangából és fordítási nyelvből
 const getMangaLatestChapterInLanguage = async (manga_id,translatedL) =>{
     return await axios.get(`https://api.mangadex.org/chapter?manga=${manga_id}&translatedLanguage[]=${translatedL}&order[volume]=desc&order[chapter]=desc&limit=1`)
     .then(
@@ -152,6 +158,7 @@ const getMangaLatestChapterInLanguage = async (manga_id,translatedL) =>{
     )
 };
 
+//Visszaadja hogy az utolsó fejezet az újabb-e mint a meglévő fejezet
 const checkIfNewChapterAvailable = async (mangaResult) =>{
     return new Promise(async(resolve, reject) => {
         try{
@@ -173,7 +180,8 @@ const checkIfNewChapterAvailable = async (mangaResult) =>{
         }
     })
 };
-//Run the function at every hour
+
+// Minden órában lefut ez a függvény
 cron.schedule('0 * * * *', async () => {
     try {
         console.log("The function fired though");
@@ -217,6 +225,5 @@ cron.schedule('0 * * * *', async () => {
         console.log(error);
     }
 })
-//Query string to get the latest chapter in a language
-//https://api.mangadex.org/chapter?manga={manga_id}&translatedLanguage[]={translatedL}&order[volume]=desc&order[chapter]=desc&limit=1
+
 module.exports = router;

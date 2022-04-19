@@ -13,11 +13,13 @@ const ac = new authClass();
 
 require('dotenv').config();
 
-// -------------------------------
+//Express router létrehozása
+var router = express.Router();
+
+//Routernek végpont beállítása
+
 // POST api/auth/login
-// Login user
-// Public
-// -------------------------------
+// Visszaad egy JWT-t ha sikerese a bejelentkezés
 router.post('/login', async (req, res) => {
     const { email, password} = req.body;
 
@@ -61,11 +63,8 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// -------------------------------
 // POST api/auth/register
-// Register user
-// Public
-// -------------------------------
+// Regisztrál egy felhasználót
 router.post('/register', async (req, res) => {
     const { email, nickname, password} = req.body;
 

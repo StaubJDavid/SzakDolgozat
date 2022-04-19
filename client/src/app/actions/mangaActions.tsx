@@ -36,9 +36,12 @@ export const searchForManga = (manga:string,offset:number) => (dispatch:any) => 
     );
 }
 
+//Dispatch wrapper getManga() ként hívja meg és kell neki egy paraméter, ami egy manga id-je
 export const getManga = (manga_id:string) => (dispatch:any) => {
+    //indítunk egy axios kérést a proxy felé(MangaDex API-hoz) hogy megkapjuk a megadott mangának a részleteit
     axios.get(`${process.env.REACT_APP_PROXY_URL}/manga/${manga_id}?includes[]=artist&includes[]=author&includes[]=cover_art`)
     .then(
+        //Ha sikeresen visszatér a kérés, GET_MANGA típusú kérést kezdeményezünk, és a payload attribútumnak megadjuk a kívánt adatot
         res => {
             dispatch({
                 type: GET_MANGA,
@@ -46,11 +49,7 @@ export const getManga = (manga_id:string) => (dispatch:any) => {
             })
         }
     ).catch(
-        err => /*dispatch({
-            type: GET_ERRORS,
-            payload: err.response.data
-        })*/
-        console.log(err.response)
+        err => console.log(err.response)
     );
 }
 

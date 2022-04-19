@@ -20,11 +20,8 @@ const { v4: uuidv4 } = require('uuid');
 
 require('dotenv').config();
 
-// -------------------------------
 // POST api/threads
-// Create a thread in the database based on the content of the request body
-// Private
-// -------------------------------
+// Létrehoz egy fórum threadet
 router.post('/', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const {title, text} = req.body;
@@ -82,11 +79,8 @@ router.post('/', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // GET api/threads
-// Get all of the threads
-// Private
-// -------------------------------
+// Visszaadja az összes fórum threadet
 router.get('/', verify_check, async (req, res) => {
     const errors = {}
 
@@ -111,11 +105,8 @@ router.get('/', verify_check, async (req, res) => {
     }
 });
 
-// -------------------------------
 // GET api/threads/:t_id
-// Get aspecified thread
-// Private
-// -------------------------------
+// Visszaadja a megadott fórum thread adatait
 router.get('/:t_id', verify_check, async (req, res) => {
     //const user_id = req.jwt.id;
     const thread_id = req.params.t_id;
@@ -147,11 +138,8 @@ router.get('/:t_id', verify_check, async (req, res) => {
     
 });
 
-// -------------------------------
 // DELETE api/threads/:t_id
-// Delete the specified thread based on the list_id, and header's JWT
-// Private
-// -------------------------------
+// Törli a megadott thread-et ha a kezdeményező a thread tulaja
 router.delete('/:t_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const thread_id = req.params.t_id;
@@ -193,11 +181,8 @@ router.delete('/:t_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // GET api/threads/own/:u_id
-// Get the threads of a user
-// Private
-// -------------------------------
+// Felhasználó által létrehozott thread eket adja vissza
 router.get('/own/:u_id', verify, async (req, res) => {
     const user_id = req.params.u_id;
     const errors = threadGetUsersThreadValidator(user_id);

@@ -1,9 +1,8 @@
 const Joi = require('joi');
 
-const {joi_digit, joi_string, joi_visibility_digit} = require('./schemas');
+const {joi_digit, joi_string} = require('./schemas');
 
 
-//Validation for getting the current user
 const votePostLikeValidate = Joi.object({
     user_id: joi_digit,
     target_id: joi_string,
@@ -34,17 +33,24 @@ class commentValidations {
     constructor() {
     };
 
+    //A paraméterek a beérkező kérésből jön
     votePostLikeValidator(user_id, data){
+
+        //Kiértékeli a votePostLikeValidate objektumot a megadott értékek alapján
         const { error, value } = votePostLikeValidate.validate({ 
             user_id: user_id,
             target_id: data.target_id,
             like: data.like
         },{abortEarly: false});
     
+        //Létrehozunk egy üres objektumot, ezt fogjuk vissza adni
         const errors = {};
     
+        //Ha van hiba akkor végig megy a tömbön, és a ha a switch-nek megadott paramétert kezeljük akkor az errors
+        //objektumnak hozzáadunk attribútumot egy üzenettel
         if(error){
             error.details.forEach(e => {
+                //Csak olyan nevű hibák lehetnek amik a vizsgált objektumnak megvannak attribútumként
                 switch(e.path[0]){
                     case "user_id": errors.user_id = "Wrong user_id format";break;
                     case "target_id": errors.target_id = "Wrong target_id format";break;
@@ -53,6 +59,7 @@ class commentValidations {
             })
         }    
     
+        //Ha nincs hiba üres objektumot adunk vissza
         return errors;
     };
 

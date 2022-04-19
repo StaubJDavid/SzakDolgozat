@@ -2,8 +2,6 @@ const Joi = require('joi');
 
 const {joi_digit, joi_string, joi_visibility_digit} = require('./schemas');
 
-
-//Validation for getting the current user
 const listCreateListValidate = Joi.object({
     id: joi_digit,
     list_name: joi_string,

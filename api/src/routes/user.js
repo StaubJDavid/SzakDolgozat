@@ -31,13 +31,8 @@ const frc = new friendRequestClass();
 
 require('dotenv').config();
 
-// -------------------------------
 // GET api/user
-// Get the current user based on the authorization header
-// Private
-// -------------------------------
-
-//Friend Query Integration Done
+// Headerben lévő JWT alapján visszaadja a felhasználó profilját
 router.get('/', verify, async (req, res) => {
     const {id} = req.jwt
     const errors = userGetSelfValidator(req.jwt);
@@ -98,13 +93,8 @@ router.get('/', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // GET api/user/:u_id
-// Get the specified user based on u_id
-// Private
-// -------------------------------
-
-//Friend Query Integration Done
+// Megadott id-jú felhasználónak visszaadja a profilját
 router.get('/:u_id', verify, async (req, res) => {
     const id = req.params.u_id;
     const errors = userGetUserIdValidator(req.jwt,req.params.u_id);
@@ -182,13 +172,8 @@ router.get('/:u_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // POST api/user/details
-// Add details to the database(Bio,liked manga, disliked manga, friends)
-// Private
-// -------------------------------
-
-//Doesnt need friend integration
+// Profil részletet ad hozzá a felhasználó
 router.post('/details', verify, async (req, res) => {
     const {dt_id,value} = req.body;
     const user_id = req.jwt.id;
@@ -226,13 +211,8 @@ router.post('/details', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // DELETE api/user/details/ud_id
-// Delete the specified detail from the database(Bio,liked manga, disliked manga, friends)
-// Private
-// -------------------------------
-
-//Doesnt need friend integration
+// Profil részletet töröl a felhasználó
 router.delete('/details/:ud_id', verify, async (req, res) => {
     const ud_id = req.params.ud_id;
     const user_id = req.jwt.id;
@@ -263,13 +243,8 @@ router.delete('/details/:ud_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------userEditDetailValidator
 // PUT api/user/details/ud_id
-// Edit the specified detail in the database(Bio,liked manga, disliked manga, friends)
-// Private
-// -------------------------------
-
-//Doesnt need friend integration
+// Profil részletet változtat a felhasználó
 router.put('/details/:ud_id', verify, async (req, res) => {
     const ud_id = req.params.ud_id;
     const user_id = req.jwt.id;
@@ -323,13 +298,8 @@ router.put('/details/:ud_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // POST api/user/friend-request
-// Send a friend request(Add it to the database) based on the header, and request body
-// Private
-// -------------------------------
-
-//Friends integrated
+// Küld egy barát felkérést a kérés törzsében lévő felhasználónak
 router.post('/friend-request', verify, async (req, res) => {
     const {reciever_id, message} = req.body;
     const user_id = req.jwt.id;
@@ -396,13 +366,8 @@ router.post('/friend-request', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
-// POST api/user/friend-request/accept NEW "friend_id friend_name" divided by a space, janky...ik
-// Send a friend request(Add it to the database) based on the header, and request body
-// Private
-// -------------------------------
-
-//Friend integration Done
+// POST api/user/friend-request/accept
+// Elfogadja a kérés törzsben lévő barát kérelmet
 router.post('/friend-request/accept', verify, async (req, res) => {
     const {sender_id} = req.body;
     const user_id = req.jwt.id;
@@ -463,13 +428,8 @@ router.post('/friend-request/accept', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // DELETE api/user/friend-request
-// Delete/refuse a friend request based on the request body
-// Private
-// -------------------------------
-
-//Friend integration not needed
+// Törli/visszautasítja a kérés törzsben lévő barát kérelmet
 router.delete('/friend-request', verify, async (req, res) => {
     const {other_id} = req.body;
     const user_id = req.jwt.id;
@@ -502,13 +462,8 @@ router.delete('/friend-request', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // GET api/user/get/friend-request
-// Gets every friend request the user has based on the authorization header
-// Private
-// -------------------------------
-
-//Friend integration not needed
+// Megkapja a Headerben lévő felhasználónak az összes baráti kérelmét(kimenő,bejövő)
 router.get('/get/friend-request', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const errors = userGetFriendRequestValidator(req.jwt);
@@ -549,13 +504,8 @@ router.get('/get/friend-request', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // DELETE api/user/friend
-// Delete friend based on the authorization header and body params
-// Private
-// -------------------------------
-
-//Friend integration Done
+// Törli a törzsben megadott barátot a barátlistáról
 router.delete('/friend', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const {friend_id} = req.body;

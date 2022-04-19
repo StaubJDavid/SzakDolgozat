@@ -18,11 +18,8 @@ const lc = new listClass();
 
 require('dotenv').config();
 
-// -------------------------------
 // POST api/lists
-// Create a list in the database based on the content of the request body
-// Private
-// -------------------------------
+// Létrehoz egy listát
 router.post('/', verify, async (req, res) => {
     const {id} = req.jwt
     const {list_name, visibility} = req.body;
@@ -67,11 +64,8 @@ router.post('/', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // GET api/lists
-// Get all of the lists of a user based on the header's JWT
-// Private
-// -------------------------------
+// Headerben lévő felhasználó összes listáját visszaadja
 router.get('/', verify, async (req, res) => {
     const {id} = req.jwt;
     const errors = lv.listGetCurrentListsValidator(req.jwt);
@@ -95,13 +89,8 @@ router.get('/', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // GET api/lists/user/:user_id
-// Get all of the lists of a user based on the url user_id
-// Private
-// -------------------------------
-
-//Lehetne kevesebb if is
+// Megadott felhasználónak a listáit adja vissza
 router.get('/user/:user_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const friend_id = req.params.user_id;
@@ -238,99 +227,8 @@ router.get('/user/:user_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
-// GET api/lists/:list_id
-// Get the specified list based on the list_id
-// Private
-// -------------------------------
-
-//NEM HIVOM
-/*router.get('/:list_id', verify, async (req, res) => {
-    const user_id = req.jwt.id;
-    const friend_id = req.body.user_id;
-    const errors = lv.listGetCurrentListsValidator(req.jwt, friend_id);
-
-    if(!isEmpty(errors)){
-        res.status(400).json(errors);
-    }else{
-        if(user_id == friend_id){
-            db.query(lc.sql_getLists, [user_id], (errC, resultsC) => {
-                if(errC){
-                    console.log(errC);
-                    errors.query = "sql_getLists query error";
-                    errors.log = errC;
-    
-                    res.status(400).json(errors);
-                }else{
-                    if(resultsC.length == 0){
-                        errors.query = "You have no lists";
-                        res.status(400).json(errors);
-                    }else{
-                        res.json(resultsC);
-                    }
-                }
-            });
-        }else{
-            try {
-                console.log("before await");
-                const areFriends = await checkIfFriends(user_id, friend_id);
-                console.log("after await");
-                console.log(areFriends);
-                if(areFriends == 1){
-                    db.query(lc.sql_getFriendsLists, [friend_id], (err2, results2) => {
-                        if(err2){
-                            console.log(err2);
-                            errors.query = "sql_getFriendsLists query error";
-                            errors.log = err2;
-                
-                            res.status(400).json(errors);
-                        }else{
-                            if(results2.length != 0){
-                                res.json(results2);
-                            }else{
-                                if(results2.length == 0){
-                                    errors.query = "This user: " + friend_id + " has no lists publicly/friendly";
-                                }
-            
-                                res.status(400).json(errors);
-                            }
-                        }
-                    });
-                }else if (areFriends == 0){
-                    db.query(lc.sql_getUsersLists, [friend_id], (err2, results2) => {
-                        if(err2){
-                            console.log(err2);
-                            errors.query = "sql_getUsersLists query error";
-                            errors.log = err2;
-                
-                            res.status(400).json(errors);
-                        }else{
-                            if(results2.length != 0){
-                                res.json(results2);
-                            }else{
-                                if(results2.length == 0){
-                                    errors.query = "This user: " + friend_id + " has no lists publicly";
-                                }
-            
-                                res.status(400).json(errors);
-                            }
-                        }
-                    });
-                }else if(areFriends == -1){
-                    res.status(400).json("checkIfFriends error");
-                }
-            } catch (error) {
-                res.status(400).json("Throw error");
-            } 
-        }
-    }
-});*/
-
-// -------------------------------
 // PUT api/lists/:list_id
-// Edit the specified list based on the list_id, and request body content
-// Private
-// -------------------------------
+// Megadott listának az adatai változtatja
 router.put('/:list_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const list_id = req.params.list_id;
@@ -376,11 +274,8 @@ router.put('/:list_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // POST api/lists/:list_id
-// Add entries to the specified list based on the requests body
-// Private
-// -------------------------------
+// Megadott listához ad hozzá új elemeket
 router.post('/:list_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const list_id = req.params.list_id;
@@ -430,11 +325,8 @@ router.post('/:list_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // DELETE api/lists/:list_id
-// Delete the specified list based on the list_id, and header's JWT
-// Private
-// -------------------------------
+// Törli a megadott listát elemeivel eggyütt
 router.delete('/:list_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const list_id = req.params.list_id;
@@ -472,11 +364,8 @@ router.delete('/:list_id', verify, async (req, res) => {
     }
 });
 
-// -------------------------------
 // DELETE api/lists/entry/:list_id/:ld_id
-// Delete the specified list entry based on the list_id and ld_id
-// Private
-// -------------------------------
+// Megadott lista elemet törli a listából
 router.delete('/entry/:list_id/:ld_id', verify, async (req, res) => {
     const user_id = req.jwt.id;
     const list_id = req.params.list_id;

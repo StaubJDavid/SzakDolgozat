@@ -20,11 +20,8 @@ const fq = new friendClass();
 
 require('dotenv').config();
 
-// -------------------------------
 // GET api/chat/friendlist
-// Get the current user based on the authorization header
-// Private
-// -------------------------------
+// Visszaadja a headerben lévő felhasználónak a barátlistáját
 router.get('/friendlist', verify, async (req, res) => {
     const user_id = req.jwt.id
 
@@ -106,6 +103,8 @@ router.get('/friendlist', verify, async (req, res) => {
     }
 });
 
+// GET api/chat/messages/:friend_id
+// Visszaadja a headerben lévő felhasználó és a megadott barát közötti üzeneteket
 router.get('/messages/:friend_id', verify, async (req, res) => {
     const user_id = req.jwt.id
     const friend_id = req.params.friend_id;
@@ -130,6 +129,8 @@ router.get('/messages/:friend_id', verify, async (req, res) => {
     }
 });
 
+// POST api/chat/send
+// Kérés törzsében megadott barátnak küld egy üzenetet
 router.post('/send', verify, async (req, res) => {
     const user_id = req.jwt.id
     const {reciever_id, message} = req.body;

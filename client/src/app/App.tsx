@@ -67,20 +67,12 @@ const App: React.FC<State> = ({basename}) =>  {
           <Route path='/search' exact component={Search} />
           <Route path='/manga/:id' exact component={withRouter(MangaPage)} />
           <Route path='/manga/read/:chapterid' exact component={MangaReadPage} />
-
-          {/*Delete*/}
-          <Route path='/test' exact component={ParentTest} /> 
-
           <Route path='/register' exact component={Register} /> 
           <Route path='/login' exact component={Login} />
           <Route path='/profile/:id' exact component={withRouter(Profile)} />
           <Route path='/threads' exact component={Threads} />
           <Route path='/thread/:thread_id' exact component={Thread} />
           <Route path='/chat' exact component={ChatPage} />
-
-          {/*Delete*/}
-          <Route path='/stest' exact component={Test} />
-
           <Route path='/god/:creator_id' exact component={Creator} />
           <Route path='/scangroup/:scangroup_id' exact component={ScanGroup} />
         </div>
