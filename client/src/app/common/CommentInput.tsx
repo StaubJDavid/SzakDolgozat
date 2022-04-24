@@ -28,7 +28,7 @@ const CommentInput: FC<Props> = ({target_id, postComment, auth}) => {
                         value={text}
                         error={null} 
                         onChange={(e:any) => setText(e.target.value)}  
-                        placeholder="No boku no piku is not degenerate..."
+                        placeholder="Your message here..."
                         disabled={false}
                     />
                 </div>

@@ -13,6 +13,15 @@ type Props = {
   onScanGroupClick:any
 }
 
+const getVolume = (volume:any) => {
+  if(volume){
+    return "Volume: " + volume;
+  }else{
+    return "Volume: ";
+  }
+}
+//"Volume: "+ch.attributes.volume===null?"":ch.attributes.volume
+
 const ChapterRow: FC<Props> = ({scangroup,ch,onReadChapterClick,onScanGroupClick}) => {
   const [chapterHover,setChapterHover] = useState(false);
   const [scangroupHover,setScangroupHover] = useState(false);
@@ -25,7 +34,7 @@ const ChapterRow: FC<Props> = ({scangroup,ch,onReadChapterClick,onScanGroupClick
         pointer={true}
         onClick={onReadChapterClick}
         onClickData={ch}
-        text={"Volume: "+ch.attributes.volume}
+        text={getVolume(ch.attributes.volume)}
         onHover={setChapterHover}
         classname={"text-center align-middle"}
       />

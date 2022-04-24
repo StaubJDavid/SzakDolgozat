@@ -6,7 +6,7 @@ import LatestChapters from './MainPageComponents/LatestChapters';
 import Seasonals from './MainPageComponents/Seasonals';
 import {withRouter} from 'react-router-dom';
 
-type Props = {
+type Props = {//Komponens tulajdonságok(Saját Typescript típus)
     mainPage:any,
     history:any,
     errors:any,
@@ -14,13 +14,14 @@ type Props = {
     getLatestUpload:any,
     getSeasonals:any,
     sortSeasonals:any
-  }
+}
   
-  type State = {
-  }
+type State = {//Komponens állapot(Saját Typescript típus)
+}
 
-class Landing extends Component<Props,State> {
+class Landing extends Component<Props,State> { 
     componentDidMount(){
+        //Redux akciók hivása
         this.props.getMostFollowed();
         this.props.getLatestUpload();
         this.props.getSeasonals();

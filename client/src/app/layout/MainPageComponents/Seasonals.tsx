@@ -89,11 +89,6 @@ const Seasonals: FC<Props> = ({seasonals,history}) => {
             return null;
         });
 
-        /*console.log(carousels);
-        console.log(carouselname);*/
-
-        //console.log(sortSeasonal(carouselname[0],carouselname[1]));
-
         return (
             <>
             <div className="bg-orange border-bottom border-dark border-3 rounded mb-2 d-flex justify-content-center align-items-center">

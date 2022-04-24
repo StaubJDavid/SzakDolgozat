@@ -130,11 +130,11 @@ class MangaPage extends Component<Props,State> {
                   </ul>
                 </div>
                 <div className="col-md-6">
-                  <h3 className="text-center text-orange fw-bold">Extra details</h3>
+                  <h3 className="text-center text-orange fw-bold">Creators</h3>
                   <ul className="list-group">
                     <li key={"Author_List"} className="olist-group-item">
                       <p className="fw-bold">Author: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'author')} /></p>
-                      <p className="fw-bold">Artis: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'artist')} /></p>
+                      <p className="fw-bold">Artist: <CreatorButton creator={data.relationships.find((o:any) => o.type === 'artist')} /></p>
                     </li>
                   </ul>
                 </div>

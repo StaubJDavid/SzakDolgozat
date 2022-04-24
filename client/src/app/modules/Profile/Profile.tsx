@@ -45,6 +45,7 @@ class Profile extends Component<Props,State> {
     constructor(props:any){
         super(props);
 
+        //Komponens kezdő állapotának beállítása
         this.state = {
             error: {},
             own: false,
@@ -53,6 +54,7 @@ class Profile extends Component<Props,State> {
             count:0
         }
         
+        //Javascript funkciók bindolása
         this.onAddMangaClick = this.onAddMangaClick.bind(this);
         this.onDeleteMangaClick = this.onDeleteMangaClick.bind(this);
         this.onEditClick = this.onEditClick.bind(this);
@@ -61,6 +63,46 @@ class Profile extends Component<Props,State> {
         this.onDeleteFriendClick = this.onDeleteFriendClick.bind(this);
     }
 
+    //Életciklus, miután létrejön a komponens fut le
+    componentDidMount(){   
+        if(!this.props.auth.isAuthenticated){
+            this.props.history.push('/');
+        }
+
+        let url = window.location.href;
+        url = url.slice(url.lastIndexOf('/')+1,url.length);
+        this.setState({own: isSameUser(this.props.auth,url)});
+        this.props.getProfile(parseInt(url));
+        if(this.props.profile.profile != null){
+            this.setState({bio_l: this.props.profile.profile.bio.value});
+        }
+        
+        if(this.props.errors.no_user){
+            console.log(this.props.errors.no_user);
+            this.props.clearError();
+            this.props.history.push('/');
+        }
+    }
+
+    //Életciklus, miután frissül a komponens fut le
+    componentDidUpdate(prevProps:any){
+        if(this.props.match.params.id!== prevProps.match.params.id){
+            let url = window.location.href;
+            url = url.slice(url.lastIndexOf('/')+1,url.length);
+            this.setState({own: isSameUser(this.props.auth,url)});
+            this.props.getProfile(parseInt(url));
+
+            if(this.props.profile.profile != null){
+                this.setState({bio_l: this.props.profile.profile.bio.value});
+            }
+        }
+
+        if(this.props.errors.no_user){
+            console.log(this.props.errors.no_user);
+            this.props.clearError();
+            this.props.history.push('/');
+        }
+    }
 
     onEditClick(e:any){
         console.log("Clicked on Edit");
@@ -100,45 +142,6 @@ class Profile extends Component<Props,State> {
             Number(this.props.auth.user.id),
             Number(e)
         )
-    }
-
-    componentDidMount(){   
-        if(!this.props.auth.isAuthenticated){
-            this.props.history.push('/');
-        }
-
-        let url = window.location.href;
-        url = url.slice(url.lastIndexOf('/')+1,url.length);
-        this.setState({own: isSameUser(this.props.auth,url)});
-        this.props.getProfile(parseInt(url));
-        if(this.props.profile.profile != null){
-            this.setState({bio_l: this.props.profile.profile.bio.value});
-        }
-        
-        if(this.props.errors.no_user){
-            console.log(this.props.errors.no_user);
-            this.props.clearError();
-            this.props.history.push('/');
-        }
-    }
-
-    componentDidUpdate(prevProps:any){
-        if(this.props.match.params.id!== prevProps.match.params.id){
-            let url = window.location.href;
-            url = url.slice(url.lastIndexOf('/')+1,url.length);
-            this.setState({own: isSameUser(this.props.auth,url)});
-            this.props.getProfile(parseInt(url));
-
-            if(this.props.profile.profile != null){
-                this.setState({bio_l: this.props.profile.profile.bio.value});
-            }
-        }
-
-        if(this.props.errors.no_user){
-            console.log(this.props.errors.no_user);
-            this.props.clearError();
-            this.props.history.push('/');
-        }
     }
 
     render() {

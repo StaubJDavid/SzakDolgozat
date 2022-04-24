@@ -16,11 +16,11 @@ type Props = {
 
 const LDRow: FC<Props> = ({element,auth,addMangaProfile}) => {
     const history = useHistory();
-    const [likeHover, setLikeHover] = useState(false);
-    const [dislikeHover, setDislikeHover] = useState(false);
+    const [likeHover, setLikeHover] = useState(false);//Lájk gombon van az egér állapot
+    const [dislikeHover, setDislikeHover] = useState(false);//Dislájk gombon van az egér állapot
 
+    //Funkció ami hozzáadja a mangát a profil részleteihez redux akciókkal
     function onAddMangaClick(dataType:any,dataId:any,dataName:any){
-        console.log(dataType);
         addMangaProfile(Number(auth.user.id),
             Number(dataType),
             String(dataId),
@@ -32,15 +32,15 @@ const LDRow: FC<Props> = ({element,auth,addMangaProfile}) => {
         <div className='d-flex flex-row rounded p-2 bg-orange'>
             <AddDelMangaTitle onClick={() => history.push('/manga/'+element.id)} text={getTitle(element.attributes.title)} bgColor={"bg-orange"} bgHoverColor={"bg-yellow"}/>
             <div
-                className={classnames('text-center px-2 d-flex align-items-center',{"text-success":likeHover})}
-                onMouseEnter={() => setLikeHover(true)}
-                onMouseLeave={() => setLikeHover(false)}
-                onClick={() => onAddMangaClick(2,element.id,getTitle(element.attributes.title))}
+                className={classnames('text-center px-2 d-flex align-items-center',{"text-success":likeHover})}//Ha a lájkon van az egér, a divben lévő ikon zöld lesz
+                onMouseEnter={() => setLikeHover(true)}//Egeret ráviszik a divre, lájk booleant igazra állítja
+                onMouseLeave={() => setLikeHover(false)}//Egeret elviszik a divről, lájk booleant hamisra állítja
+                onClick={() => onAddMangaClick(2,element.id,getTitle(element.attributes.title))}//Kattintási esemény beállítása
             >
-                <i className="bi bi-hand-thumbs-up-fill"/>
+                <i className="bi bi-hand-thumbs-up-fill"/>{/* Bootstrap Ikon használata */}
             </div>
             <div
-                className={classnames('text-center px-2 d-flex align-items-center',{"text-danger":dislikeHover})}
+                className={classnames('text-center px-2 d-flex align-items-center',{"text-danger":dislikeHover})}//Ha a lájkon van az egér, a divben lévő ikon piros lesz
                 onMouseEnter={() => setDislikeHover(true)}
                 onMouseLeave={() => setDislikeHover(false)}
                 onClick={() => onAddMangaClick(3,element.id,getTitle(element.attributes.title))}
