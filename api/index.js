@@ -69,6 +69,7 @@ global.lookupTable = new Map();
 //Mikor a kliens csatlakozik ez az esemény lefog futni
 io.on("connection",(socket)=> {
     //global.chatSocket = socket;
+    console.log("socket connection")
 
     //Kliensről add-user eseményt dolgozza fel
     socket.on("add-user", (userId) => {

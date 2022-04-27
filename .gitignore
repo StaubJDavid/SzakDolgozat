@@ -26,3 +26,7 @@ client/yarn-error.log*
 #Proxy Ignore
 proxy/node_modules
 proxy/public
+
+#Docker Ignore
+mariadb-docker
+docker-compose.yml

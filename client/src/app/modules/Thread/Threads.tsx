@@ -37,7 +37,6 @@ class Threads extends Component<Props,State> {
         if(thread_list != null){
             threadsContent = (
             <>
-                {this.props.auth.isAuthenticated?<CreateThread />:<></>}
                 {thread_list.map((element:any, i:number) => {
                 return  <ThreadCard thread={element} key={`thread${i}`}/>
                 })}
@@ -47,6 +46,7 @@ class Threads extends Component<Props,State> {
 
         return (
             <div>
+                {this.props.auth.isAuthenticated?<CreateThread />:<></>}
                 {threadsContent}
             </div>
         )
