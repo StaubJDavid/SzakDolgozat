@@ -29,4 +29,3 @@ proxy/public
 
 #Docker Ignore
 mariadb-docker
-docker-compose.yml

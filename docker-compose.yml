@@ -1,0 +1,57 @@
+version: '3'
+services:
+    mariadb:
+        image: davidkah20/petydex-mariadb
+        container_name: docker-petydex-mariadb
+        ports:
+            - "3306:3306"
+        environment:
+            - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
+        networks:
+            - backend-connection
+        volumes:
+            - maria-data:/data/db
+
+    backend:
+        image: davidkah20/petydex-api
+        container_name: docker-petydex-api
+        ports:
+            - "3001:3001"
+        networks:
+            - backend-connection
+        depends_on: 
+            - mariadb
+        restart: on-failure
+
+    frontend:
+        image: davidkah20/petydex-client
+        container_name: docker-petydex-client
+        ports:
+            - "3011:3011"
+        networks:
+            - backend-connection
+            - frontend-connection
+        depends_on: 
+            - mariadb
+            - backend
+            - proxy
+        restart: on-failure
+
+    proxy:
+        image: davidkah20/petydex-proxy
+        container_name: docker-petydex-proxy
+        ports:
+            - "3000:3000"
+        networks:
+            - frontend-connection
+        restart: on-failure
+
+networks:
+    backend-connection:
+        driver: bridge
+    frontend-connection:
+        driver: bridge
+
+volumes:
+  maria-data:
+    driver: local
