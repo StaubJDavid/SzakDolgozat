@@ -26,7 +26,7 @@ export const connectToServer = (userData:any) => (dispatch:any) => {
     if(!isEmpty(userData)){
         const socket:any = {};
         //"http://localhost:3001"
-        //"http://80.98.214.13:3001"
+        //"http://168.92.144.23:3001"
         socket.current = io("http://localhost:3001");
         socket.current.emit("add-user",userData.id);
         //console.log(socket.current);

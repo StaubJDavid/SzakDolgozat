@@ -133,36 +133,9 @@ CREATE TABLE IF NOT EXISTS `friend_list` (
     FOREIGN KEY (message_id) REFERENCES messages(message_id)
 );
 
+INSERT INTO `detail_types` (`type_name`) VALUES ("About me"), ("Liked Manga"), ("Disliked Manga");
 
-//Inserts
-//Detail types
-INSERT INTO `detail_types`(`type_name`) 
-VALUES ("About me"),
-("Liked Manga"),
-("Disliked Manga")
-
-DELIMITER //
-
-CREATE PROCEDURE simpleproc (IN in_cId INT, IN in_state INT)
-BEGIN
-	DECLARE clikes INT;
-	START TRANSACTION;
-	SELECT likes INTO clikes FROM `comments` WHERE comment_id=in_cId;
-	UPDATE `comments` SET likes=(clikes+1) WHERE comment_id=in_cId;
-	COMMIT;
-END;
-//
-
-DELIMITER ;
-
-1 = increase like
-2 = decrease like
-3 = increase dislike
-4 = decrease dislike
-
---COMMENT MANAGER
-DELIMITER //
-
+DELIMITER $$
 CREATE PROCEDURE sp_manage_likes (IN in_cId INT, IN in_state VARCHAR(11), OUT Q_STATUS INT)
 BEGIN
 	DECLARE clikes INT;
@@ -210,15 +183,10 @@ BEGIN
             COMMIT;
 	END CASE;
     
-END;
-//
-
+END$$
 DELIMITER ;
 
--- THREAD LIKE MANAGER
-
-DELIMITER //
-
+DELIMITER $$
 CREATE PROCEDURE sp_manage_likes_thread (IN in_tId VARCHAR(255), IN in_state VARCHAR(11), OUT Q_STATUS INT)
 BEGIN
 	DECLARE tlikes INT;
@@ -266,15 +234,10 @@ BEGIN
             COMMIT;
 	END CASE;
     
-END;
-//
-
+END$$
 DELIMITER ;
 
-//Manage manga subscribers
-
-DELIMITER //
-
+DELIMITER $$
 CREATE PROCEDURE sp_manage_manga_subscribers (IN in_imt_id INT, IN in_state VARCHAR(3), OUT Q_STATUS INT)
 BEGIN
 	DECLARE temp_followers INT;
@@ -307,13 +270,5 @@ BEGIN
             COMMIT;
 	END CASE;
     
-END;
-//
-
+END$$
 DELIMITER ;
-
-query_str = "CALL sp_whatever(?,?,?,@output); select @output";
- con.query(query_str, [param1, param2, param3], function(err,rows){
-     if(err) throw err;
-     console.log(rows);
- });

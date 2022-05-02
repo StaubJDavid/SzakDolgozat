@@ -12,7 +12,7 @@ const app = express();
 app.use('*', cors());
 app.use(express.static('public'));
 
-const PUBLIC_ADDRESS = "80.98.214.13";
+const PUBLIC_ADDRESS = "localhost";
 const PORT = 3000;
 const HOST = "0.0.0.0";
 //A kívánt API URL cím törzsének megadása
