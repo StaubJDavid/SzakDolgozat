@@ -27,7 +27,8 @@ export const connectToServer = (userData:any) => (dispatch:any) => {
         const socket:any = {};
         //"http://localhost:3001"
         //"http://168.92.144.23:3001"
-        socket.current = io("http://localhost:3001");
+		//`${process.env.REACT_APP_API_URL}`
+        socket.current = io(`${process.env.REACT_APP_API_URL}`);
         socket.current.emit("add-user",userData.id);
         //console.log(socket.current);
         dispatch({

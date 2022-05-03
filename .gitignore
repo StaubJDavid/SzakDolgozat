@@ -22,10 +22,15 @@ client/yarn-debug.log*
 client/yarn-error.log*
 
 *.JPG
+*.png
+*.docx
 
 #Proxy Ignore
 proxy/node_modules
-proxy/public
+
+!proxy/public
+proxy/public/*
+!proxy/public/error.jpg
 
 #Docker Ignore
 mariadb-docker
